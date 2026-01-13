@@ -1,5 +1,5 @@
 // app/api/admin/users/route.js
-import { connectDB } from "@/lib/db";
+import  connectDB  from "@/lib/db";
 import User from "@/models/User";
 
 export async function PATCH(req) {

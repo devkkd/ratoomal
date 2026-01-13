@@ -22,7 +22,7 @@ import Image from 'next/image';
 const navigation = [
   { name: 'Dashboard', href: '/admin', icon: HomeIcon },
   { name: 'Products', href: '/admin/products', icon: ArchiveBoxIcon },
-  // { name: 'Orders', href: '/admin/orders', icon: ShoppingCartIcon },
+  { name: 'Inquiry', href: '/admin/inquiry', icon: ShoppingCartIcon },
   { name: 'Customers', href: '/admin/customers', icon: UsersIcon },
   { name: 'Category', href: '/admin/categories', icon: ChartBarIcon },
   { name: 'Subcategory', href: '/admin/subcategories', icon: CreditCardIcon },
