@@ -5,6 +5,7 @@ import axios from "axios";
 import { 
   Upload, 
   Image as ImageIcon, 
+  Video,
   Plus, 
   Edit2, 
   Trash2, 
@@ -28,7 +29,9 @@ import {
   FileText,
   Loader2,
   AlertCircle,
-  Eye 
+  Eye,
+  Play,
+  FileVideo
 } from "lucide-react";
 
 const INITIAL_FORM = {
@@ -63,6 +66,7 @@ export default function ProductAdminPage() {
   const [editId, setEditId] = useState(null);
   const [loading, setLoading] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [uploadingVideo, setUploadingVideo] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [priceRange, setPriceRange] = useState({ min: "", max: "" });
@@ -73,11 +77,13 @@ export default function ProductAdminPage() {
   const [activeTab, setActiveTab] = useState("basic");
   const [isStock, setIsStock] = useState(true);
   
-  // Image states - SIMPLIFIED
+  // Media states
   const [thumbnail, setThumbnail] = useState("");
   const [images, setImages] = useState([]);
+  const [video360, setVideo360] = useState("");
   const [thumbnailFile, setThumbnailFile] = useState(null);
   const [imageFiles, setImageFiles] = useState([]);
+  const [videoFile, setVideoFile] = useState(null);
 
   // ---------------- FETCH ----------------
   const fetchProducts = async () => {
@@ -112,7 +118,7 @@ export default function ProductAdminPage() {
       .catch(err => console.error("Error fetching categories:", err));
   }, []);
 
-  // ---------------- FIXED CLOUDINARY UPLOAD ----------------
+  // ---------------- UPLOAD FUNCTIONS ----------------
   const uploadImage = async (file) => {
     if (!file) return null;
     
@@ -120,26 +126,55 @@ export default function ProductAdminPage() {
     fd.append("file", file);
     
     try {
-      console.log("Uploading file:", file.name, file.type, file.size);
       const res = await axios.post("/api/admin/upload", fd, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      });
+      return res.data.url;
+    } catch (error) {
+      console.error("Image upload error:", error);
+      showMessage(`Failed to upload image: ${error.response?.data?.message || error.message}`, "error");
+      return null;
+    }
+  };
+
+  const uploadVideo = async (file) => {
+    if (!file) return null;
+    
+    // Validate video file
+    if (!file.type.startsWith('video/')) {
+      showMessage("Please select a video file (MP4, MOV, etc.)", "error");
+      return null;
+    }
+
+    // Check size (15MB limit)
+    if (file.size > 15 * 1024 * 1024) {
+      showMessage("Video size must be less than 15MB", "error");
+      return null;
+    }
+
+    const fd = new FormData();
+    fd.append("file", file);
+    
+    try {
+      setUploadingVideo(true);
+      const res = await axios.post("/api/admin/upload-video", fd, {
         headers: {
           'Content-Type': 'multipart/form-data'
         },
         onUploadProgress: (progressEvent) => {
           const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
-          console.log(`Upload progress: ${percentCompleted}%`);
+          console.log(`Video upload progress: ${percentCompleted}%`);
         }
       });
-      console.log("Upload response:", res.data);
       return res.data.url;
     } catch (error) {
-      console.error("Upload error details:", {
-        message: error.message,
-        response: error.response?.data,
-        status: error.response?.status
-      });
-      showMessage(`Failed to upload image: ${error.response?.data?.message || error.message}`, "error");
+      console.error("Video upload error:", error);
+      showMessage(`Failed to upload video: ${error.response?.data?.message || error.message}`, "error");
       return null;
+    } finally {
+      setUploadingVideo(false);
     }
   };
 
@@ -153,37 +188,32 @@ export default function ProductAdminPage() {
     setLoading(true);
     let uploadedThumbnail = thumbnail;
     let uploadedImages = [...images];
+    let uploadedVideo = video360;
 
     try {
-      // If editing and thumbnail is already a URL (not base64), keep it
-      if (editId && thumbnail && (thumbnail.startsWith('http') || thumbnail.startsWith('https'))) {
-        // Keep existing thumbnail URL
-        uploadedThumbnail = thumbnail;
-      } 
-      // Upload new thumbnail if file selected
-      else if (thumbnailFile) {
-        console.log("Uploading new thumbnail...");
+      // Upload thumbnail if new file selected
+      if (thumbnailFile) {
         const thumbUrl = await uploadImage(thumbnailFile);
         if (thumbUrl) {
           uploadedThumbnail = thumbUrl;
         } else {
-          showMessage("Thumbnail upload failed", "error");
-          setLoading(false);
-          return;
+          throw new Error("Thumbnail upload failed");
         }
       }
-      // If thumbnail is base64 string (new upload preview), upload it
-      else if (thumbnail && thumbnail.startsWith('data:image')) {
-        showMessage("Please select a thumbnail file first", "error");
-        setLoading(false);
-        return;
+
+      // Upload video if new file selected
+      if (videoFile) {
+        const videoUrl = await uploadVideo(videoFile);
+        if (videoUrl) {
+          uploadedVideo = videoUrl;
+        } else {
+          throw new Error("Video upload failed");
+        }
       }
 
-      // Handle multiple images
+      // Upload gallery images
       if (imageFiles.length > 0) {
-        console.log(`Uploading ${imageFiles.length} gallery images...`);
         setUploading(true);
-        
         const uploadedUrls = [];
         for (let i = 0; i < imageFiles.length; i++) {
           const url = await uploadImage(imageFiles[i]);
@@ -191,13 +221,7 @@ export default function ProductAdminPage() {
             uploadedUrls.push(url);
           }
         }
-        
-        // Filter out existing URLs that are already proper URLs
-        const existingUrls = images.filter(img => 
-          img.startsWith('http') || img.startsWith('https')
-        );
-        
-        uploadedImages = [...existingUrls, ...uploadedUrls];
+        uploadedImages = [...uploadedUrls, ...images.filter(img => img.startsWith('http'))];
         setUploading(false);
       }
 
@@ -208,12 +232,13 @@ export default function ProductAdminPage() {
         moq: Number(form.moq || 0),
         thumbnail: uploadedThumbnail,
         images: uploadedImages,
+        video360: uploadedVideo, // ✅ Video field added
         services: form.services ? form.services.split(",").map(s => s.trim()).filter(s => s) : [],
         features: form.features ? form.features.split(",").map(f => f.trim()).filter(f => f) : [],
         availability: isStock ? "In Stock" : "Out of Stock"
       };
 
-      console.log("Submitting payload:", payload);
+      console.log("Submitting product:", payload);
 
       // Submit to API
       if (editId) {
@@ -228,15 +253,12 @@ export default function ProductAdminPage() {
       fetchProducts();
       
     } catch (err) {
-      console.error("Save error details:", {
-        message: err.message,
-        response: err.response?.data,
-        status: err.response?.status
-      });
+      console.error("Save error:", err);
       showMessage(err.response?.data?.message || "Error saving product", "error");
     } finally {
       setLoading(false);
       setUploading(false);
+      setUploadingVideo(false);
     }
   };
 
@@ -254,22 +276,17 @@ export default function ProductAdminPage() {
       features: p.features?.join(", ") || "",
     });
     
-    // Set existing thumbnail and images (should be URLs from database)
-    if (p.thumbnail && (p.thumbnail.startsWith('http') || p.thumbnail.startsWith('https'))) {
-      setThumbnail(p.thumbnail);
-    } else {
-      setThumbnail("");
-    }
-    
-    // Set existing gallery images (should be URLs from database)
-    const validImages = (p.images || []).filter(img => 
-      img && (img.startsWith('http') || img.startsWith('https'))
-    );
-    setImages(validImages);
-    
+    // Set existing media
+    setThumbnail(p.thumbnail || "");
+    setImages(p.images || []);
+    setVideo360(p.video360 || ""); // ✅ Set existing video
     setIsStock(p.availability === "In Stock");
+    
+    // Clear file inputs
     setThumbnailFile(null);
     setImageFiles([]);
+    setVideoFile(null);
+    
     fetchSubCategories(p.category?._id);
     setActiveTab("basic");
     window.scrollTo({ top: 0, behavior: "smooth" });
@@ -294,25 +311,25 @@ export default function ProductAdminPage() {
     setForm(INITIAL_FORM);
     setThumbnail("");
     setImages([]);
+    setVideo360("");
     setSubcategories([]);
     setThumbnailFile(null);
     setImageFiles([]);
+    setVideoFile(null);
     setIsStock(true);
     setActiveTab("basic");
   };
 
-  // ---------------- FIXED IMAGE HANDLING ----------------
+  // ---------------- MEDIA HANDLING ----------------
   const handleThumbnailChange = (e) => {
     const file = e.target.files[0];
     if (!file) return;
     
-    // Validate file type
     if (!file.type.startsWith('image/')) {
       showMessage("Please select an image file", "error");
       return;
     }
     
-    // Validate file size (5MB limit)
     if (file.size > 5 * 1024 * 1024) {
       showMessage("File size should be less than 5MB", "error");
       return;
@@ -320,21 +337,15 @@ export default function ProductAdminPage() {
     
     setThumbnailFile(file);
     
-    // Create preview for UI
     const reader = new FileReader();
     reader.onload = (e) => {
       setThumbnail(e.target.result);
-    };
-    reader.onerror = () => {
-      showMessage("Error reading file", "error");
     };
     reader.readAsDataURL(file);
   };
 
   const handleImagesChange = (e) => {
     const files = Array.from(e.target.files);
-    
-    // Filter valid image files
     const validFiles = files.filter(file => {
       if (!file.type.startsWith('image/')) {
         showMessage(`${file.name} is not an image file`, "error");
@@ -351,7 +362,6 @@ export default function ProductAdminPage() {
     
     setImageFiles(prev => [...prev, ...validFiles]);
     
-    // Create previews for UI
     validFiles.forEach(file => {
       const reader = new FileReader();
       reader.onload = (e) => {
@@ -361,14 +371,39 @@ export default function ProductAdminPage() {
     });
   };
 
-  const removeImage = (index) => {
-    // Remove from previews
-    setImages(prev => prev.filter((_, i) => i !== index));
+  const handleVideoChange = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
     
-    // Also remove from files array if it exists
+    if (!file.type.startsWith('video/')) {
+      showMessage("Please select a video file", "error");
+      return;
+    }
+    
+    if (file.size > 15 * 1024 * 1024) {
+      showMessage("Video size must be less than 15MB", "error");
+      return;
+    }
+    
+    setVideoFile(file);
+    
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      setVideo360(e.target.result);
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const removeImage = (index) => {
+    setImages(prev => prev.filter((_, i) => i !== index));
     if (imageFiles[index]) {
       setImageFiles(prev => prev.filter((_, i) => i !== index));
     }
+  };
+
+  const removeVideo = () => {
+    setVideo360("");
+    setVideoFile(null);
   };
 
   // ---------------- UI HELPERS ----------------
@@ -392,7 +427,6 @@ export default function ProductAdminPage() {
     return matchesSearch && matchesCategory && matchesMinPrice && matchesMaxPrice;
   });
 
-  // ---------------- UI ----------------
   return (
     <div className="min-h-screen bg-gray-50 p-4 md:p-6">
       {/* Success/Error Messages */}
@@ -492,7 +526,7 @@ export default function ProductAdminPage() {
           {/* Form Tabs */}
           <div className="border-b border-gray-200 mb-6">
             <nav className="flex space-x-6 overflow-x-auto">
-              {["basic", "details", "images", "description"].map((tab) => (
+              {["basic", "details", "media", "description"].map((tab) => (
                 <button
                   key={tab}
                   onClick={() => setActiveTab(tab)}
@@ -504,7 +538,7 @@ export default function ProductAdminPage() {
                 >
                   {tab === "basic" && "Basic Info"}
                   {tab === "details" && "Specifications"}
-                  {tab === "images" && "Images"}
+                  {tab === "media" && "Media"}
                   {tab === "description" && "Description"}
                 </button>
               ))}
@@ -513,122 +547,6 @@ export default function ProductAdminPage() {
 
           {/* Form Content */}
           <div className="space-y-6">
-            {/* Images Tab - MOVED TO TOP FOR EASIER ACCESS */}
-            {activeTab === "images" && (
-              <div className="space-y-6">
-                {/* Thumbnail Upload */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Thumbnail Image <span className="text-red-500">*</span>
-                  </label>
-                  <div className="flex flex-col md:flex-row gap-6">
-                    <div className="relative flex-1 border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-[#C08237] transition-colors cursor-pointer group">
-                      <Upload className="h-12 w-12 text-gray-400 mx-auto mb-3 group-hover:text-[#C08237]" />
-                      <p className="text-sm text-gray-600 mb-2">Click to upload thumbnail</p>
-                      <p className="text-xs text-gray-500">JPG, PNG, WEBP up to 5MB</p>
-                      <input
-                        type="file"
-                        accept="image/*"
-                        onChange={handleThumbnailChange}
-                        className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                      />
-                    </div>
-                    {thumbnail && (
-                      <div className="w-48 h-48 relative">
-                        <img
-                          src={thumbnail}
-                          alt="Thumbnail preview"
-                          className="w-full h-full object-cover rounded-lg border border-gray-200"
-                        />
-                        <button
-                          onClick={() => {
-                            setThumbnail("");
-                            setThumbnailFile(null);
-                          }}
-                          className="absolute -top-2 -right-2 bg-red-500 text-white p-1 rounded-full hover:bg-red-600 transition-colors"
-                        >
-                          <X className="h-4 w-4" />
-                        </button>
-                        <div className="absolute bottom-2 left-2 right-2 bg-black bg-opacity-50 text-white text-xs p-1 rounded">
-                          {thumbnailFile?.name || "Current thumbnail"}
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                </div>
-
-                {/* Multiple Images Upload */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Gallery Images
-                  </label>
-                  <div className="relative border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-[#C08237] transition-colors cursor-pointer group mb-4">
-                    <ImageIcon className="h-12 w-12 text-gray-400 mx-auto mb-3 group-hover:text-[#C08237]" />
-                    <p className="text-sm text-gray-600 mb-2">Click to upload multiple images</p>
-                    <p className="text-xs text-gray-500">JPG, PNG, WEBP up to 5MB each</p>
-                    <input
-                      type="file"
-                      accept="image/*"
-                      multiple
-                      onChange={handleImagesChange}
-                      className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                    />
-                  </div>
-
-                  {uploading && (
-                    <div className="flex items-center justify-center p-4">
-                      <Loader2 className="h-6 w-6 text-[#C08237] animate-spin mr-2" />
-                      <span className="text-gray-600">Uploading images...</span>
-                    </div>
-                  )}
-
-                  {images.length > 0 && (
-                    <div>
-                      <div className="flex items-center justify-between mb-3">
-                        <p className="text-sm font-medium text-gray-700">
-                          Uploaded Images ({images.length})
-                        </p>
-                        <button
-                          onClick={() => {
-                            setImages([]);
-                            setImageFiles([]);
-                          }}
-                          className="text-sm text-red-600 hover:text-red-700 flex items-center gap-1"
-                        >
-                          <Trash2 className="h-4 w-4" />
-                          Clear All
-                        </button>
-                      </div>
-                      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
-                        {images.map((img, index) => (
-                          <div key={index} className="relative group">
-                            <img
-                              src={img}
-                              alt={`Product image ${index + 1}`}
-                              className="w-full h-32 object-cover rounded-lg border border-gray-200 cursor-pointer"
-                              onClick={() => {
-                                setPreviewImage(img);
-                                setShowImagePreview(true);
-                              }}
-                            />
-                            <button
-                              onClick={() => removeImage(index)}
-                              className="absolute top-2 right-2 bg-red-500 text-white p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-600"
-                            >
-                              <X className="h-3 w-3" />
-                            </button>
-                            <div className="absolute bottom-2 left-2 right-2 bg-black bg-opacity-50 text-white text-xs p-1 rounded truncate">
-                              {imageFiles[index]?.name || `Image ${index + 1}`}
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-                </div>
-              </div>
-            )}
-
             {/* Basic Info Tab */}
             {activeTab === "basic" && (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -793,6 +711,178 @@ export default function ProductAdminPage() {
               </div>
             )}
 
+            {/* Media Tab */}
+            {activeTab === "media" && (
+              <div className="space-y-8">
+                {/* Thumbnail Section */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Thumbnail Image <span className="text-red-500">*</span>
+                  </label>
+                  <div className="flex flex-col md:flex-row gap-6">
+                    <div className="relative flex-1 border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-[#C08237] transition-colors cursor-pointer group">
+                      <Upload className="h-12 w-12 text-gray-400 mx-auto mb-3 group-hover:text-[#C08237]" />
+                      <p className="text-sm text-gray-600 mb-2">Click to upload thumbnail</p>
+                      <p className="text-xs text-gray-500">JPG, PNG, WEBP up to 5MB</p>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={handleThumbnailChange}
+                        className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                      />
+                    </div>
+                    {thumbnail && (
+                      <div className="w-48 h-48 relative">
+                        <img
+                          src={thumbnail}
+                          alt="Thumbnail preview"
+                          className="w-full h-full object-cover rounded-lg border border-gray-200"
+                        />
+                        <button
+                          onClick={() => {
+                            setThumbnail("");
+                            setThumbnailFile(null);
+                          }}
+                          className="absolute -top-2 -right-2 bg-red-500 text-white p-1 rounded-full hover:bg-red-600 transition-colors"
+                        >
+                          <X className="h-4 w-4" />
+                        </button>
+                        <div className="absolute bottom-2 left-2 right-2 bg-black bg-opacity-50 text-white text-xs p-1 rounded">
+                          {thumbnailFile?.name || "Current thumbnail"}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {/* Video Section */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    360° Product Video (Optional)
+                  </label>
+                  <div className="flex flex-col md:flex-row gap-6">
+                    <div className="relative flex-1 border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-[#C08237] transition-colors cursor-pointer group">
+                      <FileVideo className="h-12 w-12 text-gray-400 mx-auto mb-3 group-hover:text-[#C08237]" />
+                      <p className="text-sm text-gray-600 mb-2">Click to upload 360° video</p>
+                      <p className="text-xs text-gray-500">MP4, MOV up to 15MB</p>
+                      <p className="text-xs text-gray-400 mt-1">Short video recommended (10-15MB)</p>
+                      <input
+                        type="file"
+                        accept="video/*"
+                        onChange={handleVideoChange}
+                        className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                      />
+                    </div>
+                    {video360 && (
+                      <div className="w-48 h-48 relative bg-black rounded-lg overflow-hidden">
+                        {video360.startsWith('data:video') || video360.startsWith('http') ? (
+                          <>
+                            <video
+                              src={video360}
+                              className="w-full h-full object-cover"
+                              controls
+                            />
+                            <div className="absolute top-2 left-2 bg-[#C08237] text-white px-2 py-1 rounded-full text-xs font-medium">
+                              <Play className="inline h-3 w-3 mr-1" /> VIDEO
+                            </div>
+                          </>
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center bg-gray-800">
+                            <FileVideo className="h-12 w-12 text-gray-400" />
+                          </div>
+                        )}
+                        <button
+                          onClick={removeVideo}
+                          className="absolute -top-2 -right-2 bg-red-500 text-white p-1 rounded-full hover:bg-red-600 transition-colors"
+                        >
+                          <X className="h-4 w-4" />
+                        </button>
+                        <div className="absolute bottom-2 left-2 right-2 bg-black bg-opacity-50 text-white text-xs p-1 rounded truncate">
+                          {videoFile?.name || "360° View Video"}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                  {uploadingVideo && (
+                    <div className="mt-2 flex items-center gap-2 text-sm text-[#C08237]">
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                      Uploading video...
+                    </div>
+                  )}
+                </div>
+
+                {/* Gallery Images Section */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Gallery Images
+                  </label>
+                  <div className="relative border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-[#C08237] transition-colors cursor-pointer group mb-4">
+                    <ImageIcon className="h-12 w-12 text-gray-400 mx-auto mb-3 group-hover:text-[#C08237]" />
+                    <p className="text-sm text-gray-600 mb-2">Click to upload multiple images</p>
+                    <p className="text-xs text-gray-500">JPG, PNG, WEBP up to 5MB each</p>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      multiple
+                      onChange={handleImagesChange}
+                      className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                    />
+                  </div>
+
+                  {uploading && (
+                    <div className="flex items-center justify-center p-4">
+                      <Loader2 className="h-6 w-6 text-[#C08237] animate-spin mr-2" />
+                      <span className="text-gray-600">Uploading images...</span>
+                    </div>
+                  )}
+
+                  {images.length > 0 && (
+                    <div>
+                      <div className="flex items-center justify-between mb-3">
+                        <p className="text-sm font-medium text-gray-700">
+                          Uploaded Images ({images.length})
+                        </p>
+                        <button
+                          onClick={() => {
+                            setImages([]);
+                            setImageFiles([]);
+                          }}
+                          className="text-sm text-red-600 hover:text-red-700 flex items-center gap-1"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                          Clear All
+                        </button>
+                      </div>
+                      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+                        {images.map((img, index) => (
+                          <div key={index} className="relative group">
+                            <img
+                              src={img}
+                              alt={`Product image ${index + 1}`}
+                              className="w-full h-32 object-cover rounded-lg border border-gray-200 cursor-pointer"
+                              onClick={() => {
+                                setPreviewImage(img);
+                                setShowImagePreview(true);
+                              }}
+                            />
+                            <button
+                              onClick={() => removeImage(index)}
+                              className="absolute top-2 right-2 bg-red-500 text-white p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-600"
+                            >
+                              <X className="h-3 w-3" />
+                            </button>
+                            <div className="absolute bottom-2 left-2 right-2 bg-black bg-opacity-50 text-white text-xs p-1 rounded truncate">
+                              {imageFiles[index]?.name || `Image ${index + 1}`}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+
             {/* Description Tab */}
             {activeTab === "description" && (
               <div className="space-y-6">
@@ -818,6 +908,7 @@ export default function ProductAdminPage() {
                   </label>
                   <div className="relative">
                     <FileText className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+                
                     <textarea
                       placeholder="Detailed product description with features, benefits, etc."
                       value={form.longDescription}
