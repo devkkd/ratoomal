@@ -1,277 +1,187 @@
 // import { NextResponse } from "next/server";
-// import { writeFile, unlink, mkdir } from "fs/promises";
-// import fs from "fs";
-// import { existsSync } from "fs";
-// import path from "path";
 // import * as XLSX from "xlsx";
-
 // import connectDB from "@/lib/db";
 // import Product from "@/models/Product";
 // import Category from "@/models/Category";
 // import SubCategory from "@/models/SubCategory";
-// import cloudinary from "@/lib/cloudinary";
 
-// export const dynamic = "force-dynamic";
-// export const maxDuration = 60;
+// export async function POST(req) {
+//   await connectDB();
 
-// export async function POST(request) {
-//   console.log("📥 Bulk upload API called");
+//   const formData = await req.formData();
+//   const file = formData.get("file");
 
-//   let tempFilePath = "";
+//   const buffer = Buffer.from(await file.arrayBuffer());
+//   const workbook = XLSX.read(buffer, { type: "buffer" });
+//   const sheet = workbook.Sheets[workbook.SheetNames[0]];
+//   const rows = XLSX.utils.sheet_to_json(sheet);
 
-//   try {
-//     await connectDB();
+//   const success = [];
+//   const errors = [];
 
-//     const formData = await request.formData();
-//     const file = formData.get("file");
+//   for (let i = 0; i < rows.length; i++) {
+//     const row = rows[i];
+//     const rowNo = i + 2;
 
-//     if (!file) {
-//       return NextResponse.json(
-//         { success: false, message: "No file uploaded" },
-//         { status: 400 }
-//       );
-//     }
+//     try {
+//       const category = await Category.findOne({
+//         name: new RegExp(`^${row.Category}$`, "i"),
+//       });
+//       if (!category) throw new Error("Category not found");
 
-//     // Convert file to buffer
-//     const buffer = Buffer.from(await file.arrayBuffer());
-
-//     // Temp directory
-//     const tempDir = path.join(process.cwd(), "tmp");
-//     if (!existsSync(tempDir)) {
-//       await mkdir(tempDir, { recursive: true });
-//     }
-
-//     tempFilePath = path.join(
-//       tempDir,
-//       `upload_${Date.now()}_${file.name}`
-//     );
-//     await writeFile(tempFilePath, buffer);
-
-//     // Read Excel
-//     const workbook = XLSX.read(buffer, { type: "buffer" });
-//     const sheetName = workbook.SheetNames[0];
-//     const worksheet = workbook.Sheets[sheetName];
-//     const rows = XLSX.utils.sheet_to_json(worksheet);
-
-//     if (!rows.length) {
-//       await unlink(tempFilePath);
-//       return NextResponse.json(
-//         { success: false, message: "Excel file is empty" },
-//         { status: 400 }
-//       );
-//     }
-
-//     const results = [];
-//     const errors = [];
-
-//     for (let i = 0; i < rows.length; i++) {
-//       const row = rows[i];
-//       const rowNumber = i + 2;
-
-//       try {
-//         // Basic fields
-//         const productName =
-//           row.name || row["Product Name"];
-//         const productPrice =
-//           row.price || row["Price"];
-//         const categoryName =
-//           row.category || row["Category"];
-
-//         if (!productName || !productPrice || !categoryName) {
-//           errors.push(`Row ${rowNumber}: Missing required fields`);
-//           continue;
-//         }
-
-//         // Category
-//         const category = await Category.findOne({
-//           name: { $regex: new RegExp(`^${categoryName}$`, "i") },
-//         });
-
-//         if (!category) {
-//           errors.push(
-//             `Row ${rowNumber}: Category "${categoryName}" not found`
-//           );
-//           continue;
-//         }
-
-//         // SubCategory (optional)
-//         let subCategory = null;
-//         const subCategoryName =
-//           row.subCategory || row["Sub Category"];
-
-//         if (subCategoryName) {
-//           subCategory = await SubCategory.findOne({
-//             name: { $regex: new RegExp(`^${subCategoryName}$`, "i") },
-//             category: category._id,
-//           });
-//         }
-
-//         // =========================
-//         // 🔥 CLOUDINARY UPLOADS
-//         // =========================
-
-//         // Thumbnail
-//         let thumbnail = "";
-//         if (row.Thumbnail) {
-//           const thumbPath = path.join(
-//             process.cwd(),
-//             "public",
-//             row.Thumbnail
-//           );
-//           thumbnail = await uploadToCloudinary(
-//             thumbPath,
-//             "products/thumbnails",
-//             "image"
-//           );
-//         }
-
-//         // Multiple Images
-//         let images = [];
-//         if (row.Images) {
-//           const imageList = String(row.Images)
-//             .split(",")
-//             .map((i) => i.trim());
-
-//           for (const img of imageList) {
-//             const imgPath = path.join(
-//               process.cwd(),
-//               "public",
-//               img
-//             );
-//             const url = await uploadToCloudinary(
-//               imgPath,
-//               "products/images",
-//               "image"
-//             );
-//             if (url) images.push(url);
-//           }
-//         }
-
-//         // 360 Video
-//         let video360 = "";
-//         if (row.Video360) {
-//           const videoPath = path.join(
-//             process.cwd(),
-//             "public",
-//             row.Video360
-//           );
-//           video360 = await uploadToCloudinary(
-//             videoPath,
-//             "products/videos",
-//             "video"
-//           );
-//         }
-
-//         // Product data
-//         const productData = {
-//           name: String(productName).trim(),
-//           price: Number(productPrice),
-//           moq: Number(row.MOQ || 1),
+//       let subCategory = null;
+//       if (row["Sub Category"]) {
+//         subCategory = await SubCategory.findOne({
+//           name: new RegExp(`^${row["Sub Category"]}$`, "i"),
 //           category: category._id,
-//           subCategory: subCategory?._id || null,
-
-//           thumbnail,
-//           images,
-//           video360,
-
-//           services: parseArray(row.Services),
-//           features: parseArray(row.Features),
-
-//           availability:
-//             row.Availability === "Out of Stock"
-//               ? "Out of Stock"
-//               : "In Stock",
-
-//           shortDescription: row["Short Description"] || "",
-//           description: row.Description || "",
-//         };
-
-//         const product = await Product.create(productData);
-
-//         results.push({
-//           row: rowNumber,
-//           productId: product._id,
-//           name: product.name,
 //         });
-
-//         console.log(`✅ Product created: ${product.name}`);
-//       } catch (err) {
-//         console.error(err);
-//         errors.push(`Row ${rowNumber}: ${err.message}`);
 //       }
+
+//       await Product.create({
+//         name: row["Product Name"],
+//         price: Number(row.Price),
+//         moq: Number(row.MOQ || 1),
+//         category: category._id,
+//         subCategory: subCategory?._id || null,
+//         thumbnail: row.Thumbnail, // REQUIRED (schema safe)
+//         images: parseArray(row.Images),
+//         video360: row.Video360 || "",
+//         services: parseArray(row.Services),
+//         features: parseArray(row.Features),
+//         availability: row.Availability || "In Stock",
+//         shortDescription: row["Short Description"] || "",
+//         description: row.Description || "",
+//       });
+
+//       success.push(rowNo);
+//     } catch (err) {
+//       errors.push(`Row ${rowNo}: ${err.message}`);
 //     }
-
-//     if (existsSync(tempFilePath)) {
-//       await unlink(tempFilePath);
-//     }
-
-//     return NextResponse.json({
-//       success: true,
-//       summary: {
-//         total: rows.length,
-//         success: results.length,
-//         failed: errors.length,
-//       },
-//       created: results,
-//       errors,
-//     });
-//   } catch (error) {
-//     console.error("❌ Bulk upload error:", error);
-
-//     if (existsSync(tempFilePath)) {
-//       await unlink(tempFilePath);
-//     }
-
-//     return NextResponse.json(
-//       { success: false, message: error.message },
-//       { status: 500 }
-//     );
 //   }
-// }
 
-// // =========================
-// // 🔹 Cloudinary Helper
-// // =========================
-// async function uploadToCloudinary(filePath, folder, resourceType) {
-//   if (!filePath || !existsSync(filePath)) return "";
-
-//   const buffer = fs.readFileSync(filePath);
-
-//   return new Promise((resolve) => {
-//     const stream = cloudinary.uploader.upload_stream(
-//       { folder, resource_type: resourceType },
-//       (err, result) => {
-//         if (err) {
-//           console.error("Cloudinary error:", err);
-//           resolve("");
-//         } else {
-//           resolve(result.secure_url);
-//         }
-//       }
-//     );
-//     stream.end(buffer);
+//   return NextResponse.json({
+//     success: true,
+//     created: success.length,
+//     failed: errors,
+//     total: rows.length,
 //   });
 // }
 
-// // =========================
-// // 🔹 Helpers
-// // =========================
-// function parseArray(value) {
-//   if (!value) return [];
-//   return String(value)
+// function parseArray(val) {
+//   if (!val) return [];
+//   return String(val)
 //     .split(",")
 //     .map((v) => v.trim())
 //     .filter(Boolean);
 // }
 
-// export async function GET() {
+
+// import { NextResponse } from "next/server";
+// import * as XLSX from "xlsx";
+// import connectDB from "@/lib/db";
+// import Product from "@/models/Product";
+// import Category from "@/models/Category";
+// import SubCategory from "@/models/SubCategory";
+
+// export async function POST(req) {
+//   await connectDB();
+
+//   const formData = await req.formData();
+//   const file = formData.get("file");
+
+//   if (!file) {
+//     return NextResponse.json(
+//       { success: false, message: "No file provided" },
+//       { status: 400 }
+//     );
+//   }
+
+//   const buffer = Buffer.from(await file.arrayBuffer());
+//   const workbook = XLSX.read(buffer, { type: "buffer" });
+//   const sheet = workbook.Sheets[workbook.SheetNames[0]];
+//   const rows = XLSX.utils.sheet_to_json(sheet);
+
+//   const success = [];
+//   const errors = [];
+
+//   for (let i = 0; i < rows.length; i++) {
+//     const row = rows[i];
+//     const rowNo = i + 2;
+
+//     try {
+//       // Required fields validation
+//       if (!row["Product Name"] || !row["Price"] || !row["Category"] || !row["Thumbnail URL"]) {
+//         throw new Error("Missing required fields (Name, Price, Category, Thumbnail)");
+//       }
+
+//       // Find category
+//       const category = await Category.findOne({
+//         name: new RegExp(`^${row.Category}$`, "i"),
+//       });
+//       if (!category) throw new Error(`Category "${row.Category}" not found`);
+
+//       // Find sub-category if provided
+//       let subCategory = null;
+//       if (row["Sub Category"]) {
+//         subCategory = await SubCategory.findOne({
+//           name: new RegExp(`^${row["Sub Category"]}$`, "i"),
+//           category: category._id,
+//         });
+//       }
+
+//       // Parse comma-separated arrays
+//       const parseCommaSeparated = (value) => {
+//         if (!value || typeof value !== 'string') return [];
+//         return value
+//           .split(',')
+//           .map(v => v.trim())
+//           .filter(v => v !== '');
+//       };
+
+//       // Create product
+//       const productData = {
+//         name: row["Product Name"],
+//         price: parseFloat(row.Price),
+//         moq: parseInt(row.MOQ || 1),
+//         category: category._id,
+//         subCategory: subCategory?._id || null,
+//         thumbnail: row["Thumbnail URL"],
+//         images: parseCommaSeparated(row["Image URLs"]),
+//         video360: row["Video URL"] || "",
+//         services: parseCommaSeparated(row["Services"]),
+//         features: parseCommaSeparated(row["Features"]),
+//         availability: row["Availability"] || "In Stock",
+//         description: row["Description"] || "",
+//         shortDescription: row["Short Description"] || "",
+//         godName: row["God Name"] || "",
+//         color: row["Color"] || "",
+//         suitableFor: row["Suitable For"] || "",
+//         usage: row["Usage"] || "",
+//         posture: row["Posture"] || "",
+//         baseShape: row["Base Shape"] || "",
+//         finish: row["Finish"] || "",
+//         appearance: row["Appearance"] || "",
+//         careInstruction: row["Care Instruction"] || "",
+//         assemblyRequired: row["Assembly Required"] || "",
+//         productType: row["Product Type"] || ""
+//       };
+
+//       const product = await Product.create(productData);
+//       success.push(rowNo);
+
+//     } catch (err) {
+//       errors.push(`Row ${rowNo}: ${err.message}`);
+//     }
+//   }
+
 //   return NextResponse.json({
 //     success: true,
-//     message: "Bulk upload API running",
+//     created: success.length,
+//     failed: errors,
+//     total: rows.length,
+//     message: `Processed ${rows.length} rows. ${success.length} successful, ${errors.length} failed.`
 //   });
 // }
-
-
 import { NextResponse } from "next/server";
 import * as XLSX from "xlsx";
 import connectDB from "@/lib/db";
@@ -279,72 +189,228 @@ import Product from "@/models/Product";
 import Category from "@/models/Category";
 import SubCategory from "@/models/SubCategory";
 
-export async function POST(req) {
-  await connectDB();
+// Handle POST request for bulk upload
+export async function POST(request) {
+  try {
+    console.log('📥 [BULK UPLOAD] Starting bulk upload process');
+    
+    // Connect to database
+    await connectDB();
+    console.log('✅ [BULK UPLOAD] Database connected');
 
-  const formData = await req.formData();
-  const file = formData.get("file");
+    // Get the file from form data
+    const formData = await request.formData();
+    const file = formData.get("file");
 
-  const buffer = Buffer.from(await file.arrayBuffer());
-  const workbook = XLSX.read(buffer, { type: "buffer" });
-  const sheet = workbook.Sheets[workbook.SheetNames[0]];
-  const rows = XLSX.utils.sheet_to_json(sheet);
-
-  const success = [];
-  const errors = [];
-
-  for (let i = 0; i < rows.length; i++) {
-    const row = rows[i];
-    const rowNo = i + 2;
-
-    try {
-      const category = await Category.findOne({
-        name: new RegExp(`^${row.Category}$`, "i"),
-      });
-      if (!category) throw new Error("Category not found");
-
-      let subCategory = null;
-      if (row["Sub Category"]) {
-        subCategory = await SubCategory.findOne({
-          name: new RegExp(`^${row["Sub Category"]}$`, "i"),
-          category: category._id,
-        });
-      }
-
-      await Product.create({
-        name: row["Product Name"],
-        price: Number(row.Price),
-        moq: Number(row.MOQ || 1),
-        category: category._id,
-        subCategory: subCategory?._id || null,
-        thumbnail: row.Thumbnail, // REQUIRED (schema safe)
-        images: parseArray(row.Images),
-        video360: row.Video360 || "",
-        services: parseArray(row.Services),
-        features: parseArray(row.Features),
-        availability: row.Availability || "In Stock",
-        shortDescription: row["Short Description"] || "",
-        description: row.Description || "",
-      });
-
-      success.push(rowNo);
-    } catch (err) {
-      errors.push(`Row ${rowNo}: ${err.message}`);
+    if (!file) {
+      console.log('❌ [BULK UPLOAD] No file provided');
+      return NextResponse.json(
+        { 
+          success: false, 
+          message: "No file provided" 
+        },
+        { status: 400 }
+      );
     }
-  }
 
+    console.log('📄 [BULK UPLOAD] Processing file:', file.name, 'Size:', file.size);
+
+    // Read Excel file
+    const buffer = Buffer.from(await file.arrayBuffer());
+    const workbook = XLSX.read(buffer, { type: "buffer" });
+    const sheetName = workbook.SheetNames[0];
+    const sheet = workbook.Sheets[sheetName];
+    const rows = XLSX.utils.sheet_to_json(sheet);
+
+    console.log('📊 [BULK UPLOAD] Found', rows.length, 'rows in sheet:', sheetName);
+
+    const success = [];
+    const errors = [];
+
+    // Process each row
+    for (let i = 0; i < rows.length; i++) {
+      const row = rows[i];
+      const rowNo = i + 2; // Excel rows start at 2 (1 is header)
+
+      try {
+        // Log current row
+        console.log(`🔍 [BULK UPLOAD] Processing row ${rowNo}:`, row["Product Name"] || 'Unnamed product');
+
+        // Validate required fields
+        if (!row["Product Name"] || !row["Price"] || !row["Category"] || !row["Thumbnail URL"]) {
+          throw new Error("Missing required fields (Product Name, Price, Category, Thumbnail URL)");
+        }
+
+        // Find category
+        const category = await Category.findOne({
+          name: new RegExp(`^${row.Category}$`, "i"),
+        });
+        
+        if (!category) {
+          throw new Error(`Category "${row.Category}" not found in database`);
+        }
+
+        // Find sub-category if provided
+        let subCategory = null;
+        if (row["Sub Category"]) {
+          subCategory = await SubCategory.findOne({
+            name: new RegExp(`^${row["Sub Category"]}$`, "i"),
+            category: category._id,
+          });
+        }
+
+        // Helper function to parse comma-separated strings
+        const parseCommaSeparated = (value) => {
+          if (!value || typeof value !== 'string') return [];
+          return value
+            .split(',')
+            .map(v => v.trim())
+            .filter(v => v !== '' && v !== 'null' && v !== 'undefined');
+        };
+
+        // Prepare product data
+        const productData = {
+          name: row["Product Name"].toString(),
+          price: parseFloat(row.Price),
+          moq: parseInt(row.MOQ || 1),
+          category: category._id,
+          subCategory: subCategory?._id || null,
+          thumbnail: row["Thumbnail URL"].toString(),
+          images: parseCommaSeparated(row["Image URLs"]),
+          video360: row["Video URL"]?.toString() || "",
+          services: parseCommaSeparated(row["Services"]),
+          features: parseCommaSeparated(row["Features"]),
+          availability: row["Availability"] || "In Stock",
+          description: row["Description"]?.toString() || "",
+          shortDescription: row["Short Description"]?.toString() || "",
+          godName: row["God Name"]?.toString() || "",
+          color: row["Color"]?.toString() || "",
+          suitableFor: row["Suitable For"]?.toString() || "",
+          usage: row["Usage"]?.toString() || "",
+          posture: row["Posture"]?.toString() || "",
+          baseShape: row["Base Shape"]?.toString() || "",
+          finish: row["Finish"]?.toString() || "",
+          appearance: row["Appearance"]?.toString() || "",
+          careInstruction: row["Care Instruction"]?.toString() || "",
+          assemblyRequired: row["Assembly Required"]?.toString() || "",
+          productType: row["Product Type"]?.toString() || ""
+        };
+
+        // Check if product already exists
+        const existingProduct = await Product.findOne({
+          name: productData.name,
+          category: productData.category
+        });
+
+        if (existingProduct) {
+          // Update existing product
+          await Product.findByIdAndUpdate(existingProduct._id, productData, { new: true });
+          console.log(`✅ [BULK UPLOAD] Updated existing product: "${productData.name}"`);
+        } else {
+          // Create new product
+          await Product.create(productData);
+          console.log(`✅ [BULK UPLOAD] Created new product: "${productData.name}"`);
+        }
+        
+        success.push(rowNo);
+
+      } catch (err) {
+        const errorMsg = `Row ${rowNo}: ${err.message}`;
+        console.error(`❌ [BULK UPLOAD] ${errorMsg}`);
+        errors.push(errorMsg);
+      }
+    }
+
+    // Prepare response
+    const result = {
+      success: true,
+      created: success.length,
+      failed: errors,
+      total: rows.length,
+      message: `Processed ${rows.length} rows. ${success.length} successful, ${errors.length} failed.`
+    };
+
+    console.log('📊 [BULK UPLOAD] Final result:', result);
+    
+    return NextResponse.json(result, {
+      status: 200,
+      headers: {
+        'Content-Type': 'application/json',
+      }
+    });
+
+  } catch (error) {
+    console.error("💥 [BULK UPLOAD] Critical error:", error);
+    
+    return NextResponse.json(
+      { 
+        success: false, 
+        message: error.message || "Failed to process bulk upload",
+        error: error.toString()
+      },
+      { 
+        status: 500,
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      }
+    );
+  }
+}
+
+// Handle GET request (for testing/info)
+export async function GET() {
+  console.log('📥 [BULK UPLOAD] GET request received');
+  
   return NextResponse.json({
-    success: true,
-    created: success.length,
-    failed: errors,
-    total: rows.length,
+    message: "Bulk Product Upload API",
+    instructions: "POST an Excel file with product data",
+    required_fields: [
+      "Product Name*",
+      "Price*",
+      "Category*",
+      "Thumbnail URL*"
+    ],
+    optional_fields: [
+      "Sub Category",
+      "Image URLs (comma separated)",
+      "Video URL",
+      "Services (comma separated)",
+      "Features (comma separated)",
+      "Availability",
+      "Description",
+      "Short Description",
+      "God Name",
+      "Color",
+      "Suitable For",
+      "Usage",
+      "Posture",
+      "Base Shape",
+      "Finish",
+      "Appearance",
+      "Care Instruction",
+      "Assembly Required",
+      "Product Type"
+    ],
+    note: "* indicates required field",
+    status: "active",
+    timestamp: new Date().toISOString()
+  }, {
+    status: 200,
+    headers: {
+      'Content-Type': 'application/json',
+    }
   });
 }
 
-function parseArray(val) {
-  if (!val) return [];
-  return String(val)
-    .split(",")
-    .map((v) => v.trim())
-    .filter(Boolean);
+// Handle OPTIONS request for CORS
+export async function OPTIONS() {
+  return new NextResponse(null, {
+    status: 200,
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+    },
+  });
 }
