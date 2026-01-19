@@ -1227,7 +1227,7 @@ const AnimalPage = () => {
                             name: product.name || "Unnamed Product",
                             price: product.price?.toString() || "0",
                             moq: product.minimumOrderQuantity || product.moq || 0,
-                            img: product.images?.[0] || '/images/placeholder.jpg',
+                            img: product.images?.[0] ,
                             category: product.subCategory?.name || "",
                             subCategoryId: product.subCategory?._id || "",
                             finish: product.finish || "Natural",

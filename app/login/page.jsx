@@ -7,27 +7,47 @@ const LoginPage = () => {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const handleLogin = async (e) => {
+const handleLogin = async (e) => {
     e.preventDefault();
+    setLoading(true);
 
-    try {
+ try {
       const res = await fetch("/api/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
+        credentials: "include", // Important for cookies
       });
 
       const data = await res.json();
 
       if (res.ok) {
-        router.push("/"); // redirect after login
+        console.log("Login successful, cookie should be set");
+        
+        // Also store token in localStorage for client-side access
+        if (typeof window !== 'undefined') {
+          localStorage.setItem("userEmail", email);
+          localStorage.setItem("isLoggedIn", "true");
+          
+          // Dispatch event for other components to listen
+          window.dispatchEvent(new Event('user-login'));
+        }
+        
+        // Redirect after a small delay to ensure cookie is set
+        setTimeout(() => {
+          router.push("/");
+          router.refresh(); // Refresh to update server components
+        }, 100);
       } else {
         alert(data.error || "Invalid credentials");
       }
     } catch (err) {
-      console.error(err);
+      console.error("Login error:", err);
       alert("Something went wrong. Please try again.");
+    } finally {
+      setLoading(false);
     }
   };
 
