@@ -161,6 +161,11 @@
 import { NextResponse } from "next/server";
 import connectDB from "@/lib/db";
 import CustomOrder from "@/models/CustomOrder";
+import { sendEmail } from "@/lib/mailer";
+import {
+  customOrderApprovedTemplate,
+  customOrderRejectedTemplate,
+} from "@/lib/emailTemplates";
 
 export async function GET(req, { params }) {
   try {
@@ -192,6 +197,8 @@ export async function PUT(req, { params }) {
     const { id } = await params;
     const body = await req.json();
     
+    console.log("📝 Updating custom order:", id, "Status:", body.status);
+
     // Validate status if provided
     if (body.status) {
       const validStatuses = ["pending", "contacted", "in_progress", "completed", "rejected"];
@@ -216,9 +223,56 @@ export async function PUT(req, { params }) {
       );
     }
 
+    console.log("✅ Custom order updated. Email:", updated.businessEmail);
+
+    // Send email notification to user when status is updated
+    if (body.status === "contacted" || body.status === "approved" || body.status === "rejected") {
+      try {
+        if (!updated.businessEmail) {
+          console.error("⚠️ EMAIL MISSING - Cannot send email without recipient");
+          return NextResponse.json({
+            success: true,
+            data: updated,
+            warning: "Email not sent - user email missing",
+          });
+        }
+
+        const email = (body.status === "contacted" || body.status === "approved")
+          ? customOrderApprovedTemplate(updated)
+          : customOrderRejectedTemplate(updated);
+
+        console.log(`📧 SENDING CUSTOM ORDER ${body.status.toUpperCase()} MAIL TO:`, updated.businessEmail);
+        console.log("Subject:", email.subject);
+
+        await sendEmail({
+          to: updated.businessEmail,
+          subject: email.subject,
+          html: email.html,
+        });
+
+        console.log(`✅ CUSTOM ORDER ${body.status.toUpperCase()} MAIL SENT SUCCESSFULLY`);
+      } catch (emailErr) {
+        console.error("❌ EMAIL SEND ERROR:", {
+          error: emailErr.message,
+          stack: emailErr.stack,
+          email: updated.businessEmail,
+        });
+
+        // Still return success but log the email error
+        return NextResponse.json({
+          success: true,
+          data: updated,
+          emailError: emailErr.message,
+        });
+      }
+    }
+
     return NextResponse.json({ success: true, data: updated });
   } catch (error) {
-    console.error("Error updating order:", error);
+    console.error("❌ PUT REQUEST ERROR:", {
+      error: error.message,
+      stack: error.stack,
+    });
     return NextResponse.json(
       { success: false, message: error.message },
       { status: 500 }

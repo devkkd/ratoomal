@@ -4723,6 +4723,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { ChevronRight, Search, Heart } from 'lucide-react';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { useWishlistStore } from '@/store/wishlistStore';
 
 // Static filters
 const filters = {
@@ -4778,7 +4779,7 @@ const CategoryPage = () => {
     const [products, setProducts] = useState([]);
     const [filteredProducts, setFilteredProducts] = useState([]);
     const [sortedProducts, setSortedProducts] = useState([]);
-    const [wishlist, setWishlist] = useState([]);
+    const { wishlist, toggleWishlist, isInWishlist, initializeWishlist } = useWishlistStore();
     const [loading, setLoading] = useState(true);
     
     // State for categories and subcategories from backend
@@ -4865,6 +4866,11 @@ const CategoryPage = () => {
         
         return loggedIn;
     }, []);
+
+    // Initialize wishlist from store
+    useEffect(() => {
+        initializeWishlist();
+    }, [initializeWishlist]);
 
     // Initialize from URL parameters
     useEffect(() => {
@@ -5267,13 +5273,8 @@ const CategoryPage = () => {
         }));
     };
 
-    const toggleWishlist = (productId) => {
-        setWishlist(prev =>
-            prev.includes(productId)
-                ? prev.filter(id => id !== productId)
-                : [...prev, productId]
-        );
-    };
+    // Use the hook's toggleWishlist directly
+    // No local function needed - use toggleWishlistHook from the hook
 
     const handleSort = (sortType) => {
         setSelectedSort(sortType);
@@ -5770,13 +5771,13 @@ const CategoryPage = () => {
                                                 >
                                                     <svg
                                                         xmlns="http://www.w3.org/2000/svg"
-                                                        className={`h-5 w-6 transition-colors duration-200 ${wishlist.includes(product.id)
+                                                        className={`h-5 w-6 transition-colors duration-200 ${isInWishlist(product.id)
                                                             ? "fill-red-500 text-red-500"
                                                             : "text-gray-800 fill-transparent hover:text-red-400"
                                                             }`}
                                                         viewBox="0 0 24 24"
                                                         stroke="currentColor"
-                                                        strokeWidth={wishlist.includes(product.id) ? 0 : 2}
+                                                        strokeWidth={isInWishlist(product.id) ? 0 : 2}
                                                     >
                                                         <path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5" />
                                                     </svg>

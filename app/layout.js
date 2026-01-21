@@ -61,6 +61,7 @@ import Header from "@/app/components/Header";
 import Footer from "@/app/components/Footer";
 import { usePathname } from "next/navigation"; 
 import { Mona_Sans } from "next/font/google";
+import { useInitializeWishlist } from "@/store/wishlistStore";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -86,6 +87,9 @@ const monaSans = Mona_Sans({
 
 export default function RootLayout({ children }) {
   const pathname = usePathname();
+  
+  // Initialize wishlist from cookies on app load
+  useInitializeWishlist();
   
   // Check if current route is admin route
   const isAdminRoute = pathname?.startsWith('/admin');

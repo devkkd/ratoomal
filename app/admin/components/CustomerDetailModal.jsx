@@ -89,7 +89,7 @@ export default function CustomerDetailModal({ customer, isOpen, onClose, onRevie
                       </div>
                       <div>
                         <label className="text-xs text-gray-500">Email</label>
-                        <p className="text-sm font-medium">{customer.email}</p>
+                        <p className="text-sm font-medium">{customer.businessEmail}</p>
                       </div>
                       <div>
                         <label className="text-xs text-gray-500">Phone</label>
@@ -102,27 +102,49 @@ export default function CustomerDetailModal({ customer, isOpen, onClose, onRevie
                     </div>
                   </div>
 
-                  {/* Verification Proof */}
-                  {customer.verificationProof && (
+                  {/* Verification Information */}
+                  <div>
+                    <h3 className="text-sm font-medium text-gray-900 mb-3">Verification Information</h3>
+                    <div className="grid grid-cols-1 gap-4">
+                      <div>
+                        <label className="text-xs text-gray-500">Verification Proof Type</label>
+                        <p className="text-sm font-medium">{customer.verificationProof}</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Verification Image */}
+                  {customer.verificationImage && (
                     <div>
-                      <h3 className="text-sm font-medium text-gray-900 mb-3">Verification Document</h3>
+                      <h3 className="text-sm font-medium text-gray-900 mb-3">Verification Image</h3>
                       <div className="border border-gray-200 rounded-lg p-4">
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center">
-                            <DocumentIcon className="h-8 w-8 text-gray-400 mr-3" />
-                            <div>
-                              <p className="text-sm font-medium">Verification Proof</p>
-                              <p className="text-xs text-gray-500">Uploaded document</p>
-                            </div>
+                        <div className="flex flex-col gap-4">
+                          {/* Image Preview */}
+                          <div className="bg-gray-50 rounded-lg overflow-hidden flex items-center justify-center h-48">
+                            <img 
+                              src={customer.verificationImage} 
+                              alt="Verification" 
+                              className="h-full w-full object-contain"
+                            />
                           </div>
-                          <a
-                            href={customer.verificationProof}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-sm text-[#C08237] hover:text-[#A56B2C]"
-                          >
-                            View Document
-                          </a>
+                          {/* Action Buttons */}
+                          <div className="flex gap-2">
+                            <a
+                              href={customer.verificationImage}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="flex-1 px-4 py-2 text-sm text-center bg-[#C08237] text-white rounded-lg hover:bg-[#A56B2C] transition-colors"
+                            >
+                              View Image
+                            </a>
+                            <a
+                              href={customer.verificationImage}
+                              download={`verification_${customer.companyName.replace(/\s+/g, '_')}`}
+                              className="flex-1 px-4 py-2 text-sm text-center border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+                            >
+                              Download
+                            </a>
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -130,7 +152,7 @@ export default function CustomerDetailModal({ customer, isOpen, onClose, onRevie
 
                   {/* Current Status */}
                   <div className="bg-gray-50 rounded-lg p-4">
-                    <div className="flex items-center justify-between">
+                    <div className="flex items-center justify-between mb-4">
                       <div>
                         <h4 className="text-sm font-medium text-gray-900">Current Status</h4>
                         <div className="flex items-center mt-1">
@@ -157,6 +179,12 @@ export default function CustomerDetailModal({ customer, isOpen, onClose, onRevie
                         </button>
                       )}
                     </div>
+                    {customer.status === 'rejected' && customer.rejectionReason && (
+                      <div className="mt-4 p-3 bg-red-50 border border-red-200 rounded-lg">
+                        <p className="text-xs font-medium text-red-800 mb-1">Rejection Reason:</p>
+                        <p className="text-sm text-red-700">{customer.rejectionReason}</p>
+                      </div>
+                    )}
                   </div>
                 </div>
 

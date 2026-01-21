@@ -26,7 +26,7 @@ const navigation = [
   { name: 'Customers', href: '/admin/customers', icon: UsersIcon },
   { name: 'Category', href: '/admin/categories', icon: ChartBarIcon },
   { name: 'Subcategory', href: '/admin/subcategories', icon: CreditCardIcon },
-  // { name: 'Notifications', href: '/admin/notifications', icon: BellIcon },
+  { name: 'Bulk Upload', href: '/admin/upload-bulk-products', icon: BellIcon },
   // { name: 'Settings', href: '/admin/settings', icon: CogIcon },
 ];
 

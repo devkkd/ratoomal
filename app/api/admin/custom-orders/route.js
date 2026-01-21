@@ -134,6 +134,8 @@ import { NextResponse } from "next/server";
 import connectDB from "@/lib/db";
 import CustomOrder from "@/models/CustomOrder";
 import cloudinary from "@/lib/cloudinary";
+import { sendEmail } from "@/lib/mailer";
+import { adminNewCustomOrderTemplate } from "@/lib/emailTemplates";
 
 // CREATE Custom Order (POST)
 export async function POST(req) {
@@ -145,6 +147,23 @@ export async function POST(req) {
       ...body,
       status: "pending",
     });
+
+    // Send email to admin about new custom order
+    try {
+      const email = adminNewCustomOrderTemplate(order);
+
+      console.log("SENDING NEW CUSTOM ORDER NOTIFICATION TO ADMIN");
+
+      await sendEmail({
+        to: process.env.ADMIN_EMAIL,
+        subject: email.subject,
+        html: email.html,
+      });
+
+      console.log("CUSTOM ORDER ADMIN NOTIFICATION SENT ✅");
+    } catch (err) {
+      console.error("CUSTOM ORDER ADMIN EMAIL SEND FAILED ❌", err);
+    }
 
     return NextResponse.json(
       { success: true, data: order },

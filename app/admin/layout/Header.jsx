@@ -1,24 +1,47 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { 
   MagnifyingGlassIcon, 
   BellIcon, 
   Bars3Icon,
-  ChevronDownIcon 
+  ChevronDownIcon,
+  ArrowLeftOnRectangleIcon
 } from '@heroicons/react/24/outline';
 import { Popover, Transition } from '@headlessui/react';
+import axios from 'axios';
 
 export default function Header({ sidebarOpen, toggleSidebar }) {
+  const router = useRouter();
   const [searchQuery, setSearchQuery] = useState('');
   const [userMenuOpen, setUserMenuOpen] = useState(false);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
 
-  const userMenuItems = [
-    { label: 'My Profile', href: '/admin/profile' },
-    { label: 'Account Settings', href: '/admin/settings' },
-    { label: 'Help & Support', href: '/admin/help' },
-    { label: 'Sign Out', href: '/logout', destructive: true },
-  ];
+  const handleLogout = async () => {
+    try {
+      setIsLoggingOut(true);
+      console.log('🔐 Attempting logout...');
+
+      // Call logout API
+      await axios.post('/api/admin/auth/logout');
+
+      // Clear localStorage
+      localStorage.removeItem('adminToken');
+
+      console.log('✅ Logged out successfully');
+
+      // Redirect to login
+      router.push('/login/admin');
+    } catch (error) {
+      console.error('❌ Logout error:', error);
+      // Still redirect on error
+      localStorage.removeItem('adminToken');
+      router.push('/login/admin');
+    } finally {
+      setIsLoggingOut(false);
+    }
+  };
 
   return (
     <header className="sticky top-0 z-30 bg-white border-b border-gray-200">
@@ -89,19 +112,16 @@ export default function Header({ sidebarOpen, toggleSidebar }) {
                       <p className="text-sm font-medium text-gray-900">Admin User</p>
                       <p className="text-xs text-gray-500 truncate">admin@ratoomals.com</p>
                     </div>
-                    {userMenuItems.map((item) => (
-                      <a
-                        key={item.label}
-                        href={item.href}
-                        className={`block px-4 py-2 text-sm hover:bg-gray-50 ${
-                          item.destructive 
-                            ? 'text-red-600 hover:text-red-700' 
-                            : 'text-gray-700'
-                        }`}
-                      >
-                        {item.label}
-                      </a>
-                    ))}
+                    
+                    {/* Logout Button */}
+                    <button
+                      onClick={handleLogout}
+                      disabled={isLoggingOut}
+                      className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 hover:text-red-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                    >
+                      <ArrowLeftOnRectangleIcon className="w-4 h-4" />
+                      {isLoggingOut ? 'Logging out...' : 'Sign Out'}
+                    </button>
                   </Popover.Panel>
                 </Transition>
               </>

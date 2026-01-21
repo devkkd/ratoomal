@@ -7,6 +7,7 @@ import { XMarkIcon, CheckCircleIcon, XCircleIcon } from '@heroicons/react/24/out
 export default function StatusUpdateModal({ customer, isOpen, onClose, onUpdate }) {
   const [status, setStatus] = useState('approved');
   const [rejectionReason, setRejectionReason] = useState('');
+  const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async () => {
@@ -14,8 +15,12 @@ export default function StatusUpdateModal({ customer, isOpen, onClose, onUpdate 
     
     setLoading(true);
     try {
-      await onUpdate(customer._id, status, rejectionReason);
+      await onUpdate(customer._id, status, rejectionReason, password);
       onClose();
+      // Reset form
+      setStatus('approved');
+      setRejectionReason('');
+      setPassword('');
     } finally {
       setLoading(false);
     }
@@ -123,6 +128,25 @@ export default function StatusUpdateModal({ customer, isOpen, onClose, onUpdate 
                     </div>
                   )}
 
+                  {/* Password for Approval */}
+                  {status === 'approved' && (
+                    <div>
+                      <label className="block text-sm font-medium text-gray-900 mb-2">
+                        Set Password for User
+                      </label>
+                      <input
+                        type="text"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        placeholder="Enter password to send to customer (or leave blank to auto-generate)"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#C08237] focus:border-transparent"
+                      />
+                      <p className="text-xs text-gray-500 mt-1">
+                        This password will be hashed and sent to the customer via email
+                      </p>
+                    </div>
+                  )}
+
                   {/* Actions */}
                   <div className="flex justify-end space-x-3">
                     <button
@@ -134,12 +158,12 @@ export default function StatusUpdateModal({ customer, isOpen, onClose, onUpdate 
                     </button>
                     <button
                       onClick={handleSubmit}
-                      disabled={loading}
+                      disabled={loading || (status === 'approved' && !password)}
                       className={`px-4 py-2 text-sm font-medium text-white rounded-lg ${
                         status === 'approved' 
                           ? 'bg-[#C08237] hover:bg-[#A56B2C]' 
                           : 'bg-red-600 hover:bg-red-700'
-                      } disabled:opacity-50`}
+                      } disabled:opacity-50 disabled:cursor-not-allowed`}
                     >
                       {loading ? 'Updating...' : `Mark as ${status}`}
                     </button>

@@ -13,7 +13,7 @@ const handleLogin = async (e) => {
     e.preventDefault();
     setLoading(true);
 
- try {
+    try {
       const res = await fetch("/api/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -26,13 +26,9 @@ const handleLogin = async (e) => {
       if (res.ok) {
         console.log("Login successful, cookie should be set");
         
-        // Also store token in localStorage for client-side access
+        // Store only email in localStorage (token is in httpOnly cookie)
         if (typeof window !== 'undefined') {
           localStorage.setItem("userEmail", email);
-          localStorage.setItem("isLoggedIn", "true");
-          
-          // Dispatch event for other components to listen
-          window.dispatchEvent(new Event('user-login'));
         }
         
         // Redirect after a small delay to ensure cookie is set

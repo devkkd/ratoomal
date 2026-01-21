@@ -2900,6 +2900,7 @@ import Link from 'next/link';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { Menu, X, ChevronRight } from 'lucide-react';
 import Cookies from 'js-cookie';
+import { useWishlistStore } from '@/store/wishlistStore';
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -2923,6 +2924,9 @@ const Header = () => {
   const pathname = usePathname();
   const router = useRouter();
   const searchParams = useSearchParams();
+  
+  // Get wishlist from Zustand store
+  const { wishlist, initializeWishlist } = useWishlistStore();
 
   // Manual individual category links - these are the menu items on the main nav bar
   const manualCategoryLinks = [
@@ -2978,23 +2982,26 @@ const Header = () => {
       try {
         setIsLoading(true);
         
-        // 1. Check if user is logged in
+        // 1. Initialize wishlist from store
+        initializeWishlist();
+        
+        // 2. Check if user is logged in
         const token = Cookies.get('token');
         setIsLoggedIn(!!token);
         
-        // 2. Fetch categories (for the main CATEGORY dropdown)
+        // 3. Fetch categories (for the main CATEGORY dropdown)
         const categoriesResponse = await axios.get('/api/admin/categories');
         if (categoriesResponse.data.success) {
           setCategories(categoriesResponse.data.data || []);
         }
         
-        // 3. Fetch subcategories for all categories
+        // 4. Fetch subcategories for all categories
         const subCategoriesResponse = await axios.get('/api/admin/subcategories');
         if (subCategoriesResponse.data.success) {
           setSubCategories(subCategoriesResponse.data.data || []);
         }
         
-        // 4. Fetch products for search only
+        // 5. Fetch products for search only
         const productsResponse = await axios.get('/api/admin/products');
         if (productsResponse.data.success) {
           const transformed = productsResponse.data.data.map(product => ({
@@ -3014,7 +3021,7 @@ const Header = () => {
     };
     
     fetchData();
-  }, []);
+  }, [initializeWishlist]);
 
   // Search filter logic
   useEffect(() => {
@@ -3326,9 +3333,16 @@ const Header = () => {
             )}
           </div>
 
-          <button className="p-2 rounded-full border border-[#C08237] hover:bg-[#C08237] transition-all group">
+            <Link href="/wishlist">
+          <button className="p-2 border border-[#C08237] hover:bg-[#C08237] transition-all group relative">
             <img src='/images/heart.svg' className='w-5 group-hover:brightness-0 group-hover:invert' alt="wishlist" />
+            {wishlist && wishlist.length > 0 && (
+              <span className="absolute top-0 right-0 transform translate-x-1/4 -translate-y-1/4 bg-red-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
+                {wishlist.length > 99 ? '99+' : wishlist.length}
+              </span>
+            )}
           </button>
+            </Link>
 
           {/* Conditional Login/Profile Button */}
           {isLoggedIn ? (

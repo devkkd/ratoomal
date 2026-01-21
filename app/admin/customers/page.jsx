@@ -63,11 +63,11 @@ const fetchCustomers = useCallback(async () => {
     fetchCustomers();
   }, [fetchCustomers]);
 
-const handleStatusUpdate = async (customerId, status, rejectionReason) => {
+const handleStatusUpdate = async (customerId, status, rejectionReason, password) => {
   try {
     const { data } = await api.patch(
       `/api/admin/customers/${customerId}`,
-      { status, rejectionReason }
+      { status, rejectionReason, password }
     );
 
     if (data.success) {
@@ -208,7 +208,7 @@ const handleStatusUpdate = async (customerId, status, rejectionReason) => {
                       </div>
                     </td>
                     <td className="px-6 py-4 text-sm text-gray-900">
-                      {customer.email}
+                      {customer.businessEmail}
                     </td>
                     <td className="px-6 py-4 text-sm text-gray-900">
                       {customer.phone}

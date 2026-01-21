@@ -55,8 +55,8 @@ export async function POST(req) {
   try {
     const { email, password } = await req.json();
 
-    // Find user
-    const user = await User.findOne({ email });
+    // Find user by businessEmail (not email)
+    const user = await User.findOne({ businessEmail: email });
     if (!user) {
       return NextResponse.json(
         { error: "Invalid credentials" },
@@ -94,7 +94,7 @@ export async function POST(req) {
         success: true, 
         user: {
           id: user._id,
-          email: user.email,
+          email: user.businessEmail,
           companyName: user.companyName,
           contactName: user.contactName,
           role: user.role

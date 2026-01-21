@@ -71,6 +71,7 @@ const Footer = () => {
             </ul>
           </div>
 
+         
           {/* Contact & Socials */}
           <div>
             <h4 className="font-bold text-sm mb-6 mona">Contact</h4>
@@ -99,6 +100,16 @@ const Footer = () => {
                <img src="/images/icons/LinkedIn_logo_initials-1.svg"  className="w-6" /> @ratoomal
               </a>
             </div>
+             {/* Admin Login Button */}
+          <div className="flex mt-4 items-center justify-center">
+            <a 
+              href="/login/admin"
+              className="inline-block bg-[#C08237] hover:bg-[#A56B2C] text-white font-bold py-2.5 px-4 rounded mona text-sm transition-colors duration-200"
+            >
+            🔐 Admin Login
+            </a>
+          </div>
+
           </div>
         </div>
       </div>
