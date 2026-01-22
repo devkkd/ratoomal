@@ -4779,7 +4779,7 @@ const CategoryPage = () => {
     const [products, setProducts] = useState([]);
     const [filteredProducts, setFilteredProducts] = useState([]);
     const [sortedProducts, setSortedProducts] = useState([]);
-    const { wishlist, toggleWishlist, isInWishlist, initializeWishlist } = useWishlistStore();
+    const { wishlist, toggleWishlist, isInWishlist, initialize } = useWishlistStore();
     const [loading, setLoading] = useState(true);
     
     // State for categories and subcategories from backend
@@ -4867,10 +4867,17 @@ const CategoryPage = () => {
         return loggedIn;
     }, []);
 
-    // Initialize wishlist from store
+    // Initialize wishlist from store (only once on mount)
     useEffect(() => {
-        initializeWishlist();
-    }, [initializeWishlist]);
+        if (typeof window !== 'undefined') {
+            initialize();
+        }
+    }, []);
+
+    // Log wishlist changes for debugging
+    useEffect(() => {
+        console.log('🔍 Category Page - Wishlist changed:', wishlist);
+    }, [wishlist]);
 
     // Initialize from URL parameters
     useEffect(() => {
@@ -5763,6 +5770,7 @@ const CategoryPage = () => {
                                                 <button
                                                     onClick={(e) => {
                                                         e.stopPropagation();
+                                                        console.log('❤️ Heart button clicked for:', product.id);
                                                         toggleWishlist(product.id);
                                                     }}
                                                     className="absolute top-3 right-3 z-10 p-2 bg-[#FFFFFF80] backdrop-blur-sm rounded-full 

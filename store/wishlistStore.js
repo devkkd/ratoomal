@@ -1,18 +1,11 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { create } from 'zustand';
-import Cookies from 'js-cookie';
 import { persistMiddleware } from './middleware/persistMiddleware';
 
 /**
- * Zustand Wishlist Store
- * 
- * Features:
- * - Manages wishlist state globally
- * - Auto-persists to cookies
- * - Syncs with server API for authenticated users
- * - Optimistic UI updates
+ * Zustand Wishlist Store with proper localStorage persistence
  */
 
 export const useWishlistStore = create(
@@ -23,28 +16,34 @@ export const useWishlistStore = create(
     error: null,
     isLoggedIn: false,
 
-    // Initialization
-    initializeWishlist: () => {
-      if (typeof window !== 'undefined') {
-        // Check if user is logged in
+    // Initialize store - load from localStorage on mount
+    initialize: () => {
+      if (typeof window === 'undefined') {
+        console.log('🔧 Initialize: Server-side, skipping');
+        return;
+      }
+
+      console.log('🔧 Initialize: Client-side - loading from localStorage');
+      
+      try {
+        // Load wishlist from localStorage
+        const savedWishlist = localStorage.getItem('wishlist_store');
+        console.log('📦 Retrieved from localStorage:', savedWishlist);
+        
+        if (savedWishlist) {
+          const parsed = JSON.parse(savedWishlist);
+          console.log('✅ Parsed wishlist:', parsed.wishlist);
+          set({ wishlist: parsed.wishlist || [] });
+        } else {
+          console.log('⚠️  No saved wishlist found in localStorage');
+        }
+
+        // Check login status
         const token = localStorage.getItem('token');
         set({ isLoggedIn: !!token });
-
-        // Load from cookies
-        const saved = Cookies.get('wishlist_store');
-        if (saved) {
-          try {
-            const parsed = JSON.parse(saved);
-            set({ wishlist: parsed.wishlist || [] });
-          } catch (e) {
-            console.error('Error loading wishlist:', e);
-          }
-        }
-
-        // Sync with server if logged in
-        if (token) {
-          get().syncWithServer(token);
-        }
+        
+      } catch (error) {
+        console.error('❌ Error initializing wishlist:', error);
       }
     },
 
@@ -52,9 +51,14 @@ export const useWishlistStore = create(
     addToWishlist: async (productId) => {
       const { wishlist, isLoggedIn } = get();
       
+      console.log('➕ Adding to wishlist:', productId);
+      console.log('Current wishlist before add:', wishlist);
+      
       // Optimistic update
       if (!wishlist.includes(productId)) {
-        set({ wishlist: [...wishlist, productId] });
+        const newWishlist = [...wishlist, productId];
+        set({ wishlist: newWishlist });
+        console.log('✅ Wishlist updated to:', newWishlist);
       }
 
       // Sync with server if logged in
@@ -88,8 +92,13 @@ export const useWishlistStore = create(
     removeFromWishlist: async (productId) => {
       const { wishlist, isLoggedIn } = get();
       
+      console.log('➖ Removing from wishlist:', productId);
+      console.log('Current wishlist before remove:', wishlist);
+      
       // Optimistic update
-      set({ wishlist: wishlist.filter(id => id !== productId) });
+      const newWishlist = wishlist.filter(id => id !== productId);
+      set({ wishlist: newWishlist });
+      console.log('✅ Wishlist updated to:', newWishlist);
 
       // Sync with server if logged in
       if (isLoggedIn) {
@@ -120,11 +129,16 @@ export const useWishlistStore = create(
 
     // Toggle wishlist status
     toggleWishlist: async (productId) => {
-      const { wishlist, isInWishlist } = get();
+      const { isInWishlist } = get();
+      
+      console.log('🔄 Toggling wishlist for product:', productId);
+      console.log('Is currently in wishlist?', isInWishlist(productId));
       
       if (isInWishlist(productId)) {
+        console.log('Product is in wishlist, removing...');
         await get().removeFromWishlist(productId);
       } else {
+        console.log('Product is NOT in wishlist, adding...');
         await get().addToWishlist(productId);
       }
     },
@@ -199,9 +213,9 @@ export const useWishlistStore = create(
  * Call this once in your main app layout
  */
 export const useInitializeWishlist = () => {
-  const { initializeWishlist } = useWishlistStore();
+  const { initialize } = useWishlistStore();
   
   React.useEffect(() => {
-    initializeWishlist();
-  }, [initializeWishlist]);
+    initialize();
+  }, [initialize]);
 };

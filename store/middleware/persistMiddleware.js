@@ -1,20 +1,23 @@
-import Cookies from 'js-cookie';
-
 /**
  * Zustand localStorage persistence middleware
- * Auto-saves wishlist state to cookies
+ * Auto-saves wishlist state to localStorage for reliable persistence
  */
 
 export const persistMiddleware = (config) => (set, get, api) =>
   config(
     (...args) => {
       set(...args);
-      // Save to cookies after state update
-      const state = get();
+      // Save to localStorage after state update
       if (typeof window !== 'undefined') {
-        Cookies.set('wishlist_store', JSON.stringify({
-          wishlist: state.wishlist,
-        }), { expires: 365 }); // Persist for 1 year
+        const state = get();
+        try {
+          console.log('💾 Saving to localStorage:', state.wishlist);
+          localStorage.setItem('wishlist_store', JSON.stringify({
+            wishlist: state.wishlist,
+          }));
+        } catch (error) {
+          console.error('❌ Error saving to localStorage:', error);
+        }
       }
     },
     get,

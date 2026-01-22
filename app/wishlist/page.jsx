@@ -6,15 +6,37 @@ import { Heart, MessageCircle } from 'lucide-react';
 
 export default function WishlistPage() {
   const router = useRouter();
-  const { wishlist, toggleWishlist } = useWishlistStore();
+  const { wishlist, toggleWishlist, initialize } = useWishlistStore();
   const [wishlistProducts, setWishlistProducts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [isClient, setIsClient] = useState(false);
 
+  // Mark component as mounted on client (hydration check)
   useEffect(() => {
+    console.log('🎯 WishlistPage mounted on client');
+    setIsClient(true);
+    // Initialize store from localStorage when component mounts
+    if (typeof window !== 'undefined') {
+      initialize();
+    }
+  }, []);
+
+  // Log wishlist state changes
+  useEffect(() => {
+    console.log('🔍 Wishlist Page - Store wishlist:', wishlist);
+  }, [wishlist]);
+
+  // Fetch products when wishlist changes
+  useEffect(() => {
+    if (!isClient) return;
+
+    console.log('📋 Wishlist state changed:', wishlist);
+    console.log('📊 Current wishlist length:', wishlist?.length || 0);
+
     const fetchWishlistProducts = async () => {
       try {
         setLoading(true);
-        if (wishlist.length === 0) {
+        if (!wishlist || wishlist.length === 0) {
           setWishlistProducts([]);
           return;
         }
@@ -40,8 +62,9 @@ export default function WishlistPage() {
       }
     };
 
+    console.log('📋 Fetching products for wishlist:', wishlist);
     fetchWishlistProducts();
-  }, [wishlist]);
+  }, [wishlist, isClient]);
 
   return (
     <div className="min-h-screen bg-[#FDFBF7] pb-20">
@@ -59,7 +82,11 @@ export default function WishlistPage() {
 
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-6">
-        {loading ? (
+        {!isClient ? (
+          <div className="flex justify-center py-20">
+            <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-gray-900"></div>
+          </div>
+        ) : loading ? (
           <div className="flex justify-center py-20">
             <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-gray-900"></div>
           </div>
