@@ -53,30 +53,36 @@ export async function POST(request) {
       const rowNumber = i + 2; // Excel rows start from 2 (header is row 1)
 
       try {
-        console.log(`🔍 Processing row ${rowNumber}: ${row["Product Name"] || "Unnamed"}`);
+        console.log(`🔍 Processing row ${rowNumber}: ${row["Product Name*"] || row["Product Name"] || "Unnamed"}`);
 
-        // Check required fields
-        if (!row["Product Name"] || !row["Price"] || !row["Category"] || !row["Thumbnail URL"]) {
+        // Check required fields - handle both with and without asterisk
+        const productName = row["Product Name*"] || row["Product Name"];
+        const price = row["Price*"] || row["Price"];
+        const category = row["Category*"] || row["Category"];
+        const thumbnail = row["Thumbnail URL*"] || row["Thumbnail URL"];
+
+        if (!productName || !price || !category || !thumbnail) {
           throw new Error("Missing required fields: Product Name, Price, Category, or Thumbnail URL");
         }
 
         // Find category
-        const categoryName = row["Category"].toString().trim();
-        const category = await Category.findOne({
+        const categoryName = category.toString().trim();
+        const categoryDoc = await Category.findOne({
           name: new RegExp(`^${categoryName}$`, "i"),
         });
 
-        if (!category) {
+        if (!categoryDoc) {
           throw new Error(`Category "${categoryName}" not found. Please create it first.`);
         }
 
         // Find sub-category if provided
-        let subCategory = null;
-        if (row["Sub Category"]) {
-          const subCategoryName = row["Sub Category"].toString().trim();
-          subCategory = await SubCategory.findOne({
-            name: new RegExp(`^${subCategoryName}$`, "i"),
-            category: category._id,
+        let subCategoryDoc = null;
+        const subCategoryName = row["Sub Category"] || row["SubCategory"];
+        if (subCategoryName) {
+          const subCatName = subCategoryName.toString().trim();
+          subCategoryDoc = await SubCategory.findOne({
+            name: new RegExp(`^${subCatName}$`, "i"),
+            category: categoryDoc._id,
           });
         }
 
@@ -92,16 +98,16 @@ export async function POST(request) {
 
         // Create product object
         const productData = {
-          name: row["Product Name"].toString(),
-          price: parseFloat(row["Price"]),
+          name: productName.toString(),
+          price: parseFloat(price),
           moq: parseInt(row["MOQ"] || 1),
-          category: category._id,
-          subCategory: subCategory?._id || null,
-          thumbnail: row["Thumbnail URL"].toString(),
-          images: parseArray(row["Image URLs"]),
+          category: categoryDoc._id,
+          subCategory: subCategoryDoc?._id || null,
+          thumbnail: thumbnail.toString(),
+          images: parseArray(row["Image URLs (comma separated)"] || row["Image URLs"]),
           video360: row["Video URL"]?.toString() || "",
-          services: parseArray(row["Services"]),
-          features: parseArray(row["Features"]),
+          services: parseArray(row["Services (comma separated)"] || row["Services"]),
+          features: parseArray(row["Features (comma separated)"] || row["Features"]),
           availability: row["Availability"]?.toString() || "In Stock",
           description: row["Description"]?.toString() || "",
           shortDescription: row["Short Description"]?.toString() || "",
@@ -139,9 +145,8 @@ export async function POST(request) {
     const response = {
       success: true,
       created: results.success.length,
-      failed: results.errors.length,
+      failed: results.errors, // Frontend expects this to be the array of errors
       total: results.total,
-      failedDetails: results.errors,
       message: `Processed ${results.total} rows. ${results.success.length} created, ${results.errors.length} failed.`
     };
 

@@ -106,7 +106,7 @@ export default function AboutPage() {
       </section>
 
       {/* --- Section 6: Our Values --- */}
-    <section className="max-w-7xl mx-auto py-16">
+    <section id="values" className="max-w-7xl mx-auto py-16">
   <div className="text-center mb-12">
     <h2 className="mona text-2xl font-bold mb-6">Our Values</h2>
     <p className="text-sm mona font-bold">Every partnership and product at Ratoomal’s is guided by a clear set of principles:</p>
@@ -134,7 +134,7 @@ export default function AboutPage() {
 </section>
 
       {/* --- Section 7: Vision & Philosophy --- */}
-      <section className="max-w-7xl mx-auto grid md:grid-cols-2 gap-6">
+      <section id="vision" className="max-w-7xl mx-auto grid md:grid-cols-2 gap-6">
         <div className="bg-[#FCF9F4] p-4  rounded-2xl border border-stone-300">
           <h2 className="mona text-2xl font-bold mb-6">Our Vision</h2>
           <p className="font-bold text-xs mb-4">To be a trusted global sourcing partner for handcrafted décor and gifting products from India.</p>
@@ -150,7 +150,7 @@ export default function AboutPage() {
 
 
       {/* --- Section 8: Our History (Timeline) --- */}
-      <section className="max-w-7xl mx-auto py-20 px-4">
+      <section id="history" className="max-w-7xl mx-auto py-20 px-4">
   <h2 className="mona text-2xl font-bold text-center mb-12">Our History - A Legacy by Decades</h2>
   
   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -181,7 +181,7 @@ export default function AboutPage() {
 </section>
 
       {/* --- Section 9: CEO Message --- */}
-      <section className="max-w-6xl mx-auto py-16 px-4">
+      <section id="ceo-message" className="max-w-6xl mx-auto py-16 px-4">
         <div className="flex flex-col md:flex-row items-center gap-12">
           {/* CEO Image Container */}
           <div className="w-full md:w-1/3">

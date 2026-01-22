@@ -4872,7 +4872,7 @@ const CategoryPage = () => {
         if (typeof window !== 'undefined') {
             initialize();
         }
-    }, []);
+    }, [initialize]);
 
     // Log wishlist changes for debugging
     useEffect(() => {
@@ -5162,14 +5162,22 @@ const CategoryPage = () => {
 
     // Handle category change
     const handleCategoryChange = (category) => {
+        // Check if user is logged in for non-All Products categories
+        if (category !== "All Products" && category !== "Custom" && !isLoggedIn) {
+            // Redirect to login page
+            router.push('/login');
+            return;
+        }
+        
         setActiveCategory(category);
         setCurrentPage(1);
+        updatePageInURL(1);
         
         if (category === "All Products") {
             setSelectedCategories([]);
             setNavigationState({
                 shouldNavigate: true,
-                url: '/category'
+                url: '/category?page=1'
             });
         } else if (category === "Custom") {
             setNavigationState({
@@ -5186,7 +5194,7 @@ const CategoryPage = () => {
                 
                 setNavigationState({
                     shouldNavigate: true,
-                    url: `/category?category=${encodeURIComponent(category)}&id=${categoryObj._id}`
+                    url: `/category?category=${encodeURIComponent(category)}&id=${categoryObj._id}&page=1`
                 });
             }
         }
@@ -5194,6 +5202,12 @@ const CategoryPage = () => {
 
     // Handle sidebar category change
     const handleSidebarCategoryChange = (categoryId, subCategoryId = null) => {
+        // Check if user is logged in before allowing category selection
+        if (!isLoggedIn) {
+            router.push('/login');
+            return;
+        }
+        
         const key = subCategoryId ? `${categoryId}-${subCategoryId}` : categoryId;
         
         setSelectedCategories(prev => {
@@ -5238,14 +5252,14 @@ const CategoryPage = () => {
                     if (firstSubKey) {
                         const [, subId] = firstSubKey.split('-');
                         const subCategoryObj = allSubCategories.find(sub => sub._id === subId);
-                        url = `/category?category=${encodeURIComponent(categoryObj.name)}&id=${categoryId}&subcategory=${encodeURIComponent(subCategoryObj?.name || '')}&subid=${subId}`;
+                        url = `/category?category=${encodeURIComponent(categoryObj.name)}&id=${categoryId}&subcategory=${encodeURIComponent(subCategoryObj?.name || '')}&subid=${subId}&page=1`;
                     } else {
-                        url = `/category?category=${encodeURIComponent(categoryObj.name)}&id=${categoryId}`;
+                        url = `/category?category=${encodeURIComponent(categoryObj.name)}&id=${categoryId}&page=1`;
                     }
                 } else if (hasParentCategory) {
-                    url = `/category?category=${encodeURIComponent(categoryObj.name)}&id=${categoryId}`;
+                    url = `/category?category=${encodeURIComponent(categoryObj.name)}&id=${categoryId}&page=1`;
                 } else {
-                    url = '/category';
+                    url = '/category?page=1';
                 }
                 
                 setNavigationState({
@@ -5257,10 +5271,18 @@ const CategoryPage = () => {
             return newSelection;
         });
         
+        // Reset to first page and update pagination
         setCurrentPage(1);
+        updatePageInURL(1);
     };
 
     const handleFilterChange = (filterType, value) => {
+        // Check if user is logged in when applying filters (only for non-All Products)
+        if (!isLoggedIn && activeCategory !== "All Products") {
+            router.push('/login');
+            return;
+        }
+        
         const filterKey = filterType.toLowerCase().replace(/\s+/g, '');
 
         setSelectedFilters(prev => ({
@@ -5473,6 +5495,7 @@ const CategoryPage = () => {
         setSelectedCategories([]);
         setActiveCategory("All Products");
         setCurrentPage(1);
+        updatePageInURL(1);
         
         const resetSearchTerms = {};
         backendCategories.forEach(cat => {
@@ -5482,7 +5505,7 @@ const CategoryPage = () => {
         
         setNavigationState({
             shouldNavigate: true,
-            url: '/category'
+            url: '/category?page=1'
         });
     };
 

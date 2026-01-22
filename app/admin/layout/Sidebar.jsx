@@ -27,7 +27,7 @@ const navigation = [
   { name: 'Category', href: '/admin/categories', icon: ChartBarIcon },
   { name: 'Subcategory', href: '/admin/subcategories', icon: CreditCardIcon },
   { name: 'Bulk Upload', href: '/admin/upload-bulk-products', icon: BellIcon },
-  // { name: 'Settings', href: '/admin/settings', icon: CogIcon },
+  { name: 'Custom Orders', href: '/admin/custom-orders', icon: CogIcon },
 ];
 
 

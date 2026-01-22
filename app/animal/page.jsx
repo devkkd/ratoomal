@@ -34,6 +34,7 @@ const AnimalPage = () => {
     // Login state
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
+    const [showLoginPrompt, setShowLoginPrompt] = useState(false);
     
     // Filter sidebar states
     const [isFilterOpen, setIsFilterOpen] = useState(false);
@@ -57,17 +58,43 @@ const AnimalPage = () => {
     const [loading, setLoading] = useState(true);
     const [animalSubCategories, setAnimalSubCategories] = useState([]);
 
+    // Check login status with multiple sources
+    const checkLoginStatus = () => {
+        let loggedIn = false;
+        
+        // 1. Check for cookies
+        if (typeof document !== 'undefined') {
+            const cookies = document.cookie.split('; ');
+            const tokenCookie = cookies.find(row => row.trim().startsWith('token='));
+            const isLoggedInCookie = cookies.find(row => row.trim().startsWith('isLoggedIn='));
+            
+            if (tokenCookie || isLoggedInCookie) {
+                loggedIn = true;
+            }
+        }
+        
+        // 2. Check localStorage as backup
+        if (typeof window !== 'undefined') {
+            const localStorageToken = localStorage.getItem('token');
+            const localStorageIsLoggedIn = localStorage.getItem('isLoggedIn');
+            
+            if (localStorageToken || localStorageIsLoggedIn === 'true') {
+                loggedIn = true;
+            }
+        }
+        
+        console.log('🔐 Animal Page - Login status check:', loggedIn);
+        setIsLoggedIn(loggedIn);
+        return loggedIn;
+    };
+
     // Initialize wishlist and check login
     useEffect(() => {
         if (typeof window !== 'undefined') {
             initialize();
-            const token = Cookies.get('token');
-            const isUserLoggedIn = !!token;
-            setIsLoggedIn(isUserLoggedIn);
-            console.log('🔐 Animal Page - User logged in:', isUserLoggedIn);
-            console.log('📦 Animal Page - Current wishlist:', wishlist);
+            checkLoginStatus();
         }
-    }, []);
+    }, [initialize]);
 
     // Log wishlist changes
     useEffect(() => {
@@ -194,6 +221,12 @@ const AnimalPage = () => {
 
     // Handle animal selection
     const handleAnimalSelect = (animal) => {
+        // Check if user is logged in before allowing animal selection
+        if (!isLoggedIn) {
+            setShowLoginPrompt(true);
+            return;
+        }
+        
         setSelectedAnimal(prev =>
             prev.includes(animal)
                 ? prev.filter(a => a !== animal)
@@ -212,6 +245,12 @@ const AnimalPage = () => {
 
     // Fixed filter change handler
     const handleFilterChange = (filterType, value) => {
+        // Check if user is logged in when applying filters (Animal page requires login for filters)
+        if (!isLoggedIn) {
+            setShowLoginPrompt(true);
+            return;
+        }
+        
         const filterKey = filterType.toLowerCase().replace(/\s+/g, '');
         
         setSelectedFilters(prev => ({
@@ -402,6 +441,43 @@ const AnimalPage = () => {
 
     return (
         <div className="min-h-screen bg-[#FDFBF7] font-sans">
+            {/* Login Prompt Modal */}
+            {showLoginPrompt && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+                    <div className="bg-white rounded-lg max-w-md w-full p-6">
+                        <div className="flex justify-between items-center mb-4">
+                            <h3 className="text-lg font-semibold">Login Required</h3>
+                            <button 
+                                onClick={() => setShowLoginPrompt(false)}
+                                className="text-gray-500 hover:text-gray-700"
+                            >
+                                ✕
+                            </button>
+                        </div>
+                        <p className="mb-4">
+                            Please login to access animal categories and apply filters. This helps us provide personalized recommendations for your bulk orders.
+                        </p>
+                        <div className="flex gap-3">
+                            <button
+                                onClick={() => setShowLoginPrompt(false)}
+                                className="flex-1 py-2 border border-gray-300 rounded-lg hover:bg-gray-50"
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                onClick={() => {
+                                    setShowLoginPrompt(false);
+                                    router.push('/login');
+                                }}
+                                className="flex-1 py-2 bg-[#C08237] text-white rounded-lg hover:bg-[#9C774A]"
+                            >
+                                Login
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
             {/* Header */}
             <header className="bg-white py-2">
                 <div className="max-w-7xl mx-auto px-4 py-6">
@@ -499,7 +575,14 @@ const AnimalPage = () => {
                                 {productTypes.map(type => (
                                     <button
                                         key={type}
-                                        onClick={() => setActiveProductType(type)}
+                                        onClick={() => {
+                                            // Check if user is logged in for non-All Products types
+                                            if (type !== "All Products" && !isLoggedIn) {
+                                                setShowLoginPrompt(true);
+                                                return;
+                                            }
+                                            setActiveProductType(type);
+                                        }}
                                         className={`px-4 py-2 rounded-full text-[12px] mona font-medium transition-colors ${activeProductType === type
                                                 ? 'bg-[#C08237] text-white'
                                                 : 'bg-white border border-gray-400 text-gray-900 hover:bg-gray-50'

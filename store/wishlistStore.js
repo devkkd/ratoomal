@@ -51,12 +51,15 @@ export const useWishlistStore = create(
     addToWishlist: async (productId) => {
       const { wishlist, isLoggedIn } = get();
       
-      console.log('➕ Adding to wishlist:', productId);
+      // Ensure productId is string for consistent comparison
+      const normalizedId = String(productId);
+      
+      console.log('➕ Adding to wishlist:', normalizedId);
       console.log('Current wishlist before add:', wishlist);
       
-      // Optimistic update
-      if (!wishlist.includes(productId)) {
-        const newWishlist = [...wishlist, productId];
+      // Optimistic update - check with normalized ID
+      if (!wishlist.some(id => String(id) === normalizedId)) {
+        const newWishlist = [...wishlist, normalizedId];
         set({ wishlist: newWishlist });
         console.log('✅ Wishlist updated to:', newWishlist);
       }
@@ -72,7 +75,7 @@ export const useWishlistStore = create(
                 'Authorization': `Bearer ${token}`,
                 'Content-Type': 'application/json',
               },
-              body: JSON.stringify({ productId }),
+              body: JSON.stringify({ productId: normalizedId }),
             });
 
             if (!res.ok) {
@@ -83,7 +86,7 @@ export const useWishlistStore = create(
           console.error('Error adding to wishlist:', error);
           set({ error: error.message });
           // Revert on error
-          set({ wishlist: wishlist.filter(id => id !== productId) });
+          set({ wishlist: wishlist.filter(id => String(id) !== normalizedId) });
         }
       }
     },
@@ -92,11 +95,14 @@ export const useWishlistStore = create(
     removeFromWishlist: async (productId) => {
       const { wishlist, isLoggedIn } = get();
       
-      console.log('➖ Removing from wishlist:', productId);
+      // Ensure productId is string for consistent comparison
+      const normalizedId = String(productId);
+      
+      console.log('➖ Removing from wishlist:', normalizedId);
       console.log('Current wishlist before remove:', wishlist);
       
-      // Optimistic update
-      const newWishlist = wishlist.filter(id => id !== productId);
+      // Optimistic update - use normalized ID
+      const newWishlist = wishlist.filter(id => String(id) !== normalizedId);
       set({ wishlist: newWishlist });
       console.log('✅ Wishlist updated to:', newWishlist);
 
@@ -111,7 +117,7 @@ export const useWishlistStore = create(
                 'Authorization': `Bearer ${token}`,
                 'Content-Type': 'application/json',
               },
-              body: JSON.stringify({ productId }),
+              body: JSON.stringify({ productId: normalizedId }),
             });
 
             if (!res.ok) {
@@ -122,7 +128,7 @@ export const useWishlistStore = create(
           console.error('Error removing from wishlist:', error);
           set({ error: error.message });
           // Revert on error
-          set({ wishlist: [...wishlist, productId] });
+          set({ wishlist: [...wishlist] });
         }
       }
     },
@@ -131,22 +137,27 @@ export const useWishlistStore = create(
     toggleWishlist: async (productId) => {
       const { isInWishlist } = get();
       
-      console.log('🔄 Toggling wishlist for product:', productId);
-      console.log('Is currently in wishlist?', isInWishlist(productId));
+      // Ensure productId is string for consistent comparison
+      const normalizedId = String(productId);
       
-      if (isInWishlist(productId)) {
+      console.log('🔄 Toggling wishlist for product:', normalizedId);
+      console.log('Is currently in wishlist?', isInWishlist(normalizedId));
+      
+      if (isInWishlist(normalizedId)) {
         console.log('Product is in wishlist, removing...');
-        await get().removeFromWishlist(productId);
+        await get().removeFromWishlist(normalizedId);
       } else {
         console.log('Product is NOT in wishlist, adding...');
-        await get().addToWishlist(productId);
+        await get().addToWishlist(normalizedId);
       }
     },
 
     // Check if product is in wishlist
     isInWishlist: (productId) => {
       const { wishlist } = get();
-      return wishlist.includes(productId);
+      // Ensure productId is string for consistent comparison across all pages
+      const normalizedId = String(productId);
+      return wishlist.some(id => String(id) === normalizedId);
     },
 
     // Sync with server

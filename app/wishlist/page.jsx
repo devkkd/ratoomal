@@ -17,9 +17,11 @@ export default function WishlistPage() {
     setIsClient(true);
     // Initialize store from localStorage when component mounts
     if (typeof window !== 'undefined') {
+      console.log('📦 Before initialize - wishlist:', wishlist);
       initialize();
+      console.log('📦 After initialize - wishlist should update');
     }
-  }, []);
+  }, [initialize]);
 
   // Log wishlist state changes
   useEffect(() => {

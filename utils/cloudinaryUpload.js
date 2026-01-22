@@ -68,7 +68,7 @@ export async function uploadMultipleToCloudinary(files, folder = "products", onP
       formData.append('file', file);
       formData.append('folder', folder);
 
-      const response = await fetch('/api/admin/products/upload', {
+      const response = await fetch('/api/admin/upload', {
         method: 'POST',
         body: formData,
       });
@@ -78,10 +78,10 @@ export async function uploadMultipleToCloudinary(files, folder = "products", onP
       if (data.success) {
         results.push({
           url: data.url,
-          type: data.type,
+          type: file.type.startsWith('video') ? 'video' : 'image',
           originalName: file.name,
-          publicId: data.publicId,
-          fileSize: file.size
+          publicId: data.publicId || '',
+          folder: folder
         });
         console.log(`✅ Uploaded: ${file.name}`);
       } else {
