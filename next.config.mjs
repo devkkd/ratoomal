@@ -1,23 +1,19 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  /* config options here */
+  // Optimize for production builds
+  experimental: {
+    optimizePackageImports: ['lucide-react', '@heroicons/react']
+  },
   
-  // Environment-specific configuration
+  // Handle build-time environment variables safely
   env: {
     CUSTOM_BASE_URL: process.env.NODE_ENV === 'production' 
-      ? process.env.NEXT_PUBLIC_API_BASE_URL || 'https://ratoomal.onrender.com'
+      ? (process.env.NEXT_PUBLIC_API_BASE_URL || '')
       : 'http://localhost:3000'
   },
   
-  // Ensure proper handling of API routes
-  async rewrites() {
-    return [
-      {
-        source: '/api/:path*',
-        destination: '/api/:path*',
-      },
-    ];
-  },
+  // Empty turbopack config to silence the warning
+  turbopack: {},
 };
 
 export default nextConfig;
