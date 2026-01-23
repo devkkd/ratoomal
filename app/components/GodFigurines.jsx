@@ -1,41 +1,101 @@
 
 "use client";
 import Image from "next/image";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 
 export default function GodFigurines() {
+    const router = useRouter();
     const [wishlist, setWishlist] = useState([]);
+    const [products, setProducts] = useState([]);
+    const [loading, setLoading] = useState(true);
 
-    const products = [
-        {
-            id: 1,
-            name: "Brown Wooden Elephant Statue",
-            qty: "Minimum Order Quantity: 100 Piece",
-            price: "₹ 300/Piece",
-            img: "/images/products/image-40.svg",
-        },
-        {
-            id: 2,
-            name: "Lord Ganesha Sitting Statue",
-            qty: "Minimum Order Quantity: 100 Piece",
-            price: "₹ 5,000/Piece",
-            img: "/images/products/image-74.svg",
-        },
-        {
-            id: 3,
-            name: "Blue White Owl Showpiece",
-            qty: "Minimum Order Quantity: 100 Piece",
-            price: "₹ 500/Piece",
-            img: "/images/products/image-73.svg",
-        },
-        {
-            id: 4,
-            name: "Multicolor Wooden Elephant Statue",
-            qty: "Minimum Order Quantity: 100 Piece",
-            price: "₹ 3,500/Piece",
-            img: "/images/products/image-48.svg",
-        },
-    ];
+    // Load wishlist from localStorage on mount
+    useEffect(() => {
+        const savedWishlist = localStorage.getItem('ratoomal_wishlist');
+        if (savedWishlist) {
+            try {
+                setWishlist(JSON.parse(savedWishlist));
+            } catch (error) {
+                console.error('Error loading wishlist:', error);
+            }
+        }
+    }, []);
+
+    // Save wishlist to localStorage whenever it changes
+    useEffect(() => {
+        localStorage.setItem('ratoomal_wishlist', JSON.stringify(wishlist));
+    }, [wishlist]);
+
+    // Fetch latest 4 God category products
+    useEffect(() => {
+        const fetchGodProducts = async () => {
+            try {
+                setLoading(true);
+                
+                // Fetch all products
+                const response = await fetch('/api/admin/products');
+                if (!response.ok) throw new Error('Failed to fetch products');
+                
+                const data = await response.json();
+                
+                if (data.success && data.data) {
+                    // Fetch categories to find God category ID
+                    const categoriesRes = await fetch('/api/admin/categories');
+                    const categoriesData = await categoriesRes.json();
+                    
+                    if (categoriesData.success && categoriesData.data) {
+                        console.log('All categories:', categoriesData.data.map(c => c.name));
+                        
+                        // Find God category (case-insensitive, also check for "God Figurines")
+                        const godCategory = categoriesData.data.find(
+                            cat => {
+                                const nameLC = cat.name.toLowerCase().trim();
+                                return nameLC === 'god' || nameLC === 'god figurines' || nameLC.includes('god');
+                            }
+                        );
+                        
+                        console.log('Found God category:', godCategory);
+                        
+                        if (godCategory) {
+                            console.log(`Filtering products for category: ${godCategory._id}`);
+                            
+                            // Filter products by God category and get latest 4
+                            const godProducts = data.data
+                                .filter(product => {
+                                    const categoryId = product.category?._id || product.category;
+                                    const matches = categoryId === godCategory._id;
+                                    console.log(`Product: ${product.name}, Category ID: ${categoryId}, Matches: ${matches}`);
+                                    return matches;
+                                })
+                                .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+                                .slice(0, 4)
+                                .map(product => ({
+                                    id: product._id,
+                                    name: product.name || "Unnamed Product",
+                                    qty: `Minimum Order Quantity: ${product.minimumOrderQuantity || 100} Piece`,
+                                    price: `₹ ${product.price || 0}/Piece`,
+                                    img: product.images?.[0] || '/images/placeholder.jpg',
+                                }));
+                            
+                            console.log('Filtered God products:', godProducts);
+                            setProducts(godProducts);
+                        } else {
+                            console.warn('God category not found. Available categories:', categoriesData.data.map(c => c.name));
+                            setProducts([]);
+                        }
+                    }
+                }
+            } catch (error) {
+                console.error('Error fetching god products:', error);
+                setProducts([]);
+            } finally {
+                setLoading(false);
+            }
+        };
+        
+        fetchGodProducts();
+    }, []);
 
     const toggleWishlist = (id) => {
         setWishlist(prev => {
@@ -54,15 +114,27 @@ export default function GodFigurines() {
                God Figurines
             </h3>
 
+            {loading ? (
+                <div className="flex justify-center items-center py-20">
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#c48b46]"></div>
+                </div>
+            ) : products.length === 0 ? (
+                <div className="text-center py-20">
+                    <p className="text-gray-600">No god products found</p>
+                </div>
+            ) : (
             <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 px-6">
                 {products.map((item) => (
-                    <div key={item.id} className="cursor-pointer w-full max-w-[480px] relative group">
+                    <div 
+                        key={item.id} 
+                        onClick={() => router.push(`/product/${item.id}`)}
+                        className="cursor-pointer w-full max-w-[480px] relative group"
+                    >
                         <div className="relative w-full h-[280px] sm:h-[330px] bg-gray-100 overflow-hidden rounded-2xl">
-                            <Image
+                            <img
                                 src={item.img}
                                 alt={item.name}
-                                fill
-                                className="object-cover hover:scale-105 transition duration-300"
+                                className="w-full h-full object-cover hover:scale-105 transition duration-300"
                             />
                             
                             {/* Wishlist Button */}
@@ -108,6 +180,7 @@ export default function GodFigurines() {
                     </div>
                 ))}
             </div>
+            )}
 
             <div className="text-center w-full flex justify-center items-center  mt-10">
                

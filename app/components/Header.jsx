@@ -1031,7 +1031,7 @@ const Header = () => {
   // Manual individual category links - these are the menu items on the main nav bar
   const manualCategoryLinks = [
     {
-      name: 'ANIMAL',
+      name: 'Animal',
       href: '/animal',
       hasDropdown: true,
       isCategory: true,
@@ -1039,7 +1039,7 @@ const Header = () => {
       apiCategoryName: 'Animal'
     },
     {
-      name: 'GOD FIGURE',
+      name: 'God Figure',
       href: '/god-figure',
       hasDropdown: true,
       isCategory: true,
@@ -1047,7 +1047,7 @@ const Header = () => {
       apiCategoryName: 'God Figure'
     },
     {
-      name: 'UTILITY / DECOR',
+      name: 'Utility Decor',
       href: '/utility-decor',
       hasDropdown: true,
       isCategory: true,
@@ -1687,13 +1687,7 @@ const Header = () => {
                             
                             return (
                               <>
-                                <button
-                                  onClick={() => handleAllCategoryNavigation(link)}
-                                  className="flex items-center justify-between w-full px-5 py-3 text-[12px] font-medium text-gray-700 hover:bg-[#C08237] hover:text-white transition-all border-b border-gray-100"
-                                >
-                                  ALL {link.name}
-                                  {/* <ChevronRight size={12} className="opacity-50" /> */}
-                                </button>
+                              
                                 
                                 {categorySubCats.length > 0 ? (
                                   categorySubCats.map(subCat => (
@@ -1719,6 +1713,13 @@ const Header = () => {
                               </>
                             );
                           })()}
+                            <button
+                                  onClick={() => handleAllCategoryNavigation(link)}
+                                  className="flex  items-center justify-between w-full px-5 py-3 text-[12px] font-medium text-gray-700 hover:bg-[#C08237] hover:text-white transition-all border-b border-gray-100"
+                                >
+                                  All {link.name}
+                                  {/* <ChevronRight size={12} className="opacity-50" /> */}
+                                </button>
                           
                           {/* <Link
                             href="/custom-orders"

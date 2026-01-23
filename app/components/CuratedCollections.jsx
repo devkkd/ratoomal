@@ -1,40 +1,85 @@
 "use client";
 import Image from "next/image";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 
 export default function CuratedCollections() {
+    const router = useRouter();
     const [wishlist, setWishlist] = useState([]);
+    const [products, setProducts] = useState([]);
+    const [loading, setLoading] = useState(true);
 
-    const products = [
-        {
-            id: 1,
-            name: "Brown Wooden Elephant Statue",
-            qty: "Minimum Order Quantity: 100 Piece",
-            price: "₹ 300/Piece",
-            img: "/images/products/image-36.svg",
-        },
-        {
-            id: 2,
-            name: "Lord Ganesha Sitting Statue",
-            qty: "Minimum Order Quantity: 100 Piece",
-            price: "₹ 5,000/Piece",
-            img: "/images/products/image-41.svg",
-        },
-        {
-            id: 3,
-            name: "Blue White Owl Showpiece",
-            qty: "Minimum Order Quantity: 100 Piece",
-            price: "₹ 500/Piece",
-            img: "/images/products/image-42.svg",
-        },
-        {
-            id: 4,
-            name: "Multicolor Wooden Elephant Statue",
-            qty: "Minimum Order Quantity: 100 Piece",
-            price: "₹ 3,500/Piece",
-            img: "/images/products/image-49.svg",
-        },
-    ];
+    // Load wishlist from localStorage on mount
+    useEffect(() => {
+        const savedWishlist = localStorage.getItem('ratoomal_wishlist');
+        if (savedWishlist) {
+            try {
+                setWishlist(JSON.parse(savedWishlist));
+            } catch (error) {
+                console.error('Error loading wishlist:', error);
+            }
+        }
+    }, []);
+
+    // Save wishlist to localStorage whenever it changes
+    useEffect(() => {
+        localStorage.setItem('ratoomal_wishlist', JSON.stringify(wishlist));
+    }, [wishlist]);
+
+    // Fetch latest 4 Animal category products
+    useEffect(() => {
+        const fetchAnimalProducts = async () => {
+            try {
+                setLoading(true);
+                
+                // Fetch all products
+                const response = await fetch('/api/admin/products');
+                if (!response.ok) throw new Error('Failed to fetch products');
+                
+                const data = await response.json();
+                
+                if (data.success && data.data) {
+                    // Fetch categories to find Animal category ID
+                    const categoriesRes = await fetch('/api/admin/categories');
+                    const categoriesData = await categoriesRes.json();
+                    
+                    if (categoriesData.success && categoriesData.data) {
+                        // Find Animal category
+                        const animalCategory = categoriesData.data.find(
+                            cat => cat.name.toLowerCase() === 'animal'
+                        );
+                        
+                        if (animalCategory) {
+                            // Filter products by Animal category and get latest 4
+                            const animalProducts = data.data
+                                .filter(product => product.category?._id === animalCategory._id || product.category === animalCategory._id)
+                                .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+                                .slice(0, 4)
+                                .map(product => ({
+                                    id: product._id,
+                                    name: product.name || "Unnamed Product",
+                                    qty: `Minimum Order Quantity: ${product.minimumOrderQuantity || 100} Piece`,
+                                    price: `₹ ${product.price || 0}/Piece`,
+                                    img: product.images?.[0] || '/images/placeholder.jpg',
+                                }));
+                            
+                            setProducts(animalProducts);
+                        } else {
+                            console.warn('Animal category not found');
+                            setProducts([]);
+                        }
+                    }
+                }
+            } catch (error) {
+                console.error('Error fetching animal products:', error);
+                setProducts([]);
+            } finally {
+                setLoading(false);
+            }
+        };
+        
+        fetchAnimalProducts();
+    }, []);
 
     const toggleWishlist = (id) => {
         setWishlist(prev => {
@@ -59,16 +104,28 @@ export default function CuratedCollections() {
                 Animal Figurines
             </h3>
 
+            {loading ? (
+                <div className="flex justify-center items-center py-20">
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#c48b46]"></div>
+                </div>
+            ) : products.length === 0 ? (
+                <div className="text-center py-20">
+                    <p className="text-gray-600">No animal products found</p>
+                </div>
+            ) : (
             <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 px-6">
                 {products.map((item) => (
-                    <div key={item.id} className="cursor-pointer w-full max-w-[480px] relative group">
+                    <div 
+                        key={item.id} 
+                        onClick={() => router.push(`/product/${item.id}`)}
+                        className="cursor-pointer w-full max-w-[480px] relative group"
+                    >
                         <div className="relative w-full h-[280px] sm:h-[330px] bg-gray-100 overflow-hidden rounded-2xl">
-                            <Image
-                                src={item.img}
-                                alt={item.name}
-                                fill
-                                className="object-cover hover:scale-105 transition duration-300"
-                            />
+                                                <img
+                                                    src={item.img}
+                                                    alt={item.name}
+                                                    className="w-full h-full object-cover hover:scale-105 transition duration-300"
+                                                />
                             
                             {/* Wishlist Button */}
                             <button
@@ -113,6 +170,7 @@ export default function CuratedCollections() {
                     </div>
                 ))}
             </div>
+            )}
 
             <div className="text-center w-full flex justify-center items-center  mt-10">
                
