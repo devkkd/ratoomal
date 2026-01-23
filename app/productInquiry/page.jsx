@@ -1,10 +1,10 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, Suspense } from "react";
 import { ChevronDown, Upload, X } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 
-const ProductInquiry = () => {
+const ProductInquiryContent = () => {
   const searchParams = useSearchParams();
   const productId = searchParams.get("productId");
   const [loading, setLoading] = useState(false);
@@ -496,6 +496,14 @@ const ProductInquiry = () => {
       {/* Success Modal */}
       <SuccessModal />
     </>
+  );
+};
+
+const ProductInquiry = () => {
+  return (
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center">Loading...</div>}>
+      <ProductInquiryContent />
+    </Suspense>
   );
 };
 

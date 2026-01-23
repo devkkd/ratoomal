@@ -84,7 +84,6 @@ UserSchema.virtual('formattedCreatedAt').get(function() {
 });
 
 // Index for faster queries
-UserSchema.index({ businessEmail: 1 });
 UserSchema.index({ status: 1 });
 UserSchema.index({ createdAt: -1 });
 

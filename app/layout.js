@@ -7,6 +7,7 @@ import { usePathname } from "next/navigation";
 import { Mona_Sans } from "next/font/google";
 import TranslationProvider from "@/app/components/TranslationProvider";
 import LanguageLoader from "@/app/components/LanguageLoader";
+import { Suspense } from "react";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -56,7 +57,11 @@ export default function RootLayout({ children }) {
         <TranslationProvider>
           <LanguageLoader />
           {/* Only show website header if NOT admin route */}
-          {!isAdminRoute && <Header />}
+          {!isAdminRoute && (
+            <Suspense fallback={<div className="h-16 bg-white"></div>}>
+              <Header />
+            </Suspense>
+          )}
           
           <main className="flex-grow">{children}</main>
           

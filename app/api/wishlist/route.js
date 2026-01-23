@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import connectDB from '@/lib/db';
 import Wishlist from '@/models/Wishlist';
 import User from '@/models/User';
-import { verifyToken } from '@/utils/adminAuth';
+import { adminAuth } from '@/utils/adminAuth';
 
 // GET user's wishlist
 export async function GET(req) {
@@ -19,7 +19,7 @@ export async function GET(req) {
     }
 
     // Verify token
-    const decoded = verifyToken(token);
+    const decoded = adminAuth(token);
     if (!decoded) {
       return NextResponse.json(
         { success: false, error: 'Invalid token' },
@@ -59,7 +59,7 @@ export async function POST(req) {
       );
     }
 
-    const decoded = verifyToken(token);
+    const decoded = adminAuth(token);
     if (!decoded) {
       return NextResponse.json(
         { success: false, error: 'Invalid token' },
@@ -117,7 +117,7 @@ export async function DELETE(req) {
       );
     }
 
-    const decoded = verifyToken(token);
+    const decoded = adminAuth(token);
     if (!decoded) {
       return NextResponse.json(
         { success: false, error: 'Invalid token' },
