@@ -9,7 +9,7 @@ import { adminAuth } from "../middleware/adminAuth";
 
 export async function PATCH(req) {
   // ✅ AUTH CHECK
-  const auth = adminAuth();
+  const auth = await adminAuth();
   if (auth.error) return auth.error;
 
   await connectDB();

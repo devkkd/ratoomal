@@ -136,8 +136,23 @@ export async function POST(req) {
       status: "pending",
     });
 
-    // 📩 Send email notification to admin (optional)
-    // await sendVerificationEmailToAdmin(user);
+    // 📩 Send email notification to admin
+    try {
+      const { sendEmail } = await import("@/lib/mailer");
+      const { adminNewUserTemplate } = await import("@/lib/emailTemplates");
+      
+      const emailTemplate = adminNewUserTemplate(user);
+      await sendEmail({
+        to: process.env.ADMIN_EMAIL,
+        subject: emailTemplate.subject,
+        html: emailTemplate.html,
+      });
+      
+      console.log("✅ Admin notification email sent successfully");
+    } catch (emailError) {
+      console.error("❌ Failed to send admin notification email:", emailError);
+      // Don't fail the signup if email fails
+    }
 
     return NextResponse.json({
       success: true,

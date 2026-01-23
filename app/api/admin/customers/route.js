@@ -1,8 +1,15 @@
 import { NextResponse } from 'next/server';
 import User from '@/models/User';
 import connectDB from '@/lib/db';
+import { adminAuth } from '../middleware/adminAuth';
 
 export async function GET(request) {
+  // Check admin authentication
+  const authResult = await adminAuth();
+  if (authResult.error) {
+    return authResult.error;
+  }
+
   try {
     await connectDB();
     
@@ -25,7 +32,7 @@ export async function GET(request) {
       query.$or = [
         { companyName: { $regex: search, $options: 'i' } },
         { contactName: { $regex: search, $options: 'i' } },
-        { email: { $regex: search, $options: 'i' } },
+        { businessEmail: { $regex: search, $options: 'i' } },
         { phone: { $regex: search, $options: 'i' } }
       ];
     }
@@ -58,6 +65,11 @@ export async function GET(request) {
     
   } catch (error) {
     console.error('Error fetching customers:', error);
+    console.error('Error details:', {
+      message: error.message,
+      stack: error.stack,
+      name: error.name
+    });
     return NextResponse.json(
       { success: false, error: error.message },
       { status: 500 }

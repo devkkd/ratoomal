@@ -1,11 +1,18 @@
 import { NextResponse } from "next/server";
 import connectDB from "@/lib/db";
 import Product from "@/models/Product";
+import { adminAuth } from "../middleware/adminAuth";
 
 /* =======================
    GET ALL PRODUCTS
 ======================= */
 export async function GET() {
+  // Check admin authentication
+  const authResult = await adminAuth();
+  if (authResult.error) {
+    return authResult.error;
+  }
+
   try {
     await connectDB();
 
@@ -27,6 +34,12 @@ export async function GET() {
    CREATE PRODUCT
 ======================= */
 export async function POST(request) {
+  // Check admin authentication
+  const authResult = await adminAuth();
+  if (authResult.error) {
+    return authResult.error;
+  }
+
   try {
     await connectDB();
     const body = await request.json();

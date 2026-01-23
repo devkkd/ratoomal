@@ -7,11 +7,19 @@ export async function POST(req) {
       message: "Logged out successfully",
     });
 
-    // Clear the admin token cookie
+    // Clear both admin token cookies
     res.cookies.set("adminToken", "", {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
+      sameSite: process.env.NODE_ENV === "production" ? "lax" : "strict",
+      maxAge: 0,
+      path: "/",
+    });
+
+    res.cookies.set("token", "", {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: process.env.NODE_ENV === "production" ? "lax" : "strict",
       maxAge: 0,
       path: "/",
     });

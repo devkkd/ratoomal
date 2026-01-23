@@ -66,11 +66,20 @@ export async function POST(req) {
       }
     });
 
-    // Set HTTP-only cookie for security
+    // Set HTTP-only cookies for security (both adminToken and token for compatibility)
     res.cookies.set("adminToken", token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
+      sameSite: process.env.NODE_ENV === "production" ? "lax" : "strict",
+      maxAge: 60 * 60 * 24 * 7, // 7 days
+      path: "/",
+    });
+
+    // Also set token cookie for backward compatibility
+    res.cookies.set("token", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: process.env.NODE_ENV === "production" ? "lax" : "strict",
       maxAge: 60 * 60 * 24 * 7, // 7 days
       path: "/",
     });
