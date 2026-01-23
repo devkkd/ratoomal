@@ -1,30 +1,20 @@
 "use client";
-import Image from "next/image";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { useWishlistStore } from '@/store/wishlistStore';
 
 export default function CuratedCollections() {
     const router = useRouter();
-    const [wishlist, setWishlist] = useState([]);
+    const { wishlist, toggleWishlist, isInWishlist, initialize } = useWishlistStore();
     const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(true);
 
-    // Load wishlist from localStorage on mount
+    // Initialize wishlist store
     useEffect(() => {
-        const savedWishlist = localStorage.getItem('ratoomal_wishlist');
-        if (savedWishlist) {
-            try {
-                setWishlist(JSON.parse(savedWishlist));
-            } catch (error) {
-                console.error('Error loading wishlist:', error);
-            }
+        if (typeof window !== 'undefined') {
+            initialize();
         }
-    }, []);
-
-    // Save wishlist to localStorage whenever it changes
-    useEffect(() => {
-        localStorage.setItem('ratoomal_wishlist', JSON.stringify(wishlist));
-    }, [wishlist]);
+    }, [initialize]);
 
     // Fetch latest 4 Animal category products
     useEffect(() => {
@@ -81,14 +71,16 @@ export default function CuratedCollections() {
         fetchAnimalProducts();
     }, []);
 
-    const toggleWishlist = (id) => {
-        setWishlist(prev => {
-            if (prev.includes(id)) {
-                return prev.filter(item => item !== id);
-            } else {
-                return [...prev, id];
-            }
-        });
+    // Handle wishlist toggle
+    const handleWishlistToggle = async (productId, e) => {
+        e.stopPropagation();
+        console.log('🔄 CuratedCollections - Toggling wishlist for product:', productId);
+        console.log('Current wishlist state:', wishlist);
+        console.log('Is in wishlist before toggle:', isInWishlist(productId));
+        
+        await toggleWishlist(productId);
+        
+        console.log('Is in wishlist after toggle:', isInWishlist(productId));
     };
 
     return (
@@ -129,26 +121,23 @@ export default function CuratedCollections() {
                             
                             {/* Wishlist Button */}
                             <button
-                                onClick={(e) => {
-                                    e.stopPropagation();
-                                    toggleWishlist(item.id);
-                                }}
+                                onClick={(e) => handleWishlistToggle(item.id, e)}
                                 className="absolute top-3 right-3 z-10 p-2 bg-[#FFFFFF80] backdrop-blur-sm rounded-full 
                                            shadow-lg hover:bg-white  active:scale-95 
                                            transition-all duration-200"
-                                aria-label={wishlist.includes(item.id) ? "Remove from wishlist" : "Add to wishlist"}
+                                aria-label={isInWishlist(item.id) ? "Remove from wishlist" : "Add to wishlist"}
                             >
                                 {/* Heart SVG Icon */}
                                 <svg
                                     xmlns="http://www.w3.org/2000/svg"
                                     className={`h-5 w-6 transition-colors duration-200 ${
-                                        wishlist.includes(item.id) 
+                                        isInWishlist(item.id) 
                                             ? "fill-red-500 text-red-500" 
                                             : "text-gray-800 fill-transparent hover:text-red-400"
                                     }`}
                                     viewBox="0 0 24 24"
                                     stroke="currentColor"
-                                    strokeWidth={wishlist.includes(item.id) ? 0 : 2}
+                                    strokeWidth={isInWishlist(item.id) ? 0 : 2}
                                 >
                                     <path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/>
                                 </svg>
@@ -174,11 +163,11 @@ export default function CuratedCollections() {
 
             <div className="text-center w-full flex justify-center items-center  mt-10">
                
-            <button className="mt-8 mona px-10 py-4 bg-[#c48b46] text-white rounded-full flex items-center gap-1 hover:bg-[#a6753a] transition-all duration-300 font-medium text-base">
+            <button 
+                onClick={() => router.push('/animal')}
+                className="mt-8 mona px-10 py-4 bg-[#c48b46] text-white rounded-full flex items-center gap-1 hover:bg-[#a6753a] transition-all duration-300 font-medium text-base"
+            >
              See All Animal Figurines →
-              {/* <span className="text-xl group-hover:translate-y-1 transition-transform duration-300">
-                
-              </span> */}
             </button>
             </div>
 
