@@ -1,12 +1,16 @@
 {
   "name": "ratoomal",
   "version": "0.1.0",
-  "type": "module",
   "private": true,
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "check-env": "node scripts/checkEnv.js"
   },
   "dependencies": {
     "@headlessui/react": "^2.2.9",
@@ -15,17 +19,13 @@
     "bcryptjs": "^3.0.3",
     "cloudinary": "^2.8.0",
     "date-fns": "^4.1.0",
-    "dotenv": "^17.2.3",
     "formidable": "^3.5.4",
-    "fs": "^0.0.1-security",
-    "install": "^0.13.0",
     "js-cookie": "^3.0.5",
     "jsonwebtoken": "^9.0.3",
     "lucide-react": "^0.562.0",
     "mongoose": "^9.1.2",
     "next": "16.1.1",
     "nodemailer": "^7.0.12",
-    "path": "^0.12.7",
     "react": "19.2.3",
     "react-dom": "19.2.3",
     "react-icons": "^5.5.0",

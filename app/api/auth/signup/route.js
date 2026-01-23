@@ -138,6 +138,11 @@ export async function POST(req) {
 
     // 📩 Send email notification to admin
     try {
+      console.log("🔄 Attempting to send admin notification email...");
+      console.log("📧 Admin email:", process.env.ADMIN_EMAIL);
+      console.log("📧 Email user:", process.env.EMAIL_USER);
+      console.log("📧 Email host:", process.env.EMAIL_HOST);
+      
       const { sendEmail } = await import("@/lib/mailer");
       const { adminNewUserTemplate } = await import("@/lib/emailTemplates");
       
@@ -150,7 +155,12 @@ export async function POST(req) {
       
       console.log("✅ Admin notification email sent successfully");
     } catch (emailError) {
-      console.error("❌ Failed to send admin notification email:", emailError);
+      console.error("❌ Failed to send admin notification email:", {
+        message: emailError.message,
+        stack: emailError.stack,
+        code: emailError.code,
+        command: emailError.command
+      });
       // Don't fail the signup if email fails
     }
 

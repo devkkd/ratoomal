@@ -19,22 +19,46 @@ export async function GET() {
       process.env.ADMIN_EMAIL
     );
     
+    // Get current URL info
+    const isProduction = process.env.NODE_ENV === 'production';
+    const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
+    
     return NextResponse.json({
       success: true,
-      database: 'connected',
-      userCount,
-      pendingUsers,
-      emailConfigured,
-      environment: process.env.NODE_ENV,
-      mongoUri: process.env.MONGODB_URI ? 'configured' : 'missing',
-      adminEmail: process.env.ADMIN_EMAIL ? 'configured' : 'missing'
+      environment: {
+        nodeEnv: process.env.NODE_ENV,
+        isProduction,
+        baseUrl,
+        port: process.env.PORT || 'not set'
+      },
+      database: {
+        status: 'connected',
+        userCount,
+        pendingUsers,
+        mongoConfigured: !!process.env.MONGODB_URI
+      },
+      email: {
+        configured: emailConfigured,
+        host: process.env.EMAIL_HOST,
+        user: process.env.EMAIL_USER ? 'configured' : 'missing',
+        adminEmail: process.env.ADMIN_EMAIL ? 'configured' : 'missing'
+      },
+      security: {
+        jwtSecret: process.env.JWT_SECRET ? 'configured' : 'missing',
+        cloudinaryConfigured: !!(process.env.CLOUDINARY_CLOUD_NAME && process.env.CLOUDINARY_API_KEY)
+      },
+      timestamp: new Date().toISOString()
     });
     
   } catch (error) {
     return NextResponse.json({
       success: false,
       error: error.message,
-      stack: error.stack
+      environment: {
+        nodeEnv: process.env.NODE_ENV,
+        baseUrl: process.env.NEXT_PUBLIC_API_BASE_URL,
+        port: process.env.PORT || 'not set'
+      }
     }, { status: 500 });
   }
 }
