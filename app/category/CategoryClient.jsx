@@ -238,7 +238,7 @@ const CategoryPage = () => {
                 setLoading(true);
                 
                 // Fetch categories
-                const categoriesResponse = await fetch('/api/admin/categories');
+                const categoriesResponse = await fetch('/api/categories');
                 if (categoriesResponse.ok) {
                     const categoriesData = await categoriesResponse.json();
                     if (categoriesData.success && categoriesData.data) {
@@ -252,7 +252,7 @@ const CategoryPage = () => {
                         
                         // Fetch subcategories
                         try {
-                            const subCatResponse = await fetch('/api/admin/subcategories');
+                            const subCatResponse = await fetch('/api/subcategories');
                             if (subCatResponse.ok) {
                                 const subCatData = await subCatResponse.json();
                                 if (subCatData.success && subCatData.data) {
@@ -266,7 +266,7 @@ const CategoryPage = () => {
                 }
                 
                 // Fetch products
-                const productsResponse = await fetch('/api/admin/products');
+                const productsResponse = await fetch('/api/products');
                 if (productsResponse.ok) {
                     const productsData = await productsResponse.json();
                     if (productsData.success && productsData.data) {

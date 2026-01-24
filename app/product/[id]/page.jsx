@@ -58,7 +58,7 @@ const ProductDetailPage = () => {
                 setLoading(true);
                 console.log('🆔 Fetching product with ID:', id);
                 
-                const res = await fetch(`/api/admin/products/${id}`);
+                const res = await fetch(`/api/products/${id}`);
                 const data = await res.json();
 
                 if (!data.success || !data.data) {

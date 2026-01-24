@@ -17,7 +17,7 @@ const Hero = () => {
     {
       id: 1,
       video: "/images/hero/41396-429396744_small.mp4",
-      poster: "/images/hero/video-poster1.jpg",
+      poster: "/images/placeholder.png",
       title: "Discover Premium Fragrances",
       subtitle:
         "Experience luxury perfumes crafted for timeless elegance and lasting impressions.",
@@ -26,7 +26,7 @@ const Hero = () => {
     {
       id: 2,
       video: "/images/hero/128564-741747704_small.mp4",
-      poster: "/images/hero/video-poster2.jpg",
+      poster: "/images/placeholder.png",
       title: "The Art of Gifting",
       subtitle:
         "Exquisite collectibles and divine figures for your loved ones.",
@@ -35,7 +35,7 @@ const Hero = () => {
     {
       id: 3,
       video: "/images/hero/143323-782178554_small.mp4",
-      poster: "/images/hero/video-poster3.jpg",
+      poster: "/images/placeholder.png",
       title: "Exclusive Collections",
       subtitle: "Curated selections for the discerning connoisseur.",
       ctaText: "View Collection",

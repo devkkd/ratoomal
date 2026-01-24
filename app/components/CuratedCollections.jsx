@@ -23,14 +23,14 @@ export default function CuratedCollections() {
                 setLoading(true);
                 
                 // Fetch all products
-                const response = await fetch('/api/admin/products');
+                const response = await fetch('/api/products');
                 if (!response.ok) throw new Error('Failed to fetch products');
                 
                 const data = await response.json();
                 
                 if (data.success && data.data) {
                     // Fetch categories to find Animal category ID
-                    const categoriesRes = await fetch('/api/admin/categories');
+                    const categoriesRes = await fetch('/api/categories');
                     const categoriesData = await categoriesRes.json();
                     
                     if (categoriesData.success && categoriesData.data) {
@@ -50,7 +50,7 @@ export default function CuratedCollections() {
                                     name: product.name || "Unnamed Product",
                                     qty: `Minimum Order Quantity: ${product.minimumOrderQuantity || 100} Piece`,
                                     price: `₹ ${product.price || 0}/Piece`,
-                                    img: product.images?.[0] || '/images/placeholder.jpg',
+                                    img: product.images?.[0] || '/images/placeholder.png',
                                 }));
                             
                             setProducts(animalProducts);

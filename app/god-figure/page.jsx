@@ -109,7 +109,7 @@ const GodFigurePage = () => {
                 console.log('Fetching God Figure page data...');
                 
                 // 1. Fetch all categories to find God Figure category
-                const categoriesResponse = await fetch('/api/admin/categories');
+                const categoriesResponse = await fetch('/api/categories');
                 if (categoriesResponse.ok) {
                     const categoriesData = await categoriesResponse.json();
                     console.log('Categories data:', categoriesData);
@@ -128,7 +128,7 @@ const GodFigurePage = () => {
                         
                         if (godFigureCategory) {
                             // 2. Fetch all subcategories
-                            const subCatResponse = await fetch('/api/admin/subcategories');
+                            const subCatResponse = await fetch('/api/subcategories');
                             if (subCatResponse.ok) {
                                 const subCatData = await subCatResponse.json();
                                 console.log('All subcategories:', subCatData);
@@ -173,7 +173,7 @@ const GodFigurePage = () => {
                 }
                 
                 // 3. Fetch all products
-                const productsResponse = await fetch('/api/admin/products');
+                const productsResponse = await fetch('/api/products');
                 if (productsResponse.ok) {
                     const productsData = await productsResponse.json();
                     console.log('Products data:', productsData);

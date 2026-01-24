@@ -43,7 +43,7 @@ export default function WishlistPage() {
           return;
         }
 
-        const res = await fetch('/api/admin/products');
+        const res = await fetch('/api/products');
         const data = await res.json();
         
         if (data.success && data.data) {
@@ -53,7 +53,7 @@ export default function WishlistPage() {
             name: product.name,
             price: product.price || "0",
             moq: product.minimumOrderQuantity || 100,
-            img: product.images?.[0] || '/images/placeholder.jpg',
+            img: product.images?.[0] || '/images/placeholder.png',
           }));
           setWishlistProducts(transformed);
         }
