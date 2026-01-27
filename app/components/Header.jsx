@@ -137,6 +137,7 @@ const Header = () => {
             const transformed = productsResponse.data.data.map(product => ({
               id: product._id,
               name: product.name || "Unnamed Product",
+              code: product.code || "",
               img: product.thumbnail || (product.images && product.images[0]) || '/images/placeholder.png',
               categoryName: product.category?.name || "Uncategorized",
               categoryId: product.category?._id || ""
@@ -467,6 +468,9 @@ const Header = () => {
                       <img src={product.img} alt={product.name} className="w-12 h-12 object-cover rounded border border-gray-100" />
                       <div>
                         <p className="text-[11px] font-bold text-gray-800 uppercase line-clamp-1">{product.name}</p>
+                        {product.code && (
+                          <p className="text-[9px] text-gray-600 font-mono">{product.code}</p>
+                        )}
                         <p className="text-[9px] text-[#C08237] font-semibold uppercase">{product.categoryName}</p>
                       </div>
                     </Link>
@@ -608,6 +612,9 @@ const Header = () => {
                     <img src={product.img} alt={product.name} className="w-10 h-10 object-cover rounded border border-gray-100" />
                     <div>
                       <p className="text-xs font-bold text-gray-800 uppercase line-clamp-1">{product.name}</p>
+                      {product.code && (
+                        <p className="text-xs text-gray-600 font-mono">{product.code}</p>
+                      )}
                       <p className="text-xs text-[#C08237] font-semibold uppercase">{product.categoryName}</p>
                     </div>
                   </Link>
@@ -621,167 +628,153 @@ const Header = () => {
       )}
 
       {/* --- Desktop Navigation --- */}
-      <nav className="hidden lg:block border-t border-[#A49C93]/20">
-        <div className="max-w-7xl mx-auto px-4">
-          <ul className="flex justify-center items-center gap-8">
-            {navigationLinks.map((link) => {
-              const isActive = pathname === link.href;
-              return (
-                <li 
-                  key={link.name} 
-                  className="relative py-3 group"
-                  onMouseEnter={() => setActiveDropdown(link.name)}
-                  onMouseLeave={() => setActiveDropdown(null)}
-                >
-                  {link.isMainCategory ? (
-                    <button
-                      className={`text-[11px] font-bold tracking-widest ${isActive ? 'text-[#C08237]' : 'text-gray-800'} hover:text-[#C08237] transition-colors`}
-                    >
-                      {link.name}
-                    </button>
-                  ) : (
-                    <Link 
-                      href={link.href} 
-                      className={`text-[11px] font-bold tracking-widest ${isActive ? 'text-[#C08237]' : 'text-gray-800'} hover:text-[#C08237] transition-colors`}
-                    >
-                      {link.name}
-                    </Link>
-                  )}
+   {/* --- Desktop Navigation --- */}
+<nav className="hidden lg:block border-t border-[#A49C93]/20">
+  <div className="max-w-7xl mx-auto px-4">
+    <ul className="flex justify-center items-center gap-8">
+      {navigationLinks.map((link) => {
+        const isActive = pathname === link.href;
+        return (
+          <li 
+            key={link.name} 
+            className="relative py-3 group"
+            onMouseEnter={() => setActiveDropdown(link.name)}
+            onMouseLeave={() => setActiveDropdown(null)}
+          >
+            {link.isMainCategory ? (
+              <button
+                className={`text-[11px] font-bold tracking-widest ${isActive ? 'text-[#C08237]' : 'text-gray-800'} hover:text-[#C08237] transition-colors uppercase`}
+              >
+                {link.name}
+              </button>
+            ) : (
+              <Link 
+                href={link.href} 
+                className={`text-[11px] font-bold tracking-widest ${isActive ? 'text-[#C08237]' : 'text-gray-800'} hover:text-[#C08237] transition-colors uppercase`}
+              >
+                {link.name}
+              </Link>
+            )}
 
-                  {/* Main CATEGORY Dropdown (Dynamic) */}
-                  {link.hasDropdown && link.isMainCategory && activeDropdown === link.name && (
-                    <div className="absolute top-full left-0 w-60 bg-[#FFFCF5] border border-[#D7CEC2] py-1 z-50 rounded-sm shadow-xl">
-                      {isLoading ? (
-                        <div className="px-6 py-4 text-center text-sm text-gray-500">
-                          Loading categories...
-                        </div>
-                      ) : categories.length === 0 ? (
-                        <div className="px-6 py-4 text-center text-sm text-gray-500">
-                          No categories available
-                        </div>
-                      ) : (
-                        <div className="py-2">
-                          {categories.map((category) => (
-                            <button
-                              key={category._id}
-                              onClick={() => handleCategoryNavigation(category.name, category._id)}
-                              className="flex items-center justify-between w-full px-6 py-3 text-sm font-medium text-gray-700  hover:bg-[#C08237] hover:text-white transition-all border-b border-gray-100 last:border-0"
-                            >
-                              {category.name}
-                              {/* <ChevronRight size={14} className="opacity-50" /> */}
-                            </button>
-                          ))}
-                          <div className="border-t border-gray-200 mt-2 pt-2">
-                            <Link
-                              href="/custom-orders"
-                              onClick={() => setActiveDropdown(null)}
-                              className="flex items-center justify-between px-6 py-3 text-sm font-medium text-gray-700 hover:bg-[#FFF6EB] hover:text-[#C08237] transition-all"
-                            >
-                              CUSTOM ORDERS
-                              {/* <ChevronRight size={14} className="opacity-50" /> */}
-                            </Link>
+            {/* Main CATEGORY Dropdown (Dynamic) */}
+            {link.hasDropdown && link.isMainCategory && activeDropdown === link.name && (
+              <div className="absolute top-full left-0 w-60 bg-[#FFFCF5] border border-[#D7CEC2] py-1 z-50 rounded-sm shadow-xl">
+                {isLoading ? (
+                  <div className="px-6 py-4 text-center text-sm text-gray-500">
+                    Loading categories...
+                  </div>
+                ) : categories.length === 0 ? (
+                  <div className="px-6 py-4 text-center text-sm text-gray-500">
+                    No categories available
+                  </div>
+                ) : (
+                  <div className="py-2">
+                    {categories.map((category) => (
+                      <button
+                        key={category._id}
+                        onClick={() => handleCategoryNavigation(category.name, category._id)}
+                        className="flex items-center justify-between w-full px-6 py-3 text-sm font-medium text-gray-700 hover:bg-[#C08237] hover:text-white transition-all border-b border-gray-100 last:border-0 capitalize"
+                      >
+                        {category.name}
+                      </button>
+                    ))}
+                    <div className="border-t border-gray-200 mt-2 pt-2">
+                      <Link
+                        href="/custom-orders"
+                        onClick={() => setActiveDropdown(null)}
+                        className="flex items-center justify-between px-6 py-3 text-sm font-medium text-gray-700 hover:bg-[#FFF6EB] hover:text-[#C08237] transition-all capitalize"
+                      >
+                        Custom Orders
+                      </Link>
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Individual Manual Category Dropdowns (ANIMAL, GOD FIGURE, UTILITY/DECOR) */}
+            {link.hasDropdown && link.isCategory && activeDropdown === link.name && (
+              <div className="absolute top-full left-0 w-60 bg-[#FFFCF5] border border-[#D7CEC2] py-1 z-50 rounded-sm shadow-xl">
+                {isLoading ? (
+                  <div className="px-5 py-3 text-center text-[12px] text-gray-500">
+                    Loading...
+                  </div>
+                ) : (
+                  <>
+                    {/* Find the category in database */}
+                    {(() => {
+                      const categoryObj = categories.find(cat => 
+                        cat.name.toLowerCase() === link.apiCategoryName.toLowerCase()
+                      );
+                      
+                      if (!categoryObj) {
+                        return (
+                          <div className="text-center py-3 text-[12px] text-gray-500">
+                            No data found
                           </div>
-                        </div>
-                      )}
-                    </div>
-                  )}
-
-                  {/* Individual Manual Category Dropdowns (ANIMAL, GOD FIGURE, UTILITY/DECOR) */}
-                  {link.hasDropdown && link.isCategory && activeDropdown === link.name && (
-                    <div className="absolute top-full left-0 w-60 bg-[#FFFCF5] border border-[#D7CEC2] py-1 z-50 rounded-sm shadow-xl">
-                      {isLoading ? (
-                        <div className="px-5 py-3 text-center text-[12px] text-gray-500">
-                          Loading...
-                        </div>
-                      ) : (
+                        );
+                      }
+                      
+                      const categorySubCats = getSubCategoriesForCategory(categoryObj._id);
+                      
+                      return (
                         <>
-                          {/* Find the category in database */}
-                          {(() => {
-                            const categoryObj = categories.find(cat => 
-                              cat.name.toLowerCase() === link.apiCategoryName.toLowerCase()
-                            );
-                            
-                            if (!categoryObj) {
-                              return (
-                                <div className="text-center py-3 text-[12px] text-gray-500">
-                                  No data found
-                                </div>
-                              );
-                            }
-                            
-                            const categorySubCats = getSubCategoriesForCategory(categoryObj._id);
-                            
-                            return (
-                              <>
-                              
-                                
-                                {categorySubCats.length > 0 ? (
-                                  categorySubCats.map(subCat => (
-                                    <button
-                                      key={subCat._id}
-                                      onClick={() => handleSubCategoryNavigation(
-                                        categoryObj.name, 
-                                        categoryObj._id, 
-                                        subCat.name, 
-                                        subCat._id
-                                      )}
-                                      className="flex items-center justify-between w-full px-5 py-3 text-[12px] font-medium text-gray-700 hover:bg-[#C08237] hover:text-white transition-all border-b border-gray-100 last:border-0"
-                                    >
-                                      {subCat.name}
-                                      {/* <ChevronRight size={12} className="opacity-50" /> */}
-                                    </button>
-                                  ))
-                                ) : (
-                                  <div className="px-5 py-3 text-center text-[11px] text-gray-500">
-                                    No subcategories found
-                                  </div>
-                                )}
-                              </>
-                            );
-                          })()}
-                            <button
-                                  onClick={() => handleAllCategoryNavigation(link)}
-                                  className="flex  items-center justify-between w-full px-5 py-3 text-[12px] font-medium text-gray-700 hover:bg-[#C08237] hover:text-white transition-all border-b border-gray-100"
-                                >
-                                  All {link.name}
-                                  {/* <ChevronRight size={12} className="opacity-50" /> */}
-                                </button>
-                          
-                          {/* <Link
-                            href="/custom-orders"
-                            onClick={() => setActiveDropdown(null)}
-                            className="flex items-center justify-between px-5 py-3 text-[12px] font-medium text-gray-700 hover:bg-[#C08237] hover:text-white transition-all border-t border-gray-100 mt-1"
+                          <button
+                            onClick={() => handleAllCategoryNavigation(link)}
+                            className="flex items-center justify-between w-full px-5 py-3 text-[12px] font-medium text-gray-700 hover:bg-[#C08237] hover:text-white transition-all border-b border-gray-100 capitalize"
                           >
-                            CUSTOM ORDERS
-                             <ChevronRight size={12} className="opacity-50" /> 
-                          </Link> */}
+                            All {link.name.toLowerCase()}
+                          </button>
+                          
+                          {categorySubCats.length > 0 ? (
+                            categorySubCats.map(subCat => (
+                              <button
+                                key={subCat._id}
+                                onClick={() => handleSubCategoryNavigation(
+                                  categoryObj.name, 
+                                  categoryObj._id, 
+                                  subCat.name, 
+                                  subCat._id
+                                )}
+                                className="flex items-center justify-between w-full px-5 py-3 text-[12px] font-medium text-gray-700 hover:bg-[#C08237] hover:text-white transition-all border-b border-gray-100 last:border-0 capitalize"
+                              >
+                                {subCat.name}
+                              </button>
+                            ))
+                          ) : (
+                            <div className="px-5 py-3 text-center text-[11px] text-gray-500">
+                              No subcategories found
+                            </div>
+                          )}
                         </>
-                      )}
-                    </div>
-                  )}
+                      );
+                    })()}
+                  </>
+                )}
+              </div>
+            )}
 
-                  {/* Static Dropdowns (ABOUT) */}
-                  {link.hasDropdown && !link.isMainCategory && !link.isCategory && activeDropdown === link.name && (
-                    <div className="absolute top-full left-0 w-60 bg-[#FFFCF5] border border-[#D7CEC2] py-1 z-50 rounded-sm shadow-xl">
-                      {link.subItems.map((sub) => (
-                        <Link 
-                          key={sub.label} 
-                          href={sub.href}
-                          onClick={() => setActiveDropdown(null)}
-                          className="flex items-center justify-between px-5 py-3 text-[12px] font-medium text-gray-700 hover:bg-[#C08237] hover:text-white transition-all border-b border-gray-100 last:border-0"
-                        >
-                          {sub.label.toUpperCase()}
-                          {/* <ChevronRight size={12} className="opacity-50" /> */}
-                        </Link>
-                      ))}
-                    </div>
-                  )}
-                </li>
-              );
-            })}
-          </ul>
-        </div>
-      </nav>
+            {/* Static Dropdowns (ABOUT) */}
+            {link.hasDropdown && !link.isMainCategory && !link.isCategory && activeDropdown === link.name && (
+              <div className="absolute top-full left-0 w-60 bg-[#FFFCF5] border border-[#D7CEC2] py-1 z-50 rounded-sm shadow-xl">
+                {link.subItems.map((sub) => (
+                  <Link 
+                    key={sub.label} 
+                    href={sub.href}
+                    onClick={() => setActiveDropdown(null)}
+                    className="flex items-center justify-between px-5 py-3 text-[12px] font-medium text-gray-700 hover:bg-[#C08237] hover:text-white transition-all border-b border-gray-100 last:border-0 capitalize"
+                  >
+                    {sub.label}
+                  </Link>
+                ))}
+              </div>
+            )}
+          </li>
+        );
+      })}
+    </ul>
+  </div>
+</nav>
 
       {/* Mobile Sidebar */}
       {isMenuOpen && (

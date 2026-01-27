@@ -57,12 +57,13 @@ export async function POST(request) {
 
         // Check required fields - handle both with and without asterisk
         const productName = row["Product Name*"] || row["Product Name"];
+        const productCode = row["Product Code*"] || row["Product Code"];
         const price = row["Price*"] || row["Price"];
         const category = row["Category*"] || row["Category"];
         const thumbnail = row["Thumbnail URL*"] || row["Thumbnail URL"];
 
-        if (!productName || !price || !category || !thumbnail) {
-          throw new Error("Missing required fields: Product Name, Price, Category, or Thumbnail URL");
+        if (!productName || !productCode || !price || !category || !thumbnail) {
+          throw new Error("Missing required fields: Product Name, Product Code, Price, Category, or Thumbnail URL");
         }
 
         // Find category
@@ -99,6 +100,7 @@ export async function POST(request) {
         // Create product object
         const productData = {
           name: productName.toString(),
+          code: productCode.toString().toUpperCase(),
           price: parseFloat(price),
           moq: parseInt(row["MOQ"] || 1),
           category: categoryDoc._id,

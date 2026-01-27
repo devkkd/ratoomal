@@ -48,6 +48,7 @@ export default function CuratedCollections() {
                                 .map(product => ({
                                     id: product._id,
                                     name: product.name || "Unnamed Product",
+                                    code: product.code || "",
                                     qty: `Minimum Order Quantity: ${product.minimumOrderQuantity || 100} Piece`,
                                     price: `₹ ${product.price || 0}/Piece`,
                                     img: product.images?.[0] || '/images/placeholder.png',
@@ -149,6 +150,11 @@ export default function CuratedCollections() {
                             <h3 className="font-funnel font-semibold text-md text-black">
                                 {item.name}
                             </h3>
+                            {item.code && (
+                                <p className="font-mono text-gray-600 text-xs mt-1">
+                                    Code: <span className="font-semibold">{item.code}</span>
+                                </p>
+                            )}
                             <p className="font-funnel text-gray-600 font-light text-xs mt-1">
                                 {item.qty}
                             </p>

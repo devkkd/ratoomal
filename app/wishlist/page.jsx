@@ -51,6 +51,7 @@ export default function WishlistPage() {
           const transformed = filtered.map(product => ({
             id: product._id,
             name: product.name,
+            code: product.code || "",
             price: product.price || "0",
             moq: product.minimumOrderQuantity || 100,
             img: product.images?.[0] || '/images/placeholder.png',
@@ -132,6 +133,11 @@ export default function WishlistPage() {
                   <h3 className="mona font-semibold text-sm text-black">
                     {product.name}
                   </h3>
+                  {product.code && (
+                    <p className="text-[12px] text-gray-600 font-mono">
+                      Code: <span className="font-bold text-black">{product.code}</span>
+                    </p>
+                  )}
                   <p className="text-[12px] text-gray-600">
                     Minimum Order Quantity: <span className="font-bold text-black">{product.moq} Piece</span>
                   </p>

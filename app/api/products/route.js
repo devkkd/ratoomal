@@ -19,6 +19,7 @@ export async function GET(request) {
       query = {
         $or: [
           { name: { $regex: search, $options: 'i' } },
+          { code: { $regex: search, $options: 'i' } },
           { description: { $regex: search, $options: 'i' } }
         ]
       };
@@ -30,7 +31,7 @@ export async function GET(request) {
       .populate('subCategory', 'name _id')
       .sort({ createdAt: -1 })
       .limit(limit)
-      .select('name _id thumbnail images category subCategory price createdAt');
+      .select('name code _id thumbnail images category subCategory price createdAt');
     
     return NextResponse.json({ 
       success: true, 

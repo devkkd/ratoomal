@@ -36,6 +36,11 @@ export async function PATCH(request, { params }) {
 
     const body = await request.json();
 
+    // If code is being updated, make it uppercase
+    if (body.code) {
+      body.code = body.code.toUpperCase();
+    }
+
     const updated = await Product.findByIdAndUpdate(id, body, {
       new: true,
       runValidators: true,

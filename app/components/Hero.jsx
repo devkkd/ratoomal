@@ -97,10 +97,10 @@ const Hero = () => {
               </video>
 
               {/* Gradient overlay */}
-              <div className="absolute inset-0 bg-gradient-to-r from-[#FFF6EB]/90 via-[#FFF6EB]/50 to-transparent" />
+              <div className="absolute inset-0 " />
 
               {/* Content */}
-              <div className="relative z-10 h-full flex items-center">
+              {/* <div className="relative z-10 h-full flex items-center">
                 <div className="container mx-auto px-6 md:px-12 lg:px-20">
                   <div className="max-w-xl">
                     <h1 className="font-playfair text-3xl md:text-4xl lg:text-5xl text-[#333] mb-4">
@@ -114,7 +114,7 @@ const Hero = () => {
                     </button>
                   </div>
                 </div>
-              </div>
+              </div> */}
             </div>
           </SwiperSlide>
         ))}

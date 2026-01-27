@@ -45,9 +45,9 @@ export async function POST(request) {
     const body = await request.json();
 
     // 🔴 REQUIRED FIELD CHECK (schema based)
-    if (!body.name || !body.price || !body.thumbnail || !body.category) {
+    if (!body.name || !body.code || !body.price || !body.thumbnail || !body.category) {
       return NextResponse.json(
-        { success: false, message: "Required fields missing" },
+        { success: false, message: "Required fields missing (name, code, price, thumbnail, category)" },
         { status: 400 }
       );
     }
@@ -55,6 +55,7 @@ export async function POST(request) {
     // 🧼 CLEAN DATA (schema-safe)
     const cleanBody = {
       name: body.name,
+      code: body.code?.toUpperCase(),
       price: Number(body.price),
       moq: Number(body.moq) || 1,
       category: body.category,

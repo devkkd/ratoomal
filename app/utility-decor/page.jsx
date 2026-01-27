@@ -171,6 +171,7 @@ const UtilityDecorPage = () => {
                         const transformedProducts = decorProductsData.map(product => ({
                             id: product._id,
                             name: product.name || "Unnamed Product",
+                            code: product.code || "",
                             price: product.price?.toString() || "0",
                             moq: product.minimumOrderQuantity || product.moq || 0,
                             img: product.images?.[0],
@@ -660,6 +661,11 @@ const UtilityDecorPage = () => {
                                                 <h3 className="mona font-semibold text-sm text-black line-clamp-1">
                                                     {product.name}
                                                 </h3>
+                                                {product.code && (
+                                                    <p className="mona text-gray-600 font-mono text-xs mt-1">
+                                                        Code: <b>{product.code}</b>
+                                                    </p>
+                                                )}
                                                 {product.category && (
                                                     <p className="mona text-gray-700 font-normal text-xs mt-1">
                                                         Type: <b>{product.category}</b>

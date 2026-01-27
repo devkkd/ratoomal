@@ -36,6 +36,7 @@ import {
 
 const INITIAL_FORM = {
   name: "",
+  code: "",
   price: "",
   moq: "",
   category: "",
@@ -766,6 +767,22 @@ const handleSubmit = async (e) => {
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Product Code/SKU <span className="text-red-500">*</span>
+                  </label>
+                  <div className="relative">
+                    <Hash className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                    <input
+                      type="text"
+                      placeholder="Enter product code (e.g., SKU001)"
+                      value={form.code}
+                      onChange={(e) => setForm({...form, code: e.target.value.toUpperCase()})}
+                      className="pl-10 w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#C08237] focus:border-transparent"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
                     Price <span className="text-red-500">*</span>
                   </label>
                   <div className="relative">
@@ -982,9 +999,9 @@ const handleSubmit = async (e) => {
               </button>
               <button
                 onClick={handleSubmit}
-                disabled={loading || !form.name || !form.category}
+                disabled={loading || !form.name || !form.code || !form.category}
                 className={`px-6 py-3 rounded-lg font-medium flex items-center gap-2 transition-all duration-200 ${
-                  loading || !form.name || !form.category
+                  loading || !form.name || !form.code || !form.category
                     ? "bg-gray-100 text-gray-400 cursor-not-allowed"
                     : "bg-gradient-to-r from-[#C08237] to-[#E0A75E] text-white hover:shadow-lg hover:scale-[1.02]"
                 }`}
@@ -1034,6 +1051,7 @@ const handleSubmit = async (e) => {
                 <thead>
                   <tr className="bg-gray-50">
                     <th className="py-4 px-6 text-left text-sm font-semibold text-gray-900">Product</th>
+                    <th className="py-4 px-6 text-left text-sm font-semibold text-gray-900">Code</th>
                     <th className="py-4 px-6 text-left text-sm font-semibold text-gray-900">Category</th>
                     <th className="py-4 px-6 text-left text-sm font-semibold text-gray-900">Price</th>
                     <th className="py-4 px-6 text-left text-sm font-semibold text-gray-900">Stock</th>
@@ -1068,6 +1086,14 @@ const handleSubmit = async (e) => {
                               </span>
                             )}
                           </div>
+                        </div>
+                      </td>
+                      <td className="py-4 px-6">
+                        <div className="flex items-center gap-2">
+                          <Hash className="h-4 w-4 text-gray-400" />
+                          <span className="font-mono text-sm bg-gray-100 px-2 py-1 rounded text-gray-900">
+                            {product.code || "N/A"}
+                          </span>
                         </div>
                       </td>
                       <td className="py-4 px-6">

@@ -11,7 +11,7 @@ import {
 export async function GET(request, context) {
   await connectDB();
 
-  const { id } = context.params; // ✅ same flow
+  const { id } = await context.params;
 
   const inquiry = await Inquiry
     .findById(id)
@@ -28,7 +28,7 @@ export async function PATCH(request, context) {
   try {
     await connectDB();
 
-    const { id } = context.params;
+    const { id } = await context.params;
     const body = await request.json();
 
     console.log("📝 Updating inquiry:", id, "Status:", body.status);
@@ -109,7 +109,7 @@ export async function PATCH(request, context) {
 export async function DELETE(request, context) {
   await connectDB();
 
-  const { id } = context.params;
+  const { id } = await context.params;
 
   await Inquiry.findByIdAndDelete(id);
 

@@ -138,6 +138,7 @@ export default function ProductUploadPage() {
         const excelData = data.products.map((product, index) => ({
           'S.No': index + 1,
           'Product Name': product.name,
+          'Product Code': product.code || '',
           'Price': product.price,
           'MOQ': product.moq,
           'Category': product.category?.name || '',
@@ -261,6 +262,7 @@ export default function ProductUploadPage() {
     const templateData = [
       {
         'Product Name*': 'Sample Product',
+        'Product Code*': 'SKU001',
         'Price*': '999.00',
         'MOQ': '1',
         'Category*': 'Furniture',
