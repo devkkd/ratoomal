@@ -12,14 +12,14 @@ export const useHybridTranslation = () => {
   // Available languages with Google Translate codes
   const languages = [
     { code: 'en', name: 'English', flag: 'https://flagcdn.com/w20/us.png', googleCode: 'en' },
-    { code: 'hi', name: 'हिन्दी', flag: 'https://flagcdn.com/w20/in.png', googleCode: 'hi' },
+    // { code: 'hi', name: 'हिन्दी', flag: 'https://flagcdn.com/w20/in.png', googleCode: 'hi' },
     { code: 'es', name: 'Español', flag: 'https://flagcdn.com/w20/es.png', googleCode: 'es' },
     { code: 'fr', name: 'Français', flag: 'https://flagcdn.com/w20/fr.png', googleCode: 'fr' },
     { code: 'de', name: 'Deutsch', flag: 'https://flagcdn.com/w20/de.png', googleCode: 'de' },
-    { code: 'zh', name: '中文', flag: 'https://flagcdn.com/w20/cn.png', googleCode: 'zh' },
-    { code: 'ar', name: 'العربية', flag: 'https://flagcdn.com/w20/sa.png', googleCode: 'ar' },
-    { code: 'ja', name: '日本語', flag: 'https://flagcdn.com/w20/jp.png', googleCode: 'ja' },
-    { code: 'ko', name: '한국어', flag: 'https://flagcdn.com/w20/kr.png', googleCode: 'ko' },
+    // { code: 'zh', name: '中文', flag: 'https://flagcdn.com/w20/cn.png', googleCode: 'zh' },
+    // { code: 'ar', name: 'العربية', flag: 'https://flagcdn.com/w20/sa.png', googleCode: 'ar' },
+    // { code: 'ja', name: '日本語', flag: 'https://flagcdn.com/w20/jp.png', googleCode: 'ja' },
+    // { code: 'ko', name: '한국어', flag: 'https://flagcdn.com/w20/kr.png', googleCode: 'ko' },
     { code: 'pt', name: 'Português', flag: 'https://flagcdn.com/w20/pt.png', googleCode: 'pt' },
     { code: 'ru', name: 'Русский', flag: 'https://flagcdn.com/w20/ru.png', googleCode: 'ru' },
     { code: 'it', name: 'Italiano', flag: 'https://flagcdn.com/w20/it.png', googleCode: 'it' }

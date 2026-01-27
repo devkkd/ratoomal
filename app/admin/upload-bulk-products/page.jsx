@@ -282,6 +282,8 @@ export default function ProductUploadPage() {
         'Posture': 'Sitting',
         'Base Shape': 'Round',
         'Finish': 'Matte',
+        'Material': 'Plastic',
+        'Size': '6 inch',
         'Appearance': 'Modern',
         'Care Instruction': 'Wipe clean',
         'Assembly Required': 'Yes',

@@ -106,6 +106,8 @@ export async function POST(request) {
           posture: row["Posture"]?.toString() || "",
           baseShape: row["Base Shape"]?.toString() || "",
           finish: row["Finish"]?.toString() || "",
+          material: row["Material"]?.toString() || "Plastic",
+          size: row["Size"]?.toString() || "6 inch",
           appearance: row["Appearance"]?.toString() || "",
           careInstruction: row["Care Instruction"]?.toString() || "",
           assemblyRequired: row["Assembly Required"]?.toString() || "",

@@ -1,10 +1,12 @@
 "use client";
 import React, { useState, useEffect, useRef } from 'react';
-import { Heart, ChevronLeft, ChevronRight, Play, Pause, Volume2, VolumeX, Maximize2, Settings, Download, X } from 'lucide-react';
+import { Heart, ChevronLeft, ChevronRight, Play, Pause, Volume2, VolumeX, Maximize2, Settings, Download, X, ShoppingCart, Plus } from 'lucide-react';
 import ProductInquiry from '../../productInquiry/page.jsx';
 import WhyChooseSection from '../../components/WhyChooseSection.jsx';
 import { useParams, useRouter } from "next/navigation";
 import { useWishlistStore } from '@/store/wishlistStore';
+import { useInquiryCartStore } from '@/store/inquiryCartStore';
+import { useAuth } from '@/hooks/useAuth';
 
 const ProductDetailPage = () => {
     const { id } = useParams();
@@ -20,12 +22,20 @@ const ProductDetailPage = () => {
     const [isFullscreen, setIsFullscreen] = useState(false);
     const [showVolumeSlider, setShowVolumeSlider] = useState(false);
     const [quantity, setQuantity] = useState(1);
+    const [selectedSizes, setSelectedSizes] = useState([]);
+    const [customSize, setCustomSize] = useState('');
     const [showInquiryModal, setShowInquiryModal] = useState(false);
     const videoRef = useRef(null);
     const videoContainerRef = useRef(null);
 
+    // Get auth state
+    const { isLoggedIn, isClient } = useAuth();
+    
     // Wishlist store (global, shared with other pages)
     const { wishlist, toggleWishlist, isInWishlist, initialize } = useWishlistStore();
+    
+    // Inquiry Cart store
+    const { addToCart, isInCart, getCartCount, initialize: initializeCart } = useInquiryCartStore();
 
     // Fallback images
     const fallbackImages = [
@@ -34,12 +44,13 @@ const ProductDetailPage = () => {
         "https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?w=400&h=500&fit=crop",
     ];
 
-    // Initialize wishlist on client
+    // Initialize wishlist and cart on client
     useEffect(() => {
         if (typeof window !== 'undefined') {
             initialize();
+            initializeCart();
         }
-    }, [initialize]);
+    }, [initialize, initializeCart]);
 
     const getCookie = (name) => {
         if (typeof document === 'undefined') return null;
@@ -405,6 +416,32 @@ const ProductDetailPage = () => {
 
     return (
         <div className="w-full bg-[#fffcf7] min-h-screen font-sans pb-8 md:pb-20">
+            {/* Login Prompt for Non-Authenticated Users */}
+            {!isLoggedIn && isClient && (
+                <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 mb-6">
+                    <div className="flex items-center justify-between">
+                        <div className="flex">
+                            <div className="flex-shrink-0">
+                                <svg className="h-5 w-5 text-yellow-400" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                                </svg>
+                            </div>
+                            <div className="ml-3">
+                                <p className="text-sm text-yellow-700">
+                                    <strong>Limited View:</strong> You're viewing basic product information. 
+                                    <button 
+                                        onClick={() => router.push('/login')}
+                                        className="ml-1 font-medium text-yellow-800 underline hover:text-yellow-900"
+                                    >
+                                        Login to view complete details, specifications, and more images.
+                                    </button>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
+            
             <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8 pt-4 md:pt-6">
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 md:gap-6 lg:gap-8">
                     {/* LEFT COLUMN - Media Gallery */}
@@ -569,9 +606,9 @@ const ProductDetailPage = () => {
                             )}
                         </div>
 
-                        {/* Thumbnails Grid - Responsive */}
+                        {/* Thumbnails Grid - Responsive (Limited for non-authenticated users) */}
                         <div className="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-6 lg:grid-cols-5 gap-2 md:gap-3">
-                            {mediaItems.map((media, idx) => (
+                            {(isLoggedIn ? mediaItems : mediaItems.slice(0, 2)).map((media, idx) => (
                                 <button
                                     key={idx}
                                     onClick={() => {
@@ -610,6 +647,21 @@ const ProductDetailPage = () => {
                                     )}
                                 </button>
                             ))}
+                            
+                            {/* Login prompt for more images */}
+                            {!isLoggedIn && mediaItems.length > 2 && (
+                                <div className="aspect-square rounded-lg md:rounded-xl border-2 border-dashed border-gray-300 flex flex-col items-center justify-center bg-gray-50 hover:bg-gray-100 transition-colors">
+                                    <div className="text-center p-2">
+                                        <div className="text-xs text-gray-500 mb-1">+{mediaItems.length - 2} more</div>
+                                        <button 
+                                            onClick={() => router.push('/login')}
+                                            className="text-xs text-[#C08237] font-medium hover:underline"
+                                        >
+                                            Login to view
+                                        </button>
+                                    </div>
+                                </div>
+                            )}
                         </div>
                     </div>
 
@@ -657,94 +709,244 @@ const ProductDetailPage = () => {
                                 </button>
                             </div>
 
-                            {/* Price and MOQ Card */}
+                            {/* Product Inquiry Card */}
                             <div className="bg-[#F9F5F0] rounded-xl p-4 md:p-6">
-                                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
-                                    <div>
-                                        <p className="text-xs md:text-sm text-gray-600">Price per piece</p>
-                                        <p className="text-2xl md:text-3xl font-bold text-gray-900">₹ {transformedProduct.price}</p>
+                                <h3 className="text-lg font-semibold text-gray-800 mb-4">Product Inquiry</h3>
+                                
+                                {/* Product Code */}
+                                {transformedProduct.id && (
+                                    <div className="mb-4">
+                                        <p className="text-sm text-gray-600 mb-1">Product Code:</p>
+                                        <p className="text-lg font-mono font-bold text-[#C08237]">{transformedProduct.id}</p>
                                     </div>
-                                    <div className="text-left sm:text-right">
-                                        <p className="text-xs md:text-sm text-gray-600">Minimum Order Quantity</p>
-                                        <p className="text-xl md:text-2xl font-bold text-[#C08237]">{transformedProduct.moq} Pieces</p>
+                                )}
+                                
+                                {/* Size Variants - Multiple Selection with Better UI */}
+                                <div className="mb-4">
+                                    <p className="text-sm font-medium text-gray-700 mb-3">Available Sizes (Select Multiple):</p>
+                                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-4">
+                                        {["3", "6", "9", "12"].map(size => (
+                                            <button
+                                                key={size}
+                                                onClick={() => {
+                                                    setSelectedSizes(prev => 
+                                                        prev.includes(size + '"')
+                                                            ? prev.filter(s => s !== size + '"')
+                                                            : [...prev, size + '"']
+                                                    );
+                                                }}
+                                                className={`px-4 py-3 text-sm font-medium border-2 rounded-lg transition-all duration-200 ${
+                                                    selectedSizes.includes(size + '"')
+                                                        ? 'bg-[#C08237] text-white border-[#C08237] shadow-md transform scale-105'
+                                                        : 'bg-white text-gray-700 border-gray-300 hover:border-[#C08237] hover:bg-gray-50'
+                                                }`}
+                                            >
+                                                {size}"
+                                            </button>
+                                        ))}
                                     </div>
+                                    
+                                    {/* Custom Size Input with Better Styling */}
+                                    <div className="space-y-2">
+                                        <label className="text-sm font-medium text-gray-700">Custom Size:</label>
+                                        <div className="flex items-center gap-2">
+                                            <input
+                                                type="text"
+                                                placeholder="e.g., 15 inch"
+                                                value={customSize}
+                                                onChange={(e) => setCustomSize(e.target.value)}
+                                                className="flex-1 px-4 py-3 text-sm border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#C08237] focus:border-[#C08237] transition-colors"
+                                            />
+                                            {customSize && (
+                                                <button
+                                                    onClick={() => {
+                                                        if (customSize.trim() && !selectedSizes.includes(customSize.trim())) {
+                                                            setSelectedSizes(prev => [...prev, customSize.trim()]);
+                                                            setCustomSize('');
+                                                        }
+                                                    }}
+                                                    className="px-4 py-3 bg-[#C08237] text-white text-sm font-medium rounded-lg hover:bg-[#9C774A] transition-colors"
+                                                >
+                                                    Add
+                                                </button>
+                                            )}
+                                        </div>
+                                    </div>
+                                    
+                                    {/* Selected Sizes Display with Better UI */}
+                                    {selectedSizes.length > 0 && (
+                                        <div className="mt-4 p-3 bg-gray-50 rounded-lg border border-gray-200">
+                                            <p className="text-sm font-medium text-gray-700 mb-2">Selected Sizes:</p>
+                                            <div className="flex flex-wrap gap-2">
+                                                {selectedSizes.map((size, index) => (
+                                                    <span
+                                                        key={index}
+                                                        className="inline-flex items-center gap-2 px-3 py-1 bg-[#C08237] text-white text-sm font-medium rounded-full"
+                                                    >
+                                                        {size}
+                                                        <button
+                                                            onClick={() => setSelectedSizes(prev => prev.filter(s => s !== size))}
+                                                            className="ml-1 hover:bg-[#9C774A] rounded-full p-1 transition-colors"
+                                                        >
+                                                            <X size={12} />
+                                                        </button>
+                                                    </span>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    )}
                                 </div>
                                 
-                                {/* Quantity Selector */}
+                                {/* Quantity Selector with 6x increment */}
                                 <div className="mb-4">
                                     <p className="text-sm font-medium text-gray-700 mb-2">Quantity:</p>
                                     <div className="flex items-center gap-3">
                                         <div className="flex items-center border border-gray-300 rounded-lg">
                                             <button 
-                                                onClick={() => setQuantity(prev => Math.max(transformedProduct.moq, prev - 1))}
+                                                onClick={() => {
+                                                    if (quantity > 6) {
+                                                        setQuantity(prev => prev - 6);
+                                                    } else {
+                                                        setQuantity(1);
+                                                    }
+                                                }}
                                                 className="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-l-lg"
                                             >
-                                                -
+                                                -6
                                             </button>
                                             <span className="px-4 py-2 border-x border-gray-300 min-w-[60px] text-center font-medium">
                                                 {quantity}
                                             </span>
                                             <button 
-                                                onClick={() => setQuantity(prev => prev + 1)}
+                                                onClick={() => {
+                                                    if (quantity === 1) {
+                                                        setQuantity(6);
+                                                    } else {
+                                                        setQuantity(prev => prev + 6);
+                                                    }
+                                                }}
                                                 className="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-r-lg"
                                             >
-                                                +
+                                                +6
                                             </button>
                                         </div>
                                         <div className="text-sm text-gray-600">
-                                            Total: <span className="font-bold text-[#C08237]">₹ {transformedProduct.price * quantity}</span>
+                                            pieces
                                         </div>
                                     </div>
                                     <p className="text-xs text-gray-500 mt-1">
-                                        Minimum quantity: {transformedProduct.moq} pieces
+                                        Quantity increases by 6 pieces (1 → 6 → 12 → 18...)
                                     </p>
                                 </div>
                                 
-                                {/* FIXED: Inquiry Button */}
-                                <button
-                                    onClick={() => {
-                                        // Login check: based on isLoggedIn cookie (set on login)
-                                        const isLoggedIn =
-                                            typeof window !== 'undefined'
-                                                ? getCookie('isLoggedIn') === 'true'
-                                                : false;
-                                        if (!isLoggedIn) {
-                                            router.push('/login');
-                                            return;
-                                        }
+                                {/* Action Buttons */}
+                                <div className="space-y-3">
+                                    {/* Send Inquiry Button */}
+                                    <button
+                                        onClick={() => {
+                                            // Login check: based on isLoggedIn cookie (set on login)
+                                            const isLoggedIn =
+                                                typeof window !== 'undefined'
+                                                    ? getCookie('isLoggedIn') === 'true'
+                                                    : false;
+                                            if (!isLoggedIn) {
+                                                router.push('/login');
+                                                return;
+                                            }
 
-                                        // Direct navigate to inquiry page (no modal)
-                                        const productId = transformedProduct?.id;
-                                        const qty = quantity || transformedProduct?.moq || 1;
-                                        router.push(`/productInquiry?productId=${productId}&quantity=${qty}`);
-                                    }}
-                                    className="w-full py-3 bg-[#C08237] text-white font-semibold rounded-lg hover:bg-[#a56e2e] transition-colors text-sm md:text-base flex items-center justify-center gap-2"
-                                >
-                                    <span>Send Product Inquiry</span>
-                                    <ChevronRight size={18} className="md:w-5 md:h-5" />
-                                </button>
+                                            // Prepare sizes parameter
+                                            const allSizes = [...selectedSizes];
+                                            const sizesParam = allSizes.length > 0 ? `&sizes=${encodeURIComponent(allSizes.join(','))}` : '';
+                                            
+                                            // Direct navigate to inquiry page
+                                            const productId = transformedProduct?.id;
+                                            const qty = quantity || 1;
+                                            router.push(`/productInquiry?productId=${productId}&quantity=${qty}${sizesParam}`);
+                                        }}
+                                        className="w-full py-3 bg-[#C08237] text-white font-semibold rounded-lg hover:bg-[#a56e2e] transition-colors text-sm md:text-base flex items-center justify-center gap-2"
+                                    >
+                                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                                        </svg>
+                                        <span>Send Product Inquiry</span>
+                                        <ChevronRight size={18} className="md:w-5 md:h-5" />
+                                    </button>
+                                    
+                                    {/* Add to Cart Button */}
+                                    <button
+                                        onClick={() => {
+                                            if (!transformedProduct) return;
+                                            
+                                            // Add to cart with selected options
+                                            addToCart(
+                                                transformedProduct,
+                                                selectedSizes.length > 0 ? selectedSizes : ['Standard'],
+                                                quantity
+                                            );
+                                            
+                                            // Show success feedback
+                                            alert('Product added to inquiry cart!');
+                                        }}
+                                        className="w-full py-3 bg-white text-[#C08237] font-semibold border-2 border-[#C08237] rounded-lg hover:bg-[#C08237] hover:text-white transition-colors text-sm md:text-base flex items-center justify-center gap-2"
+                                    >
+                                        <ShoppingCart size={18} className="md:w-5 md:h-5" />
+                                        <span>Add to Inquiry Cart</span>
+                                        <Plus size={16} className="md:w-4 md:h-4" />
+                                    </button>
+                                </div>
+                                
+                                {/* Inquiry Summary */}
+                                {(selectedSizes.length > 0 || quantity > 1) && (
+                                    <div className="mt-4 p-3 bg-white rounded-lg border border-gray-200">
+                                        <p className="text-sm font-medium text-gray-700 mb-2">Inquiry Summary:</p>
+                                        <div className="text-sm text-gray-600 space-y-1">
+                                            <p>Product: {transformedProduct.name}</p>
+                                            <p>Quantity: {quantity} pieces</p>
+                                            {selectedSizes.length > 0 && (
+                                                <p>Sizes: {selectedSizes.join(', ')}</p>
+                                            )}
+                                        </div>
+                                    </div>
+                                )}
                             </div>
                         </div>
 
-                        {/* Quick Specs Card */}
+                        {/* Quick Specs Card - Limited for non-authenticated users */}
                         <div className="bg-white rounded-xl p-4 md:p-5 shadow-sm border border-gray-100">
                             <h3 className="text-base md:text-lg font-semibold text-gray-800 mb-3 md:mb-4">Quick Specifications</h3>
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                                {productSpecs.slice(0, 8).map((spec, idx) => (
+                                {(isLoggedIn ? productSpecs.slice(0, 8) : productSpecs.slice(0, 4)).map((spec, idx) => (
                                     <div key={idx} className="space-y-1">
                                         <p className="text-xs md:text-sm text-gray-500">{spec.label}</p>
                                         <p className="text-sm md:text-base font-medium text-gray-800 truncate">{spec.value}</p>
                                     </div>
                                 ))}
+                                
+                                {/* Login prompt for more specs */}
+                                {!isLoggedIn && productSpecs.length > 4 && (
+                                    <div className="col-span-full mt-3 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+                                        <p className="text-sm text-yellow-700 text-center">
+                                            <button 
+                                                onClick={() => router.push('/login')}
+                                                className="font-medium underline hover:text-yellow-800"
+                                            >
+                                                Login to view {productSpecs.length - 4} more specifications
+                                            </button>
+                                        </p>
+                                    </div>
+                                )}
                             </div>
-                            <button 
-                                onClick={() => {
-                                    document.getElementById('full-specs')?.scrollIntoView({ behavior: 'smooth' });
-                                }}
-                                className="w-full mt-4 py-2 md:py-3 text-[#C08237] font-medium border border-[#C08237] rounded-lg hover:bg-[#C08237] hover:text-white transition-colors text-sm md:text-base"
-                            >
-                                View All Specifications
-                            </button>
+                            
+                            {isLoggedIn && (
+                                <button 
+                                    onClick={() => {
+                                        document.getElementById('full-specs')?.scrollIntoView({ behavior: 'smooth' });
+                                    }}
+                                    className="w-full mt-4 py-2 md:py-3 text-[#C08237] font-medium border border-[#C08237] rounded-lg hover:bg-[#C08237] hover:text-white transition-colors text-sm md:text-base"
+                                >
+                                    View All Specifications
+                                </button>
+                            )}
                         </div>
 
                         {/* Product Description Card */}
@@ -806,23 +1008,49 @@ const ProductDetailPage = () => {
                     </div>
                 </div>
 
-                {/* Full Specifications Section */}
-                <div id="full-specs" className="mt-8 md:mt-12 bg-white rounded-xl p-4 md:p-6 shadow-sm border border-gray-100">
-                    <div className="flex items-center justify-between mb-4 md:mb-6">
-                        <h3 className="text-xl md:text-2xl font-bold text-gray-900">Complete Product Specifications</h3>
-                        <button className="text-xs md:text-sm text-[#C08237] font-medium hover:text-[#a56e2e] transition-colors">
-                            Print Specifications
-                        </button>
+                {/* Full Specifications Section - Only for authenticated users */}
+                {isLoggedIn && (
+                    <div id="full-specs" className="mt-8 md:mt-12 bg-white rounded-xl p-4 md:p-6 shadow-sm border border-gray-100">
+                        <div className="flex items-center justify-between mb-4 md:mb-6">
+                            <h3 className="text-xl md:text-2xl font-bold text-gray-900">Complete Product Specifications</h3>
+                            <button className="text-xs md:text-sm text-[#C08237] font-medium hover:text-[#a56e2e] transition-colors">
+                                Print Specifications
+                            </button>
+                        </div>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+                            {productSpecs.map((spec, idx) => (
+                                <div key={idx} className="p-3 md:p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+                                    <p className="text-xs md:text-sm text-gray-500 font-medium mb-1">{spec.label}</p>
+                                    <p className="text-sm md:text-base font-semibold text-gray-800">{spec.value}</p>
+                                </div>
+                            ))}
+                        </div>
                     </div>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
-                        {productSpecs.map((spec, idx) => (
-                            <div key={idx} className="p-3 md:p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
-                                <p className="text-xs md:text-sm text-gray-500 font-medium mb-1">{spec.label}</p>
-                                <p className="text-sm md:text-base font-semibold text-gray-800">{spec.value}</p>
+                )}
+                
+                {/* Login prompt for full specifications */}
+                {!isLoggedIn && (
+                    <div className="mt-8 md:mt-12 bg-gradient-to-r from-yellow-50 to-orange-50 rounded-xl p-6 md:p-8 border border-yellow-200 text-center">
+                        <div className="max-w-md mx-auto">
+                            <div className="w-16 h-16 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                                <svg className="w-8 h-8 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                                </svg>
                             </div>
-                        ))}
+                            <h3 className="text-xl font-bold text-gray-900 mb-2">Complete Specifications Available</h3>
+                            <p className="text-gray-600 mb-4">
+                                Get access to detailed product specifications, technical drawings, material information, and more.
+                            </p>
+                            <button 
+                                onClick={() => router.push('/login')}
+                                className="inline-flex items-center gap-2 bg-[#C08237] text-white px-6 py-3 rounded-lg font-medium hover:bg-[#a56e2e] transition-colors"
+                            >
+                                Login to View Complete Specifications
+                                <ChevronRight size={18} />
+                            </button>
+                        </div>
                     </div>
-                </div>
+                )}
             </div>
             
             {/* FIXED: Product Inquiry Modal */}

@@ -7,20 +7,16 @@ export const useReliableTranslation = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   // Available languages
-  const languages = [
-    { code: 'en', name: 'English', flag: 'https://flagcdn.com/w20/us.png' },
-    { code: 'hi', name: 'हिन्दी', flag: 'https://flagcdn.com/w20/in.png' },
-    { code: 'es', name: 'Español', flag: 'https://flagcdn.com/w20/es.png' },
-    { code: 'fr', name: 'Français', flag: 'https://flagcdn.com/w20/fr.png' },
-    { code: 'de', name: 'Deutsch', flag: 'https://flagcdn.com/w20/de.png' },
-    { code: 'zh', name: '中文', flag: 'https://flagcdn.com/w20/cn.png' },
-    { code: 'ar', name: 'العربية', flag: 'https://flagcdn.com/w20/sa.png' },
-    { code: 'ja', name: '日本語', flag: 'https://flagcdn.com/w20/jp.png' },
-    { code: 'ko', name: '한국어', flag: 'https://flagcdn.com/w20/kr.png' },
-    { code: 'pt', name: 'Português', flag: 'https://flagcdn.com/w20/pt.png' },
-    { code: 'ru', name: 'Русский', flag: 'https://flagcdn.com/w20/ru.png' },
-    { code: 'it', name: 'Italiano', flag: 'https://flagcdn.com/w20/it.png' }
-  ];
+const languages = [
+  { code: 'en', name: 'English', flag: 'https://flagcdn.com/w20/us.png' },
+  { code: 'es', name: 'Español', flag: 'https://flagcdn.com/w20/es.png' },
+  { code: 'fr', name: 'Français', flag: 'https://flagcdn.com/w20/fr.png' },
+  { code: 'de', name: 'Deutsch', flag: 'https://flagcdn.com/w20/de.png' },
+  { code: 'pt', name: 'Português', flag: 'https://flagcdn.com/w20/pt.png' },
+  // { code: 'ar', name: 'العربية', flag: 'https://flagcdn.com/w20/sa.png' },
+  { code: 'zh', name: '中文', flag: 'https://flagcdn.com/w20/cn.png' },
+];
+
 
   // Initialize translation service
   useEffect(() => {

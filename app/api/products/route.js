@@ -1,15 +1,33 @@
 import { NextResponse } from 'next/server';
 import Product from '@/models/Product';
 import connectDB from '@/lib/db';
+import jwt from 'jsonwebtoken';
 
-// GET ALL PRODUCTS (Public endpoint for frontend)
+// Helper function to check authentication
+const checkAuth = (request) => {
+  try {
+    const token = request.cookies.get('token')?.value;
+    if (!token) return false;
+    
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    return !!decoded;
+  } catch (error) {
+    return false;
+  }
+};
+
+// GET ALL PRODUCTS (Public endpoint with restrictions for non-authenticated users)
 export async function GET(request) {
   try {
     await connectDB();
     
     const { searchParams } = new URL(request.url);
-    const limit = parseInt(searchParams.get('limit')) || 100; // Default limit for performance
+    const limit = parseInt(searchParams.get('limit')) || 100;
     const search = searchParams.get('search') || '';
+    const page = parseInt(searchParams.get('page')) || 1;
+    
+    // Check if user is authenticated
+    const isAuthenticated = checkAuth(request);
     
     // Build query
     let query = {};
@@ -25,18 +43,40 @@ export async function GET(request) {
       };
     }
     
+    // For non-authenticated users, limit results
+    let actualLimit = limit;
+    let actualPage = page;
+    
+    if (!isAuthenticated) {
+      // Non-authenticated users can only see first page with limited results
+      actualLimit = Math.min(limit, 12); // Max 12 products per page
+      actualPage = 1; // Force first page only
+    }
+    
+    // Calculate skip for pagination
+    const skip = (actualPage - 1) * actualLimit;
+    
     // Get products with populated category info
     const products = await Product.find(query)
       .populate('category', 'name _id')
       .populate('subCategory', 'name _id')
       .sort({ createdAt: -1 })
-      .limit(limit)
-      .select('name code _id thumbnail images category subCategory price createdAt');
+      .skip(skip)
+      .limit(actualLimit)
+      .select('name code _id thumbnail images category subCategory price createdAt minimumOrderQuantity finish productType services material size');
+    
+    // Get total count for pagination
+    const totalCount = await Product.countDocuments(query);
     
     return NextResponse.json({ 
       success: true, 
       data: products,
-      count: products.length 
+      count: products.length,
+      totalCount: totalCount,
+      page: actualPage,
+      totalPages: Math.ceil(totalCount / actualLimit),
+      isAuthenticated: isAuthenticated,
+      message: !isAuthenticated ? 'Limited results for non-authenticated users. Login to view all products.' : undefined
     });
     
   } catch (error) {

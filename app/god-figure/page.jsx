@@ -8,7 +8,8 @@ import Cookies from 'js-cookie';
 // Filter options
 const filters = {
     "Finish / Style": ["All Finishes", "Natural", "Hand Painted", "Antique", "Metallic", "Matte"],
-    "Minimum Order Quantity": ["50-100 pcs", "100-500 pcs", "500-3000 pcs", "1000+ pcs"],
+    "Material": ["Plastic", "Wooden", "Resin", "Thandi Lac", "Marble", "Metal", "Ceramic", "Glass", "Stone"],
+    "Size": ["3 inch", "6 inch", "9 inch", "12 inch", "15 inch", "18 inch", "24 inch", "36 inch"],
     "Product Type": ["Ready Stock", "Made to Order"],
     "Business Services": ["Custom Design", "Private Label", "Corporate Gifts", "Other"]
 };
@@ -40,13 +41,15 @@ const GodFigurePage = () => {
     const [isFilterOpen, setIsFilterOpen] = useState(false);
     const [selectedFilters, setSelectedFilters] = useState({
         "finish/style": [],
-        "minimumorderquantity": [],
+        "material": [],
+        "size": [],
         "producttype": [],
         "businessservices": []
     });
     const [expandedSections, setExpandedSections] = useState({
         "Finish / Style": true,
-        "Minimum Order Quantity": true,
+        "Material": true,
+        "Size": true,
         "Product Type": true,
         "Business Services": true
     });
@@ -214,6 +217,8 @@ const GodFigurePage = () => {
                             category: product.subCategory?.name || "",
                             subCategoryId: product.subCategory?._id || "",
                             finish: product.finish || "Natural",
+                            material: product.material || "Plastic",
+                            size: product.size || "6 inch",
                             productType: product.productType || "Ready Stock",
                             services: product.services || [],
                             createdAt: product.createdAt || new Date().toISOString()
@@ -358,17 +363,22 @@ const GodFigurePage = () => {
             console.log('After finish filter:', filtered.length);
         }
 
-        if (selectedFilters["minimumorderquantity"] && selectedFilters["minimumorderquantity"].length > 0) {
+        if (selectedFilters["material"] && selectedFilters["material"].length > 0) {
             filtered = filtered.filter(product => {
-                return selectedFilters["minimumorderquantity"].some(range => {
-                    if (range === "50-100 pcs") return product.moq >= 50 && product.moq <= 100;
-                    if (range === "100-500 pcs") return product.moq > 100 && product.moq <= 500;
-                    if (range === "500-3000 pcs") return product.moq > 500 && product.moq <= 3000;
-                    if (range === "1000+ pcs") return product.moq > 1000;
-                    return true;
+                return selectedFilters["material"].some(material => {
+                    return product.material === material;
                 });
             });
-            console.log('After MOQ filter:', filtered.length);
+            console.log('After Material filter:', filtered.length);
+        }
+
+        if (selectedFilters["size"] && selectedFilters["size"].length > 0) {
+            filtered = filtered.filter(product => {
+                return selectedFilters["size"].some(size => {
+                    return product.size === size;
+                });
+            });
+            console.log('After Size filter:', filtered.length);
         }
 
         if (selectedFilters["producttype"] && selectedFilters["producttype"].length > 0) {
@@ -468,7 +478,8 @@ const GodFigurePage = () => {
         setSearchTerm("");
         setSelectedFilters({
             "finish/style": [],
-            "minimumorderquantity": [],
+            "material": [],
+            "size": [],
             "producttype": [],
             "businessservices": []
         });
@@ -766,17 +777,74 @@ const GodFigurePage = () => {
                                                         Code: <b>{product.code}</b>
                                                     </p>
                                                 )}
-                                                {product.category && (
-                                                    <p className="mona text-gray-700 font-normal text-xs mt-1">
-                                                        God Figure: <b>{product.category}</b>
-                                                    </p>
-                                                )}
-                                                <p className="mona text-gray-700 font-normal text-xs mt-1">
-                                                    Minimum Order Quantity: <b>{product.moq} Piece{product.moq !== 1 ? 's' : ''}</b>
-                                                </p>
-                                                <p className="mona font-semibold text-black text-xs mt-1">
-                                                    ₹ {Number(product.price).toLocaleString('en-IN')}/Piece
-                                                </p>
+                                                
+                                                {/* Add to Inquiry Section */}
+                                                <div className="mt-3 space-y-2">
+                                                    {/* Quantity Selector */}
+                                                    <div className="flex items-center justify-between">
+                                                        <span className="text-xs text-gray-600">Quantity:</span>
+                                                        <div className="flex items-center border border-gray-300 rounded-md">
+                                                            <button 
+                                                                onClick={(e) => {
+                                                                    e.stopPropagation();
+                                                                    const input = e.target.parentElement.querySelector('input');
+                                                                    const currentValue = parseInt(input.value) || 1;
+                                                                    if (currentValue > 6) {
+                                                                        input.value = currentValue - 6;
+                                                                    } else {
+                                                                        input.value = 1;
+                                                                    }
+                                                                }}
+                                                                className="px-2 py-1 text-xs text-gray-600 hover:bg-gray-100 rounded-l-md"
+                                                            >
+                                                                -
+                                                            </button>
+                                                            <input 
+                                                                type="number" 
+                                                                min="1" 
+                                                                step="6"
+                                                                defaultValue="1"
+                                                                onClick={(e) => e.stopPropagation()}
+                                                                className="w-12 px-1 py-1 text-xs text-center border-x border-gray-300 focus:outline-none"
+                                                            />
+                                                            <button 
+                                                                onClick={(e) => {
+                                                                    e.stopPropagation();
+                                                                    const input = e.target.parentElement.querySelector('input');
+                                                                    const currentValue = parseInt(input.value) || 1;
+                                                                    if (currentValue === 1) {
+                                                                        input.value = 6;
+                                                                    } else {
+                                                                        input.value = currentValue + 6;
+                                                                    }
+                                                                }}
+                                                                className="px-2 py-1 text-xs text-gray-600 hover:bg-gray-100 rounded-r-md"
+                                                            >
+                                                                +
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                    
+                                                    {/* Add to Inquiry Button */}
+                                                    <button
+                                                        onClick={(e) => {
+                                                            e.stopPropagation();
+                                                            if (!isLoggedIn) {
+                                                                router.push('/login');
+                                                                return;
+                                                            }
+                                                            const quantityInput = e.target.parentElement.parentElement.querySelector('input[type="number"]');
+                                                            const quantity = parseInt(quantityInput?.value) || 1;
+                                                            router.push(`/productInquiry?productId=${product.id}&quantity=${quantity}`);
+                                                        }}
+                                                        className="w-full py-2 bg-[#C08237] text-white text-xs font-medium rounded-md hover:bg-[#9C774A] transition-colors flex items-center justify-center gap-1"
+                                                    >
+                                                        <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                                                        </svg>
+                                                        Add to Inquiry
+                                                    </button>
+                                                </div>
                                             </div>
                                         </div>
                                     ))}

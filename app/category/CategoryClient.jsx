@@ -3,11 +3,13 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { ChevronRight, Search, Heart } from 'lucide-react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useWishlistStore } from '@/store/wishlistStore';
+import { useAuth } from '@/hooks/useAuth';
 
 // Static filters
 const filters = {
     "Finish / Style": ["All Finishes", "Natural", "Hand Painted", "Antique", "Metallic", "Matte"],
-    "Minimum Order Quantity": ["50-100 pcs", "100-500 pcs", "500-3000 pcs", "1000+ pcs"],
+    "Material": ["Plastic", "Wooden", "Resin", "Thandi Lac", "Marble", "Metal", "Ceramic", "Glass", "Stone"],
+    "Size": ["3 inch", "6 inch", "9 inch", "12 inch", "15 inch", "18 inch", "24 inch", "36 inch"],
     "Product Type": ["Ready Stock", "Made to Order"],
     "Business Services": ["Custom Design", "Private Label", "Corporate Gifts", "Other"]
 };
@@ -19,8 +21,6 @@ const sortOptions = [
     "Popularity",
     "Name A-Z",
     "Name Z-A",
-    "Price Low to High",
-    "Price High to Low"
 ];
 
 const CategoryPage = () => {
@@ -37,7 +37,8 @@ const CategoryPage = () => {
     const [activeCategory, setActiveCategory] = useState("All Products");
     const [selectedFilters, setSelectedFilters] = useState({
         "finish/style": [],
-        "minimumorderquantity": [],
+        "material": [],
+        "size": [],
         "producttype": [],
         "businessservices": []
     });
@@ -72,11 +73,9 @@ const CategoryPage = () => {
     const [totalPages, setTotalPages] = useState(1);
     const [currentProducts, setCurrentProducts] = useState([]);
     
-    // Authentication state
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
+    // Get auth state from custom hook
+    const { isLoggedIn, isLoading: authLoading, isClient } = useAuth();
     const [showLoginPrompt, setShowLoginPrompt] = useState(false);
-    
-    // Fixed image fallback function
     const getProductImage = (product) => {
         if (product.thumbnail && (product.thumbnail.startsWith('http') || product.thumbnail.startsWith('/'))) {
             return product.thumbnail;
@@ -95,56 +94,6 @@ const CategoryPage = () => {
         
         return '/images/placeholder.png';
     };
-
-    // Check if user is logged in (check for token)
-    const checkLoginStatus = useCallback(() => {
-        console.log("=== Checking login status ===");
-        
-        // Check multiple sources for login status
-        let loggedIn = false;
-        
-        // 1. Check for 'token' cookie
-        if (typeof document !== 'undefined') {
-            const cookies = document.cookie.split('; ');
-            console.log("All cookies:", cookies);
-            
-            const tokenCookie = cookies.find(row => row.trim().startsWith('token='));
-            const isLoggedInCookie = cookies.find(row => row.trim().startsWith('isLoggedIn='));
-            
-            console.log("Token cookie found:", !!tokenCookie);
-            console.log("isLoggedIn cookie found:", !!isLoggedInCookie);
-            
-            if (tokenCookie || isLoggedInCookie) {
-                loggedIn = true;
-            }
-        }
-        
-        // 2. Check localStorage as backup
-        if (typeof window !== 'undefined') {
-            const localStorageToken = localStorage.getItem('token');
-            const localStorageIsLoggedIn = localStorage.getItem('isLoggedIn');
-            
-            console.log("localStorage token:", !!localStorageToken);
-            console.log("localStorage isLoggedIn:", localStorageIsLoggedIn);
-            
-            if (localStorageToken || localStorageIsLoggedIn === 'true') {
-                loggedIn = true;
-            }
-        }
-        
-        console.log("Final login status:", loggedIn);
-        
-        // Update state only if changed
-        setIsLoggedIn(prev => {
-            if (prev !== loggedIn) {
-                console.log("Login status changed from", prev, "to", loggedIn);
-                return loggedIn;
-            }
-            return prev;
-        });
-        
-        return loggedIn;
-    }, []);
 
     // Initialize wishlist from store (only once on mount)
     useEffect(() => {
@@ -178,50 +127,12 @@ const CategoryPage = () => {
             }
         }
         
-        // Check login status on mount
-        const loggedIn = checkLoginStatus();
-        
         // If user is not logged in and trying to access page > 1, redirect to login
-        if (!loggedIn && pageParam && parseInt(pageParam) > 1) {
+        if (!isLoggedIn && pageParam && parseInt(pageParam) > 1) {
             setCurrentPage(1);
             updatePageInURL(1);
         }
-        
-        // Setup interval to check login status
-        const intervalId = setInterval(checkLoginStatus, 3000);
-        
-        return () => clearInterval(intervalId);
-    }, [urlCategory, urlCategoryId, urlSubCategoryId, pageParam, checkLoginStatus]);
-
-    // Add event listeners for login/logout
-    useEffect(() => {
-        const handleLoginEvent = () => {
-            console.log("Login event received");
-            checkLoginStatus();
-        };
-        
-        const handleLogoutEvent = () => {
-            console.log("Logout event received");
-            checkLoginStatus();
-        };
-        
-        const handleStorageChange = (e) => {
-            if (e.key === 'token' || e.key === 'isLoggedIn' || e.key === null) {
-                console.log("Storage changed:", e.key);
-                checkLoginStatus();
-            }
-        };
-        
-        window.addEventListener('user-login', handleLoginEvent);
-        window.addEventListener('user-logout', handleLogoutEvent);
-        window.addEventListener('storage', handleStorageChange);
-        
-        return () => {
-            window.removeEventListener('user-login', handleLoginEvent);
-            window.removeEventListener('user-logout', handleLogoutEvent);
-            window.removeEventListener('storage', handleStorageChange);
-        };
-    }, [checkLoginStatus]);
+    }, [urlCategory, urlCategoryId, urlSubCategoryId, pageParam, isLoggedIn]);
 
     // Handle navigation
     useEffect(() => {
@@ -282,6 +193,8 @@ const CategoryPage = () => {
                             subCategory: product.subCategory?._id || "",
                             subCategoryName: product.subCategory?.name || "",
                             finish: product.finish || "Natural",
+                            material: product.material || "Plastic", // Default material
+                            size: product.size || "6 inch", // Default size
                             productType: product.productType || "Ready Stock",
                             services: product.services || [],
                             thumbnail: product.thumbnail,
@@ -310,8 +223,9 @@ const CategoryPage = () => {
     useEffect(() => {
         if (backendCategories.length > 0) {
             const initialExpandedSections = {};
-            backendCategories.forEach(cat => {
-                initialExpandedSections[cat._id] = true;
+            backendCategories.forEach((cat, index) => {
+                // Only expand the first category by default
+                initialExpandedSections[cat._id] = index === 0;
             });
             Object.keys(filters).forEach(filter => {
                 initialExpandedSections[filter] = true;
@@ -668,14 +582,23 @@ const CategoryPage = () => {
             );
         }
 
-        if (selectedFilters["minimumorderquantity"] && selectedFilters["minimumorderquantity"].length > 0) {
+        if (selectedFilters["material"] && selectedFilters["material"].length > 0) {
             filtered = filtered.filter(product => {
-                return selectedFilters["minimumorderquantity"].some(range => {
-                    if (range === "50-100 pcs") return product.moq >= 50 && product.moq <= 100;
-                    if (range === "100-500 pcs") return product.moq > 100 && product.moq <= 500;
-                    if (range === "500-3000 pcs") return product.moq > 500 && product.moq <= 3000;
-                    if (range === "1000+ pcs") return product.moq > 1000;
-                    return true;
+                // Assuming product has a 'material' field
+                return selectedFilters["material"].some(material => {
+                    return product.material === material || 
+                           (product.materials && product.materials.includes(material));
+                });
+            });
+        }
+
+        if (selectedFilters["size"] && selectedFilters["size"].length > 0) {
+            filtered = filtered.filter(product => {
+                // Assuming product has a 'size' field
+                return selectedFilters["size"].some(size => {
+                    return product.size === size || 
+                           (product.sizes && product.sizes.includes(size)) ||
+                           (product.dimensions && product.dimensions.includes(size));
                 });
             });
         }
@@ -768,7 +691,8 @@ const CategoryPage = () => {
     const clearAllFilters = () => {
         setSelectedFilters({
             "finish/style": [],
-            "minimumorderquantity": [],
+            "material": [],
+            "size": [],
             "producttype": [],
             "businessservices": []
         });
@@ -1104,18 +1028,74 @@ const CategoryPage = () => {
                                                         Code: <b>{product.code}</b>
                                                     </p>
                                                 )}
-                                                <p className="mona text-gray-700 font-normal text-xs mt-1">
-                                                    Category: <b>{product.categoryName}</b>
-                                                    {product.subCategoryName && (
-                                                        <span> • Subcategory: <b>{product.subCategoryName}</b></span>
-                                                    )}
-                                                </p>
-                                                <p className="mona text-gray-700 font-normal text-xs mt-1">
-                                                    Minimum Order Quantity: <b>{product.moq} Piece{product.moq !== 1 ? 's' : ''}</b>
-                                                </p>
-                                                <p className="mona font-semibold text-black text-xs mt-1">
-                                                    ₹ {product.price}/Piece
-                                                </p>
+                                                
+                                                {/* Add to Inquiry Section */}
+                                                <div className="mt-3 space-y-2">
+                                                    {/* Quantity Selector */}
+                                                    <div className="flex items-center justify-between">
+                                                        <span className="text-xs text-gray-600">Quantity:</span>
+                                                        <div className="flex items-center border border-gray-300 rounded-md">
+                                                            <button 
+                                                                onClick={(e) => {
+                                                                    e.stopPropagation();
+                                                                    const input = e.target.parentElement.querySelector('input');
+                                                                    const currentValue = parseInt(input.value) || 1;
+                                                                    if (currentValue > 6) {
+                                                                        input.value = currentValue - 6;
+                                                                    } else {
+                                                                        input.value = 1;
+                                                                    }
+                                                                }}
+                                                                className="px-2 py-1 text-xs text-gray-600 hover:bg-gray-100 rounded-l-md"
+                                                            >
+                                                                -
+                                                            </button>
+                                                            <input 
+                                                                type="number" 
+                                                                min="1" 
+                                                                step="6"
+                                                                defaultValue="1"
+                                                                onClick={(e) => e.stopPropagation()}
+                                                                className="w-12 px-1 py-1 text-xs text-center border-x border-gray-300 focus:outline-none"
+                                                            />
+                                                            <button 
+                                                                onClick={(e) => {
+                                                                    e.stopPropagation();
+                                                                    const input = e.target.parentElement.querySelector('input');
+                                                                    const currentValue = parseInt(input.value) || 1;
+                                                                    if (currentValue === 1) {
+                                                                        input.value = 6;
+                                                                    } else {
+                                                                        input.value = currentValue + 6;
+                                                                    }
+                                                                }}
+                                                                className="px-2 py-1 text-xs text-gray-600 hover:bg-gray-100 rounded-r-md"
+                                                            >
+                                                                +
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                    
+                                                    {/* Add to Inquiry Button */}
+                                                    <button
+                                                        onClick={(e) => {
+                                                            e.stopPropagation();
+                                                            if (!isLoggedIn) {
+                                                                router.push('/login');
+                                                                return;
+                                                            }
+                                                            const quantityInput = e.target.parentElement.parentElement.querySelector('input[type="number"]');
+                                                            const quantity = parseInt(quantityInput?.value) || 1;
+                                                            router.push(`/productInquiry?productId=${product.id}&quantity=${quantity}`);
+                                                        }}
+                                                        className="w-full py-2 bg-[#C08237] text-white text-xs font-medium rounded-md hover:bg-[#9C774A] transition-colors flex items-center justify-center gap-1"
+                                                    >
+                                                        <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                                                        </svg>
+                                                        Add to Inquiry
+                                                    </button>
+                                                </div>
                                             </div>
                                         </div>
                                     ))}

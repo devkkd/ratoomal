@@ -72,6 +72,8 @@ const ProductSchema = new mongoose.Schema(
     posture: String,
     baseShape: String,
     finish: String,
+    material: String, // New field for material filter
+    size: String, // New field for size filter
     appearance: String,
     careInstruction: String,
     assemblyRequired: String,

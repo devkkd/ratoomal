@@ -65,7 +65,7 @@ export async function POST(req) {
       value: token,
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
+      sameSite: "lax", // Changed from strict to lax for better compatibility
       maxAge: 60 * 60 * 24 * 7, // 7 days
       path: "/",
     });
@@ -74,8 +74,9 @@ export async function POST(req) {
     response.cookies.set({
       name: "isLoggedIn",
       value: "true",
+      httpOnly: false, // Make sure this is accessible to client
       secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
+      sameSite: "lax", // Changed from strict to lax
       maxAge: 60 * 60 * 24 * 7,
       path: "/",
     });
