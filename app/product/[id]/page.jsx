@@ -22,7 +22,7 @@ const ProductDetailPage = () => {
     const [isFullscreen, setIsFullscreen] = useState(false);
     const [showVolumeSlider, setShowVolumeSlider] = useState(false);
     const [quantity, setQuantity] = useState(1);
-    const [selectedSizes, setSelectedSizes] = useState([]);
+    const [selectedSizes, setSelectedSizes] = useState(['3']);  // Default to size 3
     const [customSize, setCustomSize] = useState('');
     const [showInquiryModal, setShowInquiryModal] = useState(false);
     const videoRef = useRef(null);
@@ -880,7 +880,7 @@ const ProductDetailPage = () => {
                                             // Add to cart with selected options
                                             addToCart(
                                                 transformedProduct,
-                                                selectedSizes.length > 0 ? selectedSizes : ['Standard'],
+                                                selectedSizes.length > 0 ? selectedSizes : ['3'],
                                                 quantity
                                             );
                                             

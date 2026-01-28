@@ -21,10 +21,10 @@ const InquiryCartPage = () => {
     initialize
   } = useInquiryCartStore();
 
-  const [editingSizes, setEditingSizes] = useState(null);
-  const [tempSizes, setTempSizes] = useState([]);
   const [customSize, setCustomSize] = useState('');
   const [inquiryData, setInquiryData] = useState({
+    inquiryFor: '',
+    customizationNeeded: '',
     message: ''
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -48,52 +48,25 @@ const InquiryCartPage = () => {
   const handleQuantityChange = (cartItemId, change) => {
     const item = cart.find(item => item.id === cartItemId);
     if (item) {
-      const newQuantity = Math.max(1, item.quantity + change);
+      let newQuantity = item.quantity + change;
+      // Ensure minimum quantity is 1 and changes are in multiples of 6
+      if (change < 0 && newQuantity < 1) {
+        newQuantity = 1;
+      }
       updateQuantity(cartItemId, newQuantity);
     }
   };
 
-  const handleSizeEdit = (cartItemId) => {
-    const item = cart.find(item => item.id === cartItemId);
-    if (item) {
-      setEditingSizes(cartItemId);
-      setTempSizes([...item.selectedSizes]);
-      setCustomSize('');
-    }
-  };
-
-  const handleSizeToggle = (size) => {
-    setTempSizes(prev => 
-      prev.includes(size) 
-        ? prev.filter(s => s !== size)
-        : [...prev, size]
-    );
-  };
-
-  const handleAddCustomSize = () => {
-    if (customSize.trim() && !tempSizes.includes(customSize.trim())) {
-      setTempSizes(prev => [...prev, customSize.trim()]);
-      setCustomSize('');
-    }
-  };
-
-  const handleSaveSizes = () => {
-    if (editingSizes && tempSizes.length > 0) {
-      updateSizes(editingSizes, tempSizes);
-    }
-    setEditingSizes(null);
-    setTempSizes([]);
-    setCustomSize('');
-  };
-
-  const handleCancelSizeEdit = () => {
-    setEditingSizes(null);
-    setTempSizes([]);
-    setCustomSize('');
-  };
-
   const validateForm = () => {
     const newErrors = {};
+    
+    if (!inquiryData.inquiryFor) {
+      newErrors.inquiryFor = "Please select inquiry purpose";
+    }
+    
+    if (!inquiryData.customizationNeeded) {
+      newErrors.customizationNeeded = "Please select customization option";
+    }
     
     if (!inquiryData.message.trim()) {
       newErrors.message = "Message is required";
@@ -113,19 +86,19 @@ const InquiryCartPage = () => {
     setIsSubmitting(true);
 
     try {
-      // Get user email from localStorage for user identification
+      // Get user email from localStorage as fallback
       const userEmail = typeof window !== 'undefined' ? localStorage.getItem('userEmail') : null;
       
       const inquiryPayload = {
-        userEmail, // Send user email to backend for user identification
-        message: inquiryData.message,
-        inquiryType: 'cart_inquiry', // Set specific type for cart inquiries
-        products: cart.map(item => ({
+        cartProducts: cart.map(item => ({
           productId: item.productId,
           quantity: item.quantity,
           selectedSizes: item.selectedSizes
         })),
-        totalItems: getTotalItems()
+        inquiryFor: inquiryData.inquiryFor,
+        customizationNeeded: inquiryData.customizationNeeded,
+        message: inquiryData.message,
+        userEmail // Add userEmail as fallback
       };
 
       const response = await fetch('/api/admin/inquiry', {
@@ -133,6 +106,7 @@ const InquiryCartPage = () => {
         headers: {
           'Content-Type': 'application/json',
         },
+        credentials: 'include', // Important: Include cookies for JWT
         body: JSON.stringify(inquiryPayload),
       });
 
@@ -142,10 +116,12 @@ const InquiryCartPage = () => {
         setShowSuccessModal(true);
         clearCart();
         setInquiryData({
+          inquiryFor: '',
+          customizationNeeded: '',
           message: ''
         });
       } else {
-        alert('Something went wrong');
+        alert(data.error || 'Something went wrong');
       }
     } catch (error) {
       console.error('Error submitting inquiry:', error);
@@ -300,17 +276,17 @@ const InquiryCartPage = () => {
                         <div className="flex items-center space-x-4 mb-3">
                           <div className="flex items-center space-x-2">
                             <button
-                              onClick={() => handleQuantityChange(item.id, -1)}
+                              onClick={() => handleQuantityChange(item.id, -6)}
                               className="p-1 rounded-full hover:bg-gray-100"
-                              disabled={item.quantity <= 1}
+                              disabled={item.quantity <= 6}
                             >
                               <Minus className="h-4 w-4" />
                             </button>
-                            <span className="px-2 py-1 bg-gray-100 rounded-md text-sm font-medium">
+                            <span className="px-3 py-2 bg-gray-100 rounded-md text-sm font-medium min-w-[60px] text-center">
                               {item.quantity}
                             </span>
                             <button
-                              onClick={() => handleQuantityChange(item.id, 1)}
+                              onClick={() => handleQuantityChange(item.id, 6)}
                               className="p-1 rounded-full hover:bg-gray-100"
                             >
                               <Plus className="h-4 w-4" />
@@ -325,76 +301,18 @@ const InquiryCartPage = () => {
                         <div className="mb-3">
                           <div className="flex items-center justify-between mb-2">
                             <span className="text-xs mona font-medium text-gray-700">Selected Sizes:</span>
-                            <button
-                              onClick={() => handleSizeEdit(item.id)}
-                              className="text-[#bf8e44] hover:text-[#a67a38] text-xs flex items-center space-x-1"
-                            >
-                              <Edit3 className="h-3 w-3" />
-                              <span>Edit</span>
-                            </button>
                           </div>
                           
-                          {editingSizes === item.id ? (
-                            <div className="bg-gray-50 p-3 rounded-lg">
-                              <div className="grid grid-cols-2 gap-2 mb-3">
-                                {['Small', 'Medium', 'Large', 'Extra Large'].map((size) => (
-                                  <button
-                                    key={size}
-                                    onClick={() => handleSizeToggle(size)}
-                                    className={`px-2 py-1 text-xs rounded-md border transition-colors ${
-                                      tempSizes.includes(size)
-                                        ? 'bg-[#bf8e44] text-white border-[#bf8e44]'
-                                        : 'bg-white text-gray-700 border-gray-300 hover:border-gray-400'
-                                    }`}
-                                  >
-                                    {size}
-                                  </button>
-                                ))}
-                              </div>
-                              
-                              <div className="flex space-x-2 mb-3">
-                                <input
-                                  type="text"
-                                  value={customSize}
-                                  onChange={(e) => setCustomSize(e.target.value)}
-                                  placeholder="Custom size"
-                                  className="flex-1 px-2 py-1 border border-gray-300 rounded-md text-xs"
-                                />
-                                <button
-                                  onClick={handleAddCustomSize}
-                                  className="px-3 py-1 bg-gray-600 text-white rounded-md text-xs hover:bg-gray-700"
-                                >
-                                  Add
-                                </button>
-                              </div>
-                              
-                              <div className="flex space-x-2">
-                                <button
-                                  onClick={handleSaveSizes}
-                                  className="px-3 py-1 bg-[#bf8e44] text-white rounded-md text-xs hover:bg-[#a67a38]"
-                                >
-                                  Save
-                                </button>
-                                <button
-                                  onClick={handleCancelSizeEdit}
-                                  className="px-3 py-1 bg-gray-300 text-gray-700 rounded-md text-xs hover:bg-gray-400"
-                                >
-                                  Cancel
-                                </button>
-                              </div>
-                            </div>
-                          ) : (
-                            <div className="flex flex-wrap gap-1">
-                              {item.selectedSizes.map((size, index) => (
-                                <span
-                                  key={index}
-                                  className="px-2 py-1 bg-[#bf8e44] bg-opacity-10 text-[#bf8e44] text-xs rounded-full"
-                                >
-                                  {size}
-                                </span>
-                              ))}
-                            </div>
-                          )}
+                          <div className="flex flex-wrap gap-1">
+                            {item.selectedSizes.map((size, index) => (
+                              <span
+                                key={index}
+                                className="px-2 py-1 bg-[#bf8e44] bg-opacity-10 text-[#bf8e44] text-xs rounded-full"
+                              >
+                                {size}
+                              </span>
+                            ))}
+                          </div>
                         </div>
                       </div>
 
@@ -441,6 +359,77 @@ const InquiryCartPage = () => {
                   </div>
                 </div>
 
+                {/* Inquiry Purpose */}
+                <div className="space-y-2">
+                  <label className="text-[12px] mona font-medium">
+                    What is this inquiry for? <span className="text-red-500">*</span>
+                  </label>
+                  <div className="relative">
+                    <select
+                      name="inquiryFor"
+                      value={inquiryData.inquiryFor}
+                      onChange={handleInputChange}
+                      className={`w-full p-3 bg-white border rounded-lg text-[12px] appearance-none focus:outline-none focus:ring-1 ${
+                        errors.inquiryFor 
+                          ? "border-red-500 focus:ring-red-500 text-red-500" 
+                          : "border-gray-200 focus:ring-[#bf8e44] text-gray-700"
+                      }`}
+                    >
+                      <option value="">Select inquiry purpose</option>
+                      <option value="bulk_order">Bulk Order</option>
+                      <option value="wholesale">Wholesale Purchase</option>
+                      <option value="custom_design">Custom Design Development</option>
+                      <option value="private_label">Private Label / Branding</option>
+                      <option value="corporate_project">Corporate / Hospitality Project</option>
+                      <option value="other">Other</option>
+                    </select>
+                    <ChevronDown
+                      className={`absolute right-3 top-1/2 -translate-y-1/2 ${
+                        errors.inquiryFor ? "text-red-500" : "text-gray-400"
+                      }`}
+                      size={18}
+                    />
+                  </div>
+                  {errors.inquiryFor && (
+                    <p className="text-red-500 text-[10px]">{errors.inquiryFor}</p>
+                  )}
+                </div>
+
+                {/* Customization Needed */}
+                <div className="space-y-2">
+                  <label className="text-[12px] mona font-medium">
+                    Customization Required <span className="text-red-500">*</span>
+                  </label>
+                  <div className="relative">
+                    <select
+                      name="customizationNeeded"
+                      value={inquiryData.customizationNeeded}
+                      onChange={handleInputChange}
+                      className={`w-full p-3 bg-white border rounded-lg text-[12px] appearance-none focus:outline-none focus:ring-1 ${
+                        errors.customizationNeeded 
+                          ? "border-red-500 focus:ring-red-500 text-red-500" 
+                          : "border-gray-200 focus:ring-[#bf8e44] text-gray-700"
+                      }`}
+                    >
+                      <option value="">Select customization needed</option>
+                      <option value="finish_color">Finish / Color</option>
+                      <option value="material">Material</option>
+                      <option value="packaging">Packaging</option>
+                      <option value="branding_logo">Branding / Logo</option>
+                      <option value="none">No customization needed</option>
+                    </select>
+                    <ChevronDown
+                      className={`absolute right-3 top-1/2 -translate-y-1/2 ${
+                        errors.customizationNeeded ? "text-red-500" : "text-gray-400"
+                      }`}
+                      size={18}
+                    />
+                  </div>
+                  {errors.customizationNeeded && (
+                    <p className="text-red-500 text-[10px]">{errors.customizationNeeded}</p>
+                  )}
+                </div>
+
                 {/* Message Field */}
                 <div className="space-y-2">
                   <label className="text-[12px] mona font-medium">
@@ -451,7 +440,7 @@ const InquiryCartPage = () => {
                     name="message"
                     value={inquiryData.message}
                     onChange={handleInputChange}
-                    placeholder="Please describe your requirements, preferred quantities, customization needs, timeline, or any other details..."
+                    placeholder="Please describe your requirements, preferred timeline, budget range, or any other details..."
                     className={`w-full p-3 bg-white border rounded-lg text-[12px] focus:outline-none focus:ring-1 resize-none ${
                       errors.message 
                         ? "border-red-500 focus:ring-red-500" 

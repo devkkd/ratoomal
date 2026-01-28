@@ -2,19 +2,22 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useWishlistStore } from '@/store/wishlistStore';
+import { useInquiryCartStore } from '@/store/inquiryCartStore';
 
 export default function CuratedCollections() {
     const router = useRouter();
     const { wishlist, toggleWishlist, isInWishlist, initialize } = useWishlistStore();
+    const { addToCart, initialize: initializeCart } = useInquiryCartStore();
     const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(true);
 
-    // Initialize wishlist store
+    // Initialize stores
     useEffect(() => {
         if (typeof window !== 'undefined') {
             initialize();
+            initializeCart();
         }
-    }, [initialize]);
+    }, [initialize, initializeCart]);
 
     // Fetch latest 4 Animal category products
     useEffect(() => {
@@ -82,6 +85,18 @@ export default function CuratedCollections() {
         await toggleWishlist(productId);
         
         console.log('Is in wishlist after toggle:', isInWishlist(productId));
+    };
+
+    // Handle add to inquiry cart
+    const handleAddToInquiry = (product, quantity, e) => {
+        e.stopPropagation();
+        console.log('➕ Adding to inquiry cart:', { product: product.id, quantity });
+        
+        // Add to inquiry cart with size 3
+        addToCart(product, ['3'], quantity);
+        
+        // Show success message or redirect to inquiry cart
+        alert(`${product.name} added to inquiry cart!`);
     };
 
     return (
@@ -209,7 +224,7 @@ export default function CuratedCollections() {
                                         e.stopPropagation();
                                         const quantityInput = e.target.parentElement.parentElement.querySelector('input[type="number"]');
                                         const quantity = parseInt(quantityInput?.value) || 1;
-                                        router.push(`/productInquiry?productId=${item.id}&quantity=${quantity}`);
+                                        handleAddToInquiry(item, quantity, e);
                                     }}
                                     className="w-full py-2 bg-[#C08237] text-white text-xs font-medium rounded-md hover:bg-[#9C774A] transition-colors flex items-center justify-center gap-1"
                                 >

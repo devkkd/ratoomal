@@ -301,7 +301,7 @@ const Header = () => {
       },
       { name: 'CUSTOM ORDERS', href: '/custom-orders' },
       { name: 'CONTACT US', href: '/contact-us' },
-       { name: 'EXHIBITION', href: '/exhibition' },
+      { name: 'EXHIBITION', href: '/exhibition' },
     ];
   };
 

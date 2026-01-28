@@ -46,11 +46,13 @@ export const useInquiryCartStore = create(
     addToCart: (product, selectedSizes = [], quantity = 1) => {
       const { cart } = get();
       
-      console.log('➕ Adding to cart:', { product: product.id, selectedSizes, quantity });
+      console.log('➕ Adding to cart:', { product: product.id || product._id, selectedSizes, quantity });
+      
+      const productId = product.id || product._id;
       
       // Check if same product with same sizes already exists
       const existingItemIndex = cart.findIndex(item => 
-        item.productId === product.id && 
+        item.productId === productId && 
         JSON.stringify(item.selectedSizes.sort()) === JSON.stringify(selectedSizes.sort())
       );
       
@@ -63,14 +65,14 @@ export const useInquiryCartStore = create(
       } else {
         // Create new cart item
         const cartItem = {
-          id: `${product.id}_${Date.now()}`, // Unique ID for cart item
-          productId: product.id,
+          id: `${productId}_${Date.now()}`, // Unique ID for cart item
+          productId: productId,
           name: product.name,
-          image: product.images?.[0] || product.thumbnail || '/images/placeholder.png',
+          image: product.images?.[0] || product.thumbnail || product.img || '/images/placeholder.png',
           price: product.price,
           category: product.category,
           subCategory: product.subCategory,
-          selectedSizes: selectedSizes.length > 0 ? selectedSizes : ['Standard'],
+          selectedSizes: selectedSizes.length > 0 ? selectedSizes : ['3'],
           quantity: quantity,
           addedAt: new Date().toISOString(),
         };
@@ -117,7 +119,7 @@ export const useInquiryCartStore = create(
       
       const newCart = cart.map(item => 
         item.id === cartItemId 
-          ? { ...item, selectedSizes: newSizes.length > 0 ? newSizes : ['Standard'] }
+          ? { ...item, selectedSizes: newSizes.length > 0 ? newSizes : ['3'] }
           : item
       );
       

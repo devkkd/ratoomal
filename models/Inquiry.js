@@ -1,92 +1,122 @@
 import mongoose from "mongoose";
 
-// Schema for individual inquiry items (for cart-based inquiries)
-const InquiryItemSchema = new mongoose.Schema({
-  productId: String, // Store product ID as string for flexibility
-  productName: String,
+// Schema for cart inquiry products
+const CartProductSchema = new mongoose.Schema({
+  productId: {
+    type: String,
+    required: true
+  },
   quantity: {
     type: Number,
     required: true,
-    min: 1,
+    min: 1
   },
-  selectedSizes: [String], // Array of selected sizes
-  price: Number,
-  image: String,
+  selectedSizes: [{
+    type: String,
+    default: 'Standard'
+  }]
 });
 
 const InquirySchema = new mongoose.Schema(
   {
-    // Support both single product (legacy) and multiple products (new cart-based)
+    // User reference (for logged-in users)
+    user: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true
+    },
+    
+    // Inquiry type
+    inquiryType: {
+      type: String,
+      enum: ['single_product', 'cart_inquiry', 'bulk', 'custom', 'private', 'corporate', 'other'],
+      default: 'cart_inquiry'
+    },
+    
+    // For single product inquiries (legacy support)
     product: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Product",
-      required: false, // Made optional for cart-based inquiries
+      required: false
     },
     
-    // New: Multiple products support for cart-based inquiries
-    products: [InquiryItemSchema], // Array of products from cart
-    totalItems: Number, // Total number of different products
+    // For cart-based inquiries (new)
+    cartProducts: [CartProductSchema],
     
-    // User identification
-    userDetails: {
-      userId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "User",
-      },
-      companyName: String,
-      contactName: String,
-      email: String,
-      country: String,
-      phone: String,
-      businessType: String,
-      purpose: String,
+    // Cart inquiry specific fields
+    totalProducts: {
+      type: Number,
+      default: 0
+    },
+    totalQuantity: {
+      type: Number,
+      default: 0
     },
     
-    // Form data (takes priority over user details)
+    // Inquiry details
+    inquiryFor: {
+      type: String,
+      enum: ['bulk_order', 'wholesale', 'custom_design', 'private_label', 'corporate_project', 'other'],
+      required: true
+    },
+    estimatedQuantity: {
+      type: String,
+      enum: ['50-100', '100-500', '500-1000', '1000+', 'to_be_discussed'],
+      required: true
+    },
+    customizationNeeded: {
+      type: String,
+      enum: ['finish_color', 'material', 'packaging', 'branding_logo', 'none'],
+      required: true
+    },
+    message: {
+      type: String,
+      required: true,
+      trim: true
+    },
+    
+    // Legacy fields (for backward compatibility)
     companyName: String,
     contactName: String,
     email: String,
     country: String,
     phone: String,
-    
-    // ProductInquiry page fields
-    inquiryType: {
-      type: String,
-      enum: ['bulk', 'custom', 'private', 'corporate', 'other', 'cart_inquiry'],
-      default: 'cart_inquiry'
-    },
-    quantity: String, // Estimated order quantity
-    customization: {
-      type: String,
-      enum: ['finish', 'material', 'packaging', 'branding', 'none'],
-    },
-    message: String,
-    file: String, // File upload reference
-    
-    // Legacy fields (for backward compatibility)
-    sizes: [String], // Legacy: selected sizes for single product
+    quantity: String,
+    customization: String,
+    sizes: [String],
     
     // Status tracking
     status: {
       type: String,
       enum: ['pending', 'reviewed', 'responded', 'closed'],
-      default: 'pending',
+      default: 'pending'
     },
     
-    // Admin notes
+    // Admin fields
     adminNotes: String,
     respondedAt: Date,
     respondedBy: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
-    },
+      ref: "User"
+    }
   },
-  { timestamps: true }
+  { 
+    timestamps: true,
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true }
+  }
 );
 
-// Index for better query performance
-InquirySchema.index({ email: 1, createdAt: -1 });
-InquirySchema.index({ 'userDetails.email': 1, createdAt: -1 });
+// Virtual to populate user details
+InquirySchema.virtual('userDetails', {
+  ref: 'User',
+  localField: 'user',
+  foreignField: '_id',
+  justOne: true
+});
+
+// Index for better performance
+InquirySchema.index({ user: 1, createdAt: -1 });
 InquirySchema.index({ status: 1, createdAt: -1 });
 InquirySchema.index({ inquiryType: 1, createdAt: -1 });
 
