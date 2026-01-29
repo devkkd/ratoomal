@@ -23,6 +23,7 @@ const navigation = [
   { name: 'Dashboard', href: '/admin', icon: HomeIcon },
   { name: 'Products', href: '/admin/products', icon: ArchiveBoxIcon },
   { name: 'Inquiry', href: '/admin/inquiry', icon: ShoppingCartIcon },
+  { name: 'Customer Inquiries', href: '/admin/customer-inquiries', icon: QuestionMarkCircleIcon },
   { name: 'Customers', href: '/admin/customers', icon: UsersIcon },
   { name: 'Category', href: '/admin/categories', icon: ChartBarIcon },
   { name: 'Subcategory', href: '/admin/subcategories', icon: CreditCardIcon },

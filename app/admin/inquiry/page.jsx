@@ -242,10 +242,6 @@ const AdminInquiry = () => {
                       <span className="text-sm text-gray-900 ml-2 capitalize">{selectedInquiry.inquiryFor?.replace('_', ' ') || 'N/A'}</span>
                     </div>
                     <div>
-                      <span className="text-sm font-medium text-gray-700">Estimated Quantity:</span>
-                      <span className="text-sm text-gray-900 ml-2">{selectedInquiry.estimatedQuantity || 'N/A'}</span>
-                    </div>
-                    <div>
                       <span className="text-sm font-medium text-gray-700">Customization:</span>
                       <span className="text-sm text-gray-900 ml-2 capitalize">{selectedInquiry.customizationNeeded?.replace('_', ' ') || 'N/A'}</span>
                     </div>
@@ -451,12 +447,62 @@ const AdminInquiry = () => {
   }
 
   return (
-    <div className="p-8 bg-[#FFF6EB] min-h-screen">
+    <div className="p-8 bg-[white] min-h-screen">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-8">
           <h1 className="text-3xl playfair font-bold text-gray-900 mb-2">Product Inquiries</h1>
           <p className="text-gray-600 mona">Manage customer inquiries and cart-based requests</p>
+        </div>
+           {/* Summary Stats */}
+        <div className="mt-8 grid grid-cols-1 md:grid-cols-4 gap-6">
+          <div className="bg-white p-6 rounded-lg shadow-sm">
+            <div className="flex items-center">
+              <Clock className="h-8 w-8 text-yellow-500" />
+              <div className="ml-4">
+                <p className="text-sm font-medium text-gray-500">Pending</p>
+                <p className="text-2xl font-semibold text-gray-900">
+                  {inquiries.filter(inq => inq.status === 'pending').length}
+                </p>
+              </div>
+            </div>
+          </div>
+          
+          <div className="bg-white p-6 rounded-lg shadow-sm">
+            <div className="flex items-center">
+              <Eye className="h-8 w-8 text-blue-500" />
+              <div className="ml-4">
+                <p className="text-sm font-medium text-gray-500">Reviewed</p>
+                <p className="text-2xl font-semibold text-gray-900">
+                  {inquiries.filter(inq => inq.status === 'reviewed').length}
+                </p>
+              </div>
+            </div>
+          </div>
+          
+          <div className="bg-white p-6 rounded-lg shadow-sm">
+            <div className="flex items-center">
+              <CheckCircle className="h-8 w-8 text-green-500" />
+              <div className="ml-4">
+                <p className="text-sm font-medium text-gray-500">Responded</p>
+                <p className="text-2xl font-semibold text-gray-900">
+                  {inquiries.filter(inq => inq.status === 'responded').length}
+                </p>
+              </div>
+            </div>
+          </div>
+          
+          <div className="bg-white p-6 rounded-lg shadow-sm">
+            <div className="flex items-center">
+              <XCircle className="h-8 w-8 text-gray-500" />
+              <div className="ml-4">
+                <p className="text-sm font-medium text-gray-500">Closed</p>
+                <p className="text-2xl font-semibold text-gray-900">
+                  {inquiries.filter(inq => inq.status === 'closed').length}
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
 
         {/* Filters */}
@@ -613,56 +659,7 @@ const AdminInquiry = () => {
           </div>
         </div>
 
-        {/* Summary Stats */}
-        <div className="mt-8 grid grid-cols-1 md:grid-cols-4 gap-6">
-          <div className="bg-white p-6 rounded-lg shadow-sm">
-            <div className="flex items-center">
-              <Clock className="h-8 w-8 text-yellow-500" />
-              <div className="ml-4">
-                <p className="text-sm font-medium text-gray-500">Pending</p>
-                <p className="text-2xl font-semibold text-gray-900">
-                  {inquiries.filter(inq => inq.status === 'pending').length}
-                </p>
-              </div>
-            </div>
-          </div>
-          
-          <div className="bg-white p-6 rounded-lg shadow-sm">
-            <div className="flex items-center">
-              <Eye className="h-8 w-8 text-blue-500" />
-              <div className="ml-4">
-                <p className="text-sm font-medium text-gray-500">Reviewed</p>
-                <p className="text-2xl font-semibold text-gray-900">
-                  {inquiries.filter(inq => inq.status === 'reviewed').length}
-                </p>
-              </div>
-            </div>
-          </div>
-          
-          <div className="bg-white p-6 rounded-lg shadow-sm">
-            <div className="flex items-center">
-              <CheckCircle className="h-8 w-8 text-green-500" />
-              <div className="ml-4">
-                <p className="text-sm font-medium text-gray-500">Responded</p>
-                <p className="text-2xl font-semibold text-gray-900">
-                  {inquiries.filter(inq => inq.status === 'responded').length}
-                </p>
-              </div>
-            </div>
-          </div>
-          
-          <div className="bg-white p-6 rounded-lg shadow-sm">
-            <div className="flex items-center">
-              <XCircle className="h-8 w-8 text-gray-500" />
-              <div className="ml-4">
-                <p className="text-sm font-medium text-gray-500">Closed</p>
-                <p className="text-2xl font-semibold text-gray-900">
-                  {inquiries.filter(inq => inq.status === 'closed').length}
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
+     
       </div>
 
       {/* Modal */}

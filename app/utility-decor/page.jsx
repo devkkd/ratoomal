@@ -3,6 +3,8 @@ import React, { useState, useEffect } from 'react';
 import { ChevronRight, Search } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useWishlistStore } from '@/store/wishlistStore';
+import { useInquiryCartStore } from '@/store/inquiryCartStore';
+import NotificationToast, { useNotification } from '../components/NotificationToast';
 
 // Filter options
 const filters = {
@@ -21,6 +23,8 @@ const PRODUCTS_PER_PAGE = 12;
 const UtilityDecorPage = () => {
     const router = useRouter();
     const { wishlist, toggleWishlist, isInWishlist, initialize } = useWishlistStore();
+    const { addToCart } = useInquiryCartStore();
+    const { notification, showNotification, hideNotification } = useNotification();
     
     const [activeProductType, setActiveProductType] = useState("All Products");
     const [selectedDecor, setSelectedDecor] = useState([]);
@@ -625,127 +629,13 @@ const UtilityDecorPage = () => {
                                 {/* Products */}
                                 <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                                     {displayedProducts.map(product => (
-                                        <div 
-                                            key={product.id} 
-                                            className={`cursor-pointer w-full max-w-[480px] relative group ${!isLoggedIn ? 'opacity-75' : ''}`}
-                                            onClick={() => handleProductClick(product)}
-                                        >
-                                            <div className="relative w-full h-[280px] sm:h-[330px] bg-gray-100 overflow-hidden rounded-2xl">
-                                                <img
-                                                    src={product.img}
-                                                    alt={product.name}
-                                                    className="w-full h-full object-cover hover:scale-105 transition duration-300"
-                                                />
-
-                                                {/* Wishlist Button */}
-                                                <button
-                                                    onClick={(e) => {
-                                                        e.stopPropagation();
-                                                        if (isLoggedIn) {
-                                                            toggleWishlist(product.id);
-                                                        } else {
-                                                            router.push('/login');
-                                                        }
-                                                    }}
-                                                    className="absolute top-3 right-3 z-10 p-2 bg-[#FFFFFF80] backdrop-blur-sm rounded-full 
-                                                               shadow-lg hover:bg-white active:scale-95 
-                                                               transition-all duration-200"
-                                                    aria-label={isInWishlist(product.id) ? "Remove from wishlist" : "Add to wishlist"}
-                                                >
-                                                    <svg
-                                                        xmlns="http://www.w3.org/2000/svg"
-                                                        className={`h-5 w-6 transition-colors duration-200 ${isInWishlist(product.id)
-                                                                ? "fill-red-500 text-red-500"
-                                                                : "text-gray-800 fill-transparent hover:text-red-400"
-                                                            }`}
-                                                        viewBox="0 0 24 24"
-                                                        stroke="currentColor"
-                                                        strokeWidth={isInWishlist(product.id) ? 0 : 2}
-                                                    >
-                                                        <path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5" />
-                                                    </svg>
-                                                </button>
-                                            </div>
-
-                                            <div className="mt-3">
-                                                <h3 className="mona font-semibold text-sm text-black line-clamp-1">
-                                                    {product.name}
-                                                </h3>
-                                                {product.code && (
-                                                    <p className="mona text-gray-600 font-mono text-xs mt-1">
-                                                        Code: <b>{product.code}</b>
-                                                    </p>
-                                                )}
-                                                
-                                                {/* Add to Inquiry Section */}
-                                                <div className="mt-3 space-y-2">
-                                                    {/* Quantity Selector */}
-                                                    <div className="flex items-center justify-between">
-                                                        <span className="text-xs text-gray-600">Quantity:</span>
-                                                        <div className="flex items-center border border-gray-300 rounded-md">
-                                                            <button 
-                                                                onClick={(e) => {
-                                                                    e.stopPropagation();
-                                                                    const input = e.target.parentElement.querySelector('input');
-                                                                    const currentValue = parseInt(input.value) || 1;
-                                                                    if (currentValue > 6) {
-                                                                        input.value = currentValue - 6;
-                                                                    } else {
-                                                                        input.value = 1;
-                                                                    }
-                                                                }}
-                                                                className="px-2 py-1 text-xs text-gray-600 hover:bg-gray-100 rounded-l-md"
-                                                            >
-                                                                -
-                                                            </button>
-                                                            <input 
-                                                                type="number" 
-                                                                min="1" 
-                                                                step="6"
-                                                                defaultValue="1"
-                                                                onClick={(e) => e.stopPropagation()}
-                                                                className="w-12 px-1 py-1 text-xs text-center border-x border-gray-300 focus:outline-none"
-                                                            />
-                                                            <button 
-                                                                onClick={(e) => {
-                                                                    e.stopPropagation();
-                                                                    const input = e.target.parentElement.querySelector('input');
-                                                                    const currentValue = parseInt(input.value) || 1;
-                                                                    if (currentValue === 1) {
-                                                                        input.value = 6;
-                                                                    } else {
-                                                                        input.value = currentValue + 6;
-                                                                    }
-                                                                }}
-                                                                className="px-2 py-1 text-xs text-gray-600 hover:bg-gray-100 rounded-r-md"
-                                                            >
-                                                                +
-                                                            </button>
-                                                        </div>
-                                                    </div>
-                                                    
-                                                    {/* Add to Inquiry Button */}
-                                                    <button
-                                                        onClick={(e) => {
-                                                            e.stopPropagation();
-                                                            if (!isLoggedIn) {
-                                                                router.push('/login');
-                                                                return;
-                                                            }
-                                                            const quantityInput = e.target.parentElement.parentElement.querySelector('input[type="number"]');
-                                                            const quantity = parseInt(quantityInput?.value) || 1;
-                                                            router.push(`/productInquiry?productId=${product.id}&quantity=${quantity}`);
-                                                        }}
-                                                        className="w-full py-2 bg-[#C08237] text-white text-xs font-medium rounded-md hover:bg-[#9C774A] transition-colors flex items-center justify-center gap-1"
-                                                    >
-                                                        <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-                                                        </svg>
-                                                        Add to Inquiry
-                                                    </button>
-                                                </div>
-                                            </div>
-                                        </div>
+                                        <ProductCard
+                                            key={product.id}
+                                            product={product}
+                                            showInquiryButton={true}
+                                            showWishlistButton={true}
+                                            className={!isLoggedIn ? 'opacity-75' : ''}
+                                        />
                                     ))}
                                 </div>
 

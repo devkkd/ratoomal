@@ -15,7 +15,7 @@ export const useInquiryCartStore = create(
     loading: false,
     error: null,
 
-    // Initialize store - load from localStorage on mount
+    // Initialize store - load from localStorage on mount with expiration check
     initialize: () => {
       if (typeof window === 'undefined') {
         console.log('🔧 Initialize Cart: Server-side, skipping');
@@ -31,14 +31,40 @@ export const useInquiryCartStore = create(
         
         if (savedCart) {
           const parsed = JSON.parse(savedCart);
-          console.log('✅ Parsed cart:', parsed.cart);
-          set({ cart: parsed.cart || [] });
+          const cart = parsed.cart || [];
+          
+          // Filter out expired items (older than 7 days)
+          const now = new Date();
+          const sevenDaysAgo = new Date(now.getTime() - (7 * 24 * 60 * 60 * 1000));
+          
+          const validCart = cart.filter(item => {
+            if (!item.addedAt) return false; // Remove items without timestamp
+            const addedDate = new Date(item.addedAt);
+            const isValid = addedDate > sevenDaysAgo;
+            
+            if (!isValid) {
+              console.log('🗑️ Removing expired cart item:', item.name, 'added:', addedDate);
+            }
+            
+            return isValid;
+          });
+          
+          console.log(`✅ Loaded ${validCart.length} valid items (${cart.length - validCart.length} expired items removed)`);
+          set({ cart: validCart });
+          
+          // Update localStorage if items were removed
+          if (validCart.length !== cart.length) {
+            localStorage.setItem('inquiry_cart_store', JSON.stringify({ cart: validCart }));
+          }
         } else {
           console.log('⚠️  No saved cart found in localStorage');
         }
         
       } catch (error) {
         console.error('❌ Error initializing cart:', error);
+        // Clear corrupted data
+        localStorage.removeItem('inquiry_cart_store');
+        set({ cart: [] });
       }
     },
 

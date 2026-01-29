@@ -183,7 +183,6 @@ const CustomOrdersPanel = () => {
               <p><b>Country:</b> {selectedOrder.country}</p>
               <p><b>Inquiry Type:</b> {selectedOrder.inquiryType}</p>
               <p><b>Product Category:</b> {selectedOrder.productCategory}</p>
-              <p><b>Estimated Quantity:</b> {selectedOrder.estimatedQuantity}</p>
               <p><b>Customization:</b> {selectedOrder.customizationRequired}</p>
             </div>
 

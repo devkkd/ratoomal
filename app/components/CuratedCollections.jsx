@@ -3,11 +3,13 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useWishlistStore } from '@/store/wishlistStore';
 import { useInquiryCartStore } from '@/store/inquiryCartStore';
+import NotificationToast, { useNotification } from './NotificationToast';
 
 export default function CuratedCollections() {
     const router = useRouter();
     const { wishlist, toggleWishlist, isInWishlist, initialize } = useWishlistStore();
     const { addToCart, initialize: initializeCart } = useInquiryCartStore();
+    const { notification, showNotification, hideNotification } = useNotification();
     const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(true);
 
@@ -95,8 +97,8 @@ export default function CuratedCollections() {
         // Add to inquiry cart with size 3
         addToCart(product, ['3'], quantity);
         
-        // Show success message or redirect to inquiry cart
-        alert(`${product.name} added to inquiry cart!`);
+        // Show success notification
+        showNotification('Product added to inquiry cart!', 'cart');
     };
 
     return (
@@ -251,6 +253,14 @@ export default function CuratedCollections() {
             </div>
 
             <hr className="border-t border-gray-300 mt-8 " />
+            
+            {/* Notification Toast */}
+            <NotificationToast
+                message={notification.message}
+                type={notification.type}
+                isVisible={notification.isVisible}
+                onClose={hideNotification}
+            />
         </div>
     );
 }

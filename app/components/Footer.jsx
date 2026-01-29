@@ -138,7 +138,7 @@ const Footer = () => {
       
         <p className="text-[11px] font-bold text-gray-500">© Ratoomals Handicrafts. All rights reserved.</p>
         <p className="text-[11px] font-bold text-gray-500">
-            House of Quality Since 1955. Crafted by artisans. Trusted by global buyers.
+            House of Quality Since 1955. Crafted by artisans. Trusted by global buyers. | Developed by KKD
           </p>
             </div>
       </div>

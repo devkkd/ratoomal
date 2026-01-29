@@ -22,16 +22,30 @@ const ConnectSection = () => {
           <div className="space-y-6">
             <h4 className="text-xl playfair font-bold  ">Jaipur Office and Showroom</h4>
             <div className="flex gap-4 h-64 md:h-80">
-              <img 
-                src="/images/connect/image-118.svg" 
-                alt="Hawa Mahal Jaipur" 
-                className="w-1/2 object-cover rounded-2xl"
-              />
-              <img 
-                src="/images/connect/image-119.svg" 
-                alt="Jaipur Location Map" 
-                className="w-1/2 object-cover rounded-2xl border border-gray-200"
-              />
+              <a 
+                href="https://maps.google.com/?q=2,+Ratan+Niwas,+Opposite+Anukampa+Mansion,+M.I.+Road,+Jaipur+302001,+Rajasthan,+India"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-1/2 block hover:opacity-90 transition-opacity"
+              >
+                <img 
+                  src="/images/connect/image-118.svg" 
+                  alt="Hawa Mahal Jaipur" 
+                  className="w-full h-full object-cover rounded-2xl"
+                />
+              </a>
+              <a 
+                href="https://maps.google.com/?q=2,+Ratan+Niwas,+Opposite+Anukampa+Mansion,+M.I.+Road,+Jaipur+302001,+Rajasthan,+India"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-1/2 block hover:opacity-90 transition-opacity"
+              >
+                <img 
+                  src="/images/connect/image-119.svg" 
+                  alt="Jaipur Location Map" 
+                  className="w-full h-full object-cover rounded-2xl border border-gray-200"
+                />
+              </a>
             </div>
             <div className="space-y-4 pt-4">
               <h5 className="text-xl mona font-bold">Ratoomal's Handicraft's</h5>
@@ -51,16 +65,30 @@ const ConnectSection = () => {
           <div className="space-y-6">
             <h4 className="text-xl playfair font-bold">Greater Noida Showroom</h4>
             <div className="flex gap-4 h-64 md:h-80">
-              <img 
-                src="/images/connect/Mask-group.svg" 
-                alt="Greater Noida Statue" 
-                className="w-1/2 object-cover rounded-2xl"
-              />
-              <img 
-                src="/images/connect/image-123.svg" 
-                alt="Noida Location Map" 
-                className="w-1/2 object-cover rounded-2xl border border-gray-200"
-              />
+              <a 
+                href="https://maps.google.com/?q=Plot+No.+23/25,+27/29,+Knowledge+Park+II,+Greater+Noida,+Uttar+Pradesh+201310"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-1/2 block hover:opacity-90 transition-opacity"
+              >
+                <img 
+                  src="/images/connect/Mask-group.svg" 
+                  alt="Greater Noida Statue" 
+                  className="w-full h-full object-cover rounded-2xl"
+                />
+              </a>
+              <a 
+                href="https://maps.google.com/?q=Plot+No.+23/25,+27/29,+Knowledge+Park+II,+Greater+Noida,+Uttar+Pradesh+201310"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-1/2 block hover:opacity-90 transition-opacity"
+              >
+                <img 
+                  src="/images/connect/image-123.svg" 
+                  alt="Noida Location Map" 
+                  className="w-full h-full object-cover rounded-2xl border border-gray-200"
+                />
+              </a>
             </div>
             <div className="space-y-4 pt-4">
               <h5 className="text-xl mona font-bold uppercase">INDIA EXPO CENTRE & MART</h5>

@@ -59,11 +59,6 @@ const InquirySchema = new mongoose.Schema(
       enum: ['bulk_order', 'wholesale', 'custom_design', 'private_label', 'corporate_project', 'other'],
       required: true
     },
-    estimatedQuantity: {
-      type: String,
-      enum: ['50-100', '100-500', '500-1000', '1000+', 'to_be_discussed'],
-      required: true
-    },
     customizationNeeded: {
       type: String,
       enum: ['finish_color', 'material', 'packaging', 'branding_logo', 'none'],

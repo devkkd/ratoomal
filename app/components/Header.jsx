@@ -301,7 +301,7 @@ const Header = () => {
       },
       { name: 'CUSTOM ORDERS', href: '/custom-orders' },
       { name: 'CONTACT US', href: '/contact-us' },
-      { name: 'EXHIBITION', href: '/exhibition' },
+      { name: 'EXHIBITIONS', href: '/exhibitions' },
     ];
   };
 
@@ -452,7 +452,7 @@ const Header = () => {
               <div className="p-2 flex justify-center item-center w-10 h-10 border rounded-full border-[#C08237] bg-[#C08237] hover:bg-[#a66f2e] cursor-pointer">
                 <img src='/images/heart.svg' className='w-5 h-5 group-hover:brightness-0 group-hover:invert' alt="wishlist" />
               </div>
-              {wishlist && wishlist.length > 0 && (
+              {isClient && wishlist && wishlist.length > 0 && (
                 <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center min-w-[20px]">
                   {wishlist.length > 99 ? '99+' : wishlist.length}
                 </span>
@@ -468,7 +468,7 @@ const Header = () => {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-1.5 6M7 13l-1.5-6M17 21a2 2 0 100-4 2 2 0 000 4zM9 21a2 2 0 100-4 2 2 0 000 4z" />
                 </svg>
               </div>
-              {getCartCount() > 0 && (
+              {isClient && getCartCount() > 0 && (
                 <span className="absolute -top-1 -right-1 bg-blue-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center min-w-[20px]">
                   {getCartCount() > 99 ? '99+' : getCartCount()}
                 </span>
@@ -479,16 +479,7 @@ const Header = () => {
           {/* Conditional Inquiry/Profile Button */}
           {isLoggedIn ? (
             <>
-              {/* Inquiry Button (Only when logged in) */}
-              {/* <Link href="/inquiry" className="hidden sm:block">
-                <button className="flex items-center gap-2 bg-white text-[#C08237] border border-[#C08237] px-4 py-2 rounded-full text-xs font-bold uppercase hover:bg-[#C08237] hover:text-white transition-all duration-200">
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-                  </svg>
-                  <span>INQUIRY</span>
-                </button>
-              </Link> */}
-
+             
               {/* Profile Dropdown */}
               <div className="relative group">
                 
@@ -923,13 +914,13 @@ const Header = () => {
                     </button>
                   </Link> */}
                   
-                  {/* Inquiry Button in Mobile */}
-                  <Link href="/inquiry" onClick={() => setIsMenuOpen(false)}>
+                  {/* Customer Inquiry Button in Mobile */}
+                  <Link href="/productInquiry" onClick={() => setIsMenuOpen(false)}>
                     <button className="w-full flex items-center justify-center gap-2 bg-white border border-[#C08237] text-[#C08237] px-5 py-3 rounded-full text-xs font-bold uppercase hover:bg-[#C08237] hover:text-white transition-colors">
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
                       </svg>
-                      INQUIRY
+                      CUSTOMER INQUIRY
                     </button>
                   </Link>
                   

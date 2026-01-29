@@ -12,6 +12,18 @@ const nextConfig = {
       : 'http://localhost:3000'
   },
   
+  // Configure external image domains
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'res.cloudinary.com',
+        port: '',
+        pathname: '/**',
+      },
+    ],
+  },
+  
   // Empty turbopack config to silence the warning
   turbopack: {},
 };

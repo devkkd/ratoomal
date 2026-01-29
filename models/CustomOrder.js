@@ -37,11 +37,6 @@ const CustomOrderSchema = new mongoose.Schema(
       default: "",
     },
 
-    estimatedQuantity: {
-      type: String,
-      default: "",
-    },
-
     customizationRequired: {
       type: String,
       default: "",

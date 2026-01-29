@@ -53,6 +53,7 @@ export async function GET(request, { params }) {
       productData = {
         _id: product._id,
         name: product.name,
+        code: product.code, // Add product code
         thumbnail: product.thumbnail,
         images: product.images ? product.images.slice(0, 2) : [], // Only first 2 images
         category: product.category,

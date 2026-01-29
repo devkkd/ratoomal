@@ -14,7 +14,6 @@ const CustomOrderForm = () => {
     phone: "",
     inquiryType: "",
     productCategory: "",
-    estimatedQuantity: "",
     customizationRequired: "",
     message: "",
   });
@@ -36,7 +35,6 @@ const CustomOrderForm = () => {
     if (!formData.phone.trim()) newErrors.phone = "Phone number is required";
     if (!formData.inquiryType) newErrors.inquiryType = "Inquiry type is required";
     if (!formData.productCategory) newErrors.productCategory = "Product category is required";
-    if (!formData.estimatedQuantity) newErrors.estimatedQuantity = "Estimated quantity is required";
     if (!formData.customizationRequired) newErrors.customizationRequired = "Customization required field is required";
     
     setErrors(newErrors);
@@ -154,7 +152,6 @@ const CustomOrderForm = () => {
           phone: "",
           inquiryType: "",
           productCategory: "",
-          estimatedQuantity: "",
           customizationRequired: "",
           message: "",
         });
@@ -345,30 +342,6 @@ const CustomOrderForm = () => {
                 </div>
                 {errors.productCategory && (
                   <p className="text-xs text-red-500">{errors.productCategory}</p>
-                )}
-              </div>
-              <div className="space-y-2">
-                <label className="text-xs font-medium text-gray-700">Estimated Order Quantity *</label>
-                <div className="relative">
-                  <select 
-                    name="estimatedQuantity"
-                    value={formData.estimatedQuantity}
-                    onChange={handleChange}
-                    className={`w-full p-3 bg-white border rounded-md text-sm appearance-none focus:outline-none focus:ring-1 focus:ring-[#C18E4D] ${
-                      errors.estimatedQuantity ? 'border-red-500' : 'border-gray-200'
-                    }`}
-                  >
-                    <option value="">Select Estimated Quantity</option>
-                    <option value="1-100">1-100 units</option>
-                    <option value="100-500">100-500 units</option>
-                    <option value="500-1000">500-1,000 units</option>
-                    <option value="1000-5000">1,000-5,000 units</option>
-                    <option value="5000+">5,000+ units</option>
-                  </select>
-                  <ChevronDown className="absolute right-3 top-3.5 h-4 w-4 text-gray-400 pointer-events-none" />
-                </div>
-                {errors.estimatedQuantity && (
-                  <p className="text-xs text-red-500">{errors.estimatedQuantity}</p>
                 )}
               </div>
               <div className="space-y-2">

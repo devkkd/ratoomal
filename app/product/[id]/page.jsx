@@ -7,6 +7,7 @@ import { useParams, useRouter } from "next/navigation";
 import { useWishlistStore } from '@/store/wishlistStore';
 import { useInquiryCartStore } from '@/store/inquiryCartStore';
 import { useAuth } from '@/hooks/useAuth';
+import NotificationToast, { useNotification } from '../../components/NotificationToast';
 
 const ProductDetailPage = () => {
     const { id } = useParams();
@@ -22,7 +23,7 @@ const ProductDetailPage = () => {
     const [isFullscreen, setIsFullscreen] = useState(false);
     const [showVolumeSlider, setShowVolumeSlider] = useState(false);
     const [quantity, setQuantity] = useState(1);
-    const [selectedSizes, setSelectedSizes] = useState(['3']);  // Default to size 3
+    const [selectedSizes, setSelectedSizes] = useState(['3"']);  // Default to only 3 inch size selected
     const [customSize, setCustomSize] = useState('');
     const [showInquiryModal, setShowInquiryModal] = useState(false);
     const videoRef = useRef(null);
@@ -36,6 +37,9 @@ const ProductDetailPage = () => {
     
     // Inquiry Cart store
     const { addToCart, isInCart, getCartCount, initialize: initializeCart } = useInquiryCartStore();
+
+    // Notification hook
+    const { notification, showNotification, hideNotification } = useNotification();
 
     // Fallback images
     const fallbackImages = [
@@ -94,6 +98,7 @@ const ProductDetailPage = () => {
             const fallbackProduct = {
                 _id: id || "1",
                 name: "Premium Marble Ganesha Statue",
+                code: "PMGS001", // Add fallback product code
                 price: 2999,
                 moq: 50,
                 thumbnail: fallbackImages[0],
@@ -342,6 +347,7 @@ const ProductDetailPage = () => {
         return {
             id: product._id || "1",
             name: product.name || "Premium Product",
+            code: product.code || product._id || "N/A", // Add product code
             price: product.price || 2999,
             moq: product.moq || product.minimumOrderQuantity || 50,
             images: mediaItems.filter(item => item.type === 'image').map(item => item.url),
@@ -714,10 +720,10 @@ const ProductDetailPage = () => {
                                 <h3 className="text-lg font-semibold text-gray-800 mb-4">Product Inquiry</h3>
                                 
                                 {/* Product Code */}
-                                {transformedProduct.id && (
+                                {transformedProduct.code && (
                                     <div className="mb-4">
-                                        <p className="text-sm text-gray-600 mb-1">Product Code:</p>
-                                        <p className="text-lg font-mono font-bold text-[#C08237]">{transformedProduct.id}</p>
+                                        <p className="text-sm text-gray-600 mb-1">Product Code:  <span className="text-lg font-mono font-bold text-[#C08237]">{transformedProduct.code}</span></p>
+                                       
                                     </div>
                                 )}
                                 
@@ -774,7 +780,7 @@ const ProductDetailPage = () => {
                                     </div>
                                     
                                     {/* Selected Sizes Display with Better UI */}
-                                    {selectedSizes.length > 0 && (
+                                    {/* {selectedSizes.length > 0 && (
                                         <div className="mt-4 p-3 bg-gray-50 rounded-lg border border-gray-200">
                                             <p className="text-sm font-medium text-gray-700 mb-2">Selected Sizes:</p>
                                             <div className="flex flex-wrap gap-2">
@@ -794,7 +800,7 @@ const ProductDetailPage = () => {
                                                 ))}
                                             </div>
                                         </div>
-                                    )}
+                                    )} */}
                                 </div>
                                 
                                 {/* Quantity Selector with 6x increment */}
@@ -841,8 +847,8 @@ const ProductDetailPage = () => {
                                 
                                 {/* Action Buttons */}
                                 <div className="space-y-3">
-                                    {/* Send Inquiry Button */}
-                                    <button
+                                  
+                                    {/* <button
                                         onClick={() => {
                                             // Login check: based on isLoggedIn cookie (set on login)
                                             const isLoggedIn =
@@ -870,9 +876,9 @@ const ProductDetailPage = () => {
                                         </svg>
                                         <span>Send Product Inquiry</span>
                                         <ChevronRight size={18} className="md:w-5 md:h-5" />
-                                    </button>
+                                    </button> */}
                                     
-                                    {/* Add to Cart Button */}
+                                   
                                     <button
                                         onClick={() => {
                                             if (!transformedProduct) return;
@@ -880,12 +886,12 @@ const ProductDetailPage = () => {
                                             // Add to cart with selected options
                                             addToCart(
                                                 transformedProduct,
-                                                selectedSizes.length > 0 ? selectedSizes : ['3'],
+                                                selectedSizes.length > 0 ? selectedSizes : ['3"'],
                                                 quantity
                                             );
                                             
-                                            // Show success feedback
-                                            alert('Product added to inquiry cart!');
+                                            // Show success notification
+                                            showNotification('Product added to inquiry cart!', 'cart');
                                         }}
                                         className="w-full py-3 bg-white text-[#C08237] font-semibold border-2 border-[#C08237] rounded-lg hover:bg-[#C08237] hover:text-white transition-colors text-sm md:text-base flex items-center justify-center gap-2"
                                     >
@@ -1100,6 +1106,14 @@ const ProductDetailPage = () => {
             <div className='my-6 md:my-8 px-3 sm:px-4 md:px-0'>
                 <WhyChooseSection/>
             </div>
+
+            {/* Notification Toast */}
+            <NotificationToast
+                message={notification.message}
+                type={notification.type}
+                isVisible={notification.isVisible}
+                onClose={hideNotification}
+            />
         </div>
     );
 };

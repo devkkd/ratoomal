@@ -27,7 +27,6 @@ const InquirySchema = new mongoose.Schema({
   totalProducts: Number,
   totalQuantity: Number,
   inquiryFor: String,
-  estimatedQuantity: String,
   customizationNeeded: String,
   message: String,
   status: { type: String, default: 'pending' }
@@ -84,7 +83,6 @@ async function createTestInquiry() {
       totalProducts: 3,
       totalQuantity: 54,
       inquiryFor: 'custom_design',
-      estimatedQuantity: '100-500',
       customizationNeeded: 'branding_logo',
       message: 'Test inquiry for CSV generation',
       status: 'pending'

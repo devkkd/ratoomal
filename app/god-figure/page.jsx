@@ -3,7 +3,9 @@ import React, { useState, useEffect } from 'react';
 import { ChevronRight, Search, Heart } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useWishlistStore } from '@/store/wishlistStore';
+import { useInquiryCartStore } from '@/store/inquiryCartStore';
 import Cookies from 'js-cookie';
+import NotificationToast, { useNotification } from '../components/NotificationToast';
 
 // Filter options
 const filters = {
@@ -22,6 +24,8 @@ const PRODUCTS_PER_PAGE = 12;
 const GodFigurePage = () => {
     const router = useRouter();
     const { wishlist, toggleWishlist, isInWishlist, initialize } = useWishlistStore();
+    const { addToCart } = useInquiryCartStore();
+    const { notification, showNotification, hideNotification } = useNotification();
     
     const [activeProductType, setActiveProductType] = useState("All Products");
     const [selectedGodFigure, setSelectedGodFigure] = useState([]);
@@ -833,9 +837,16 @@ const GodFigurePage = () => {
                                                                 router.push('/login');
                                                                 return;
                                                             }
+                                                            
+                                                            // Add to inquiry cart with only 3-inch size by default
                                                             const quantityInput = e.target.parentElement.parentElement.querySelector('input[type="number"]');
                                                             const quantity = parseInt(quantityInput?.value) || 1;
-                                                            router.push(`/productInquiry?productId=${product.id}&quantity=${quantity}`);
+                                                            
+                                                            // Add to cart with only 3-inch size
+                                                            addToCart(product, ['3'], quantity);
+                                                            
+                                                            // Show notification
+                                                            showNotification('Product added to inquiry cart!', 'cart');
                                                         }}
                                                         className="w-full py-2 bg-[#C08237] text-white text-xs font-medium rounded-md hover:bg-[#9C774A] transition-colors flex items-center justify-center gap-1"
                                                     >
@@ -995,6 +1006,14 @@ const GodFigurePage = () => {
                     onClick={() => setIsSortOpen(false)}
                 />
             )}
+
+            {/* Notification Toast */}
+            <NotificationToast
+                message={notification.message}
+                type={notification.type}
+                isVisible={notification.isVisible}
+                onClose={hideNotification}
+            />
         </div>
     );
 };
