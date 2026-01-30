@@ -749,8 +749,8 @@ const AnimalPage = () => {
                                                 <div className="mt-3 space-y-2">
                                                     {/* Quantity Selector */}
                                                     <div className="flex items-center justify-between">
-                                                        <span className="text-xs text-gray-600">Quantity:</span>
-                                                        <div className="flex items-center border border-gray-300 rounded-md">
+                                                        <span className="text-xs hidden sm:flex text-gray-600">Quantity:</span>
+                                                        <div className="flex items-center mx-auto sm:mx-0 border border-gray-300 rounded-md">
                                                             <button 
                                                                 onClick={(e) => {
                                                                     e.stopPropagation();
