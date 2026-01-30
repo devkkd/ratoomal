@@ -10,7 +10,7 @@ export default function ArtOfAuthenticity() {
       </p>
 
    
-      <h1 className="playfair text-[50px] font-semibold text-[#C08237] mt-8 my-7">
+      <h1 className="playfair text-[30px] sm:text-[50px] font-semibold text-[#C08237] mt-8 my-7">
       Where Royal Rajasthan Craftsmanship
       </h1>
 

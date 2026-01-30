@@ -3,13 +3,13 @@ import { ArrowRight } from 'lucide-react';
 
 const ConnectSection = () => {
   return (
-    <section className="bg-white py-20 px-6 md:px-12 lg:px-24 text-[#1A1A1A]">
+    <section className="bg-white py-8 sm:py-20 px-6 md:px-12 lg:px-24 text-[#1A1A1A]">
       <div className="max-w-7xl mx-auto">
         
         {/* Header Section */}
         <div className="mb-16">
           <h3 className="text-2xl md:text-3xl playfair font-bold text-gray-800">Contact Us</h3>
-          <h2 className="text-4xl md:text-4xl font-bold mona my-6">Connect with Ratoomal's</h2>
+          <h2 className="text-3xl md:text-4xl font-bold mona my-6">Connect with Ratoomal's</h2>
           <h6 className="text-gray-600 text-md ">
             We welcome inquiries from international retailers, distributors, interior design partners, and export clients.
           </h6>
@@ -90,7 +90,7 @@ const ConnectSection = () => {
                 />
               </a>
             </div>
-            <div className="space-y-4 pt-4">
+            {/* <div className="space-y-4 pt-4">
               <h5 className="text-xl mona font-bold uppercase">INDIA EXPO CENTRE & MART</h5>
               <p className="text-sm leading-relaxed text-gray-700 mona">
                 Plot No. 23/25, 27/29, Knowledge Park II, Greater Noida, Uttar Pradesh 201310
@@ -98,7 +98,22 @@ const ConnectSection = () => {
               <button className="mt-4 bg-[#121212] text-white px-8 py-3 rounded-full text-sm font-semibold flex items-center gap-2 hover:bg-gray-800 transition-all">
                 Reserve Your Visit <span className="text-lg">+</span>
               </button>
+            </div> */}
+               <div className="space-y-6">
+                     
+            <div className="space-y-4 pt-4">
+              <h5 className="text-xl mona font-bold">INDIA EXPO CENTRE & MART</h5>
+              <p className="text-sm leading-relaxed mona text-gray-700">
+                <span className="font-bold mona text-black">Address :</span> Plot No. 23/25, 27/29, Knowledge Park II, Greater Noida, Uttar Pradesh 201310, Rajasthan, India.
+              </p>
+              <p className="text-sm text-gray-700 mona">
+                <span className="font-bold mona text-black">Phone :</span> +91-9828358847 / +91-9414069594
+              </p>
+              <p className="text-sm text-gray-700 mona">
+                <span className="font-bold mona text-black">Email :</span> ratoomal@ratoomals.com
+              </p>
             </div>
+          </div>
           </div>
 
         </div>

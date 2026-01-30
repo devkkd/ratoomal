@@ -25,13 +25,13 @@ export default function HomePage() {
       </section>
 
       {/* WHY US */}
-      <section className=" px-4">
+      <section className="">
         <Craftsmanship />
 
       </section>
 
       {/* PRODUCTS */}
-      <section className="px-4">
+      <section className="-mt-12">
         <ElephantSizeFilter />
 
         <div className="">

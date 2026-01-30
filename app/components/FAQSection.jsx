@@ -55,12 +55,12 @@ const FAQSection = () => {
   ];
 
   return (
-    <section className="bg-[#fdfbf7] min-h-screen py-16 px-16 ">
+    <section className="bg-[#fdfbf7] min-h-screen py-16 px-7 sm:px-16 ">
       <div className="max-w-7xl mx-auto flex flex-col md:flex-row gap-12">
         
         {/* Left Sidebar Title */}
         <div className="md:w-1/3">
-          <h2 className="text-4xl md:text-4xl mona font-bold text-gray-900 leading-[1.1]">
+          <h2 className="text-3xl md:text-4xl mona font-bold text-gray-900 leading-[1.1]">
             Frequently<br />Asked Questions
           </h2>
         </div>

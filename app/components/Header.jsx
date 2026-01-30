@@ -379,31 +379,31 @@ const Header = () => {
         </div>
 
         {/* Mobile Menu Icon & Search */}
-        <div className="lg:hidden flex items-center gap-3 flex-1">
+        <div className="lg:hidden flex items-center gap-3">
           <button onClick={() => setIsMenuOpen(true)}>
             <Menu className="text-[#C08237]" size={28} />
           </button>
           
           {/* Mobile Search Icon */}
-          <div className="md:hidden">
+          {/* <div className="md:hidden">
             <button 
               onClick={() => setIsSearchOpen(!isSearchOpen)}
               className="p-2 border rounded-full border-[#C08237] bg-transparent hover:bg-[#C08237] transition-all group"
             >
               <img src='/images/search-normal.svg' className='w-4 h-4 group-hover:brightness-0 group-hover:invert' alt="search" />
             </button>
-          </div>
+          </div> */}
         </div>
 
         {/* Center Logo */}
-        <div className="flex justify-center flex-1">
+        <div className="flex justify-center lg:flex-1">
           <Link href="/">
             <img src="/images/Group-56121.svg" alt="Logo" className="h-10 w-auto" />
           </Link>
         </div>
 
         {/* Right Side (Search & Auth) */}
-        <div className="flex  items-center justify-end gap-2 flex-1" ref={searchRef}>
+        <div className="flex  items-center justify-end gap-2 lg:flex-1" ref={searchRef}>
           {/* Search Bar */}
           <div className="relative hidden md:block">
             <div className="relative">
@@ -481,7 +481,7 @@ const Header = () => {
             <>
              
               {/* Profile Dropdown */}
-              <div className="relative group">
+              <div className="relative group hidden sm:flex">
                 
                  <button
                         onClick={handleLogout}
@@ -499,7 +499,7 @@ const Header = () => {
             </>
           ) : (
             /* Login Button (Only when NOT logged in) */
-            <Link href="/login">
+            <Link href="/login" className='hidden sm:flex'>
               <button className="hidden sm:flex  items-center justify-center gap-1 bg-[#C08237] text-white px-6 py-1 rounded-full text-xs font-bold uppercase hover:bg-[#a66f2e] transition-colors">
                 <img src='/images/profile.svg' className='w-4 h-4 brightness-0 invert' alt="login" />
                 <span className="hidden sm:inline">LOGIN</span>
@@ -605,7 +605,7 @@ const Header = () => {
                                   className={`flex items-center justify-between w-full px-6 py-3 text-sm font-medium transition-all border-b border-gray-100 last:border-0 ${
                                     isLoggedIn 
                                       ? 'text-gray-700 hover:bg-[#C08237] hover:text-white' 
-                                      : 'text-gray-500 hover:bg-yellow-50 hover:text-yellow-700'
+                                      : 'text-gray-500 hover:bg-[#C08237] hover:text-white'
                                   }`}
                                   title={!isLoggedIn ? "Login required to access this category" : ""}
                                 >
@@ -638,7 +638,7 @@ const Header = () => {
                                           className={`flex items-center justify-between w-full px-4 py-2 text-xs font-medium transition-all border-b border-gray-50 last:border-0 ${
                                             isLoggedIn 
                                               ? 'text-gray-600 hover:bg-[#C08237] hover:text-white' 
-                                              : 'text-gray-400 hover:bg-yellow-50 hover:text-yellow-600'
+                                              : 'text-gray-400 hover:bg-[#C08237] hover:text-white'
                                           }`}
                                           title={!isLoggedIn ? "Login required to access this subcategory" : ""}
                                         >
@@ -656,11 +656,11 @@ const Header = () => {
                               </div>
                             );
                           })}
-                          <div className="border-t border-gray-200 mt-2 pt-2">
+                          <div className="border-t border-gray-200 ">
                             <Link
                               href="/custom-orders"
                               onClick={() => setActiveDropdown(null)}
-                              className="flex items-center justify-between px-6 py-3 text-sm font-medium text-gray-700 hover:bg-[#FFF6EB] hover:text-[#C08237] transition-all"
+                              className="flex items-center justify-between px-6 py-3 text-sm font-medium text-gray-700 hover:bg-[#C08237] hover:text-white transition-all"
                             >
                               Custom Orders
                             </Link>

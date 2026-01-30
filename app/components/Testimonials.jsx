@@ -44,13 +44,13 @@ const testimonials = [
 
 const Testimonials = () => {
   return (
-    <section className="py-20 px-6 md:px-16 bg-[#FEFBF4] overflow-hidden">
+    <section className="sm:py-20 px-6 md:px-16 bg-[#FEFBF4] overflow-hidden">
       <div className="max-w-7xl mx-auto">
         
         {/* Header Section */}
         <div className="flex flex-col lg:flex-row justify-between items-start lg:items-end mb-16 gap-6">
           <div className="flex-1">
-            <div className='flex justify-between '>
+            <div className='sm:flex justify-between '>
             <h4 className="text-[32px] playfair text-[#1A1A1A] font-bold mb-4">Testimonials</h4>
             <div className="flex items-center gap-4 pb-2">
             <div className="flex items-center gap-2">
@@ -80,7 +80,7 @@ const Testimonials = () => {
             </div>
           </div>
             </div>
-            <h2 className="text-4xl md:text-[28px] font-bold text-[#1A1A1A]  mona">
+            <h2 className="text-3xl md:text-[28px] font-bold text-[#1A1A1A]  mona">
               Global Partners & Happy Clients
             </h2>
           </div>

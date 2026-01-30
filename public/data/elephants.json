@@ -1,0 +1,92 @@
+[
+  {
+    "id": 1,
+    "name": "Hand Painted Multi Color Wooden",
+    "image": "/images/elephant-1.svg",
+    "style": "Hand Painted",
+    "finish": "Multi Color",
+    "material": "Wooden",
+    "sizes": ["Mini", "Small", "Medium", "Large", "XL", "XXL"]
+  },
+  {
+    "id": 2,
+    "name": "Hand Painted Single Color Wooden",
+    "image": "/images/elephant/istockphoto-95710418-612x612.jpg",
+    "style": "Hand Painted",
+    "finish": "Single Color",
+    "material": "Wooden",
+  "sizes": ["Mini", "Small", "Medium", "Large", "XL", "XXL"]
+  },
+  {
+    "id": 3,
+    "name": "Hand Carved Multi Color Wooden",
+    "image": "/images/elephant/istockphoto-465002960-612x612.jpg",
+    "style": "Hand Carved",
+    "finish": "Multi Color",
+    "material": "Wooden",
+   "sizes": ["Mini", "Small", "Medium", "Large", "XL", "XXL"]
+  },
+  {
+    "id": 4,
+    "name": "Hand Painted Gold Foil Brass",
+    "image": "/images/elephant/istockphoto-465031224-612x612.jpg",
+    "style": "Hand Painted",
+    "finish": "Gold Foil",
+    "material": "Brass",
+   "sizes": ["Mini", "Small", "Medium", "Large", "XL", "XXL"]
+  },
+  {
+    "id": 5,
+    "name": "Antique Finish Meenakari Marble",
+    "image": "/images/elephant/istockphoto-500432743-612x612.jpg",
+    "style": "Antique Finish",
+    "finish": "Meenakari",
+    "material": "Marble",
+  "sizes": ["Mini", "Small", "Medium", "Large", "XL", "XXL"]
+  },
+  {
+    "id": 6,
+    "name": "Heritage Diamond Stone Resin",
+    "image": "/images/elephant/istockphoto-1162631262-612x612.jpg",
+    "style": "Heritage",
+    "finish": "Diamond/Stone",
+    "material": "Resin",
+   "sizes": ["Mini", "Small", "Medium", "Large", "XL", "XXL"]
+  },
+  {
+    "id": 7,
+    "name": "Minimal Wood Wooden",
+    "image": "/images/elephant/istockphoto-1369757859-612x612.jpg",
+    "style": "Minimal",
+    "finish": "Wood",
+    "material": "Wooden",
+    "sizes": ["Mini", "Small", "Medium", "Large", "XL", "XXL"]
+  },
+  {
+    "id": 8,
+    "name": "Royal Meenakari Meenakari",
+    "image": "/images/elephant/istockphoto-1369757859-612x612.jpg",
+    "style": "Royal",
+    "finish": "Meenakari",
+    "material": "Meenakari",
+    "sizes": ["Mini", "Small", "Medium", "Large", "XL", "XXL"]
+  },
+  {
+    "id": 9,
+    "name": "Hand Painted Multi Color Brass",
+    "image": "/images/elephant/mosaic-design-elephant-studio.jpg",
+    "style": "Hand Painted",
+    "finish": "Multi Color",
+    "material": "Brass",
+    "sizes": ["Mini", "Small", "Medium", "Large", "XL", "XXL"]
+  },
+  {
+    "id": 10,
+    "name": "Hand Carved Wood Wooden",
+    "image": "/images/products/image 59.png",
+    "style": "Hand Carved",
+    "finish": "Wood",
+    "material": "Wooden",
+   "sizes": ["Mini", "Small", "Medium", "Large", "XL", "XXL"]
+  }
+]

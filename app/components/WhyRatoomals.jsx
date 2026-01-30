@@ -39,12 +39,12 @@ const WhyRatoomals = () => {
   ];
 
   return (
-    <section className="bg-[#FAF9F6]  py-24 px-6 md:px-20 overflow-hidden">
+    <section className="bg-[#FAF9F6] py-8 sm:py-24 px-6 md:px-20 overflow-hidden">
       <div className="max-w-7xl ">
         
         {/* Header Section */}
-        <div className="mb-20 mx-6">
-          <h2 className="text-[#1A1A1A] playfair font-semibold text-4xl mb-4">
+        <div className="mb-20 sm:mx-6">
+          <h2 className="text-[#1A1A1A] text-center sm:text-left playfair font-semibold text-4xl mb-4">
             Why Ratoomal's
           </h2>
           <h2 className="text-[#1A1A1A] text-3xl md:text-4xl font-bold leading-tight  my-8">
@@ -53,7 +53,7 @@ const WhyRatoomals = () => {
         </div>
 
         {/* Features List Container */}
-        <div className="relative max-w-7xl ">
+        <div className="relative max-w-7xl sm:mt-0 -mt-9 ">
           {features.map((item, index) => {
             const isActive = activeIndex === index;
             
@@ -61,7 +61,7 @@ const WhyRatoomals = () => {
               <div
                 key={index}
                 onMouseEnter={() => setActiveIndex(index)}
-                className={`relative flex flex-col md:flex-row items-start md:items-center py-10 cursor-pointer transition-all duration-500 ease-in-out ${
+                className={`relative flex flex-col md:flex-row items-start md:items-center py-3 sm:py-10 cursor-pointer transition-all duration-500 ease-in-out ${
                   isActive ? 'bg-[#C2843E] text-white -mx-6 md:-mx-21 px-6 md:px-20' : 'text-[#1A1A1A] border-b border-gray-200'
                 }`}
               >

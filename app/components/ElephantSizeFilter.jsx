@@ -11,6 +11,7 @@ export default function RoyalCollection() {
 
   const [showLeftScroll, setShowLeftScroll] = useState(false);
   const [showRightScroll, setShowRightScroll] = useState(true);
+  const [elephantData, setElephantData] = useState([]);
   
   const scrollRefs = [useRef(null), useRef(null), useRef(null)];
 
@@ -33,8 +34,50 @@ export default function RoyalCollection() {
     { name: "Metal Inlay", color: "#626262" },
   ];
 
+  // Load elephant data on component mount
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        const response = await fetch('/data/elephants.json');
+        const data = await response.json();
+        setElephantData(data);
+        
+        // Set default filters based on first elephant
+        if (data.length > 0) {
+          const defaultElephant = data[0];
+          setFilters({
+            style: defaultElephant.style,
+            finish: defaultElephant.finish,
+            material: defaultElephant.material,
+          });
+        }
+      } catch (error) {
+        console.error("Error loading elephant data:", error);
+      }
+    };
+    
+    loadData();
+  }, []);
+
   const handleSelect = (key, value) => {
-    setFilters((prev) => ({ ...prev, [key]: value }));
+    const newFilters = { ...filters, [key]: value };
+    setFilters(newFilters);
+    
+    // Log current combination
+    if (elephantData.length > 0) {
+      const matchedElephant = elephantData.find(elephant => 
+        elephant.style === newFilters.style && 
+        elephant.finish === newFilters.finish && 
+        elephant.material === newFilters.material
+      );
+      
+      if (matchedElephant) {
+        console.log("Selected elephant:", matchedElephant.name);
+        console.log("Available sizes:", matchedElephant.sizes);
+      } else {
+        console.log("No exact match found for combination:", newFilters);
+      }
+    }
   };
 
   const checkScroll = (container, index) => {
@@ -42,7 +85,6 @@ export default function RoyalCollection() {
       const showLeft = container.scrollLeft > 0;
       const showRight = container.scrollLeft < container.scrollWidth - container.clientWidth - 1;
       
-      // You can store these states in an array if you want independent scroll buttons
       setShowLeftScroll(showLeft);
       setShowRightScroll(showRight);
     }
@@ -66,10 +108,8 @@ export default function RoyalCollection() {
         const handleScroll = () => checkScroll(container, index);
         container.addEventListener('scroll', handleScroll);
         
-        // Initial check
         checkScroll(container, index);
         
-        // Re-check on window resize
         const handleResize = () => checkScroll(container, index);
         window.addEventListener('resize', handleResize);
         
@@ -81,13 +121,27 @@ export default function RoyalCollection() {
     });
   }, []);
 
+  // Get available combinations for current filters
+  const getAvailableCombinations = () => {
+    if (elephantData.length === 0) return [];
+    
+    const { style, finish, material } = filters;
+    
+    // Find all elephants matching current filters
+    return elephantData.filter(elephant => 
+      elephant.style === style || 
+      elephant.finish === finish || 
+      elephant.material === material
+    );
+  };
+
   return (
-    <div className="w-full bg-[#FCF9F3] px-10 py-6 md:p-8 font-sans">
+    <div className="w-full bg-[#FCF9F3] px-10 py-6 md:p-8  ">
       <div className="max-w-7xl mx-auto flex flex-col lg:flex-row items-center gap-6 lg:gap-8">
         
         {/* Left Section: Branding - 45% width */}
-        <div className="w-full lg:w-[45%]  text-center  flex flex-col justify-center items-center">
-          <div className="max-w-md mx-auto lg:mx-0"> {/* Added wrapper for better control */}
+        <div className="w-full lg:w-[45%] text-center flex flex-col justify-center items-center">
+          <div className="max-w-md mx-auto lg:mx-0">
             <h1 className="text-3xl md:text-5xl playfair font-serif font-bold text-[#1a1a1a] mb-4 md:mb-6 leading-tight">
               The Elephant Guy
             </h1>
@@ -97,6 +151,21 @@ export default function RoyalCollection() {
             <p className="text-[#4a4a4a] mona text-sm md:text-base">
               From Palm-Size to Palace-Size – Your Elephant, Your Way
             </p>
+            
+            {/* Display current selection */}
+            {/* {elephantData.length > 0 && (
+              <div className="mt-4 p-3 bg-white/50 rounded-lg border">
+                <p className="text-sm font-medium text-gray-700">
+                  Current Selection:
+                </p>
+                <p className="text-xs text-gray-600">
+                  {filters.style} • {filters.finish} • {filters.material}
+                </p>
+                <p className="text-xs text-gray-500 mt-1">
+                  {getAvailableCombinations().length} matching designs available
+                </p>
+              </div>
+            )} */}
           </div>
         </div>
 
@@ -105,17 +174,17 @@ export default function RoyalCollection() {
 
         {/* Right Section: Customization - 55% width */}
         <div className="w-full lg:w-[55%] space-y-5 lg:pl-4 ">
-          <h3 className="text-base mona md:text-md font-bold text-black  text-center lg:text-left">
+          <h3 className="text-base mona md:text-md font-bold text-black text-center lg:text-left">
             Customize you want
           </h3>
 
           {/* Style Row */}
-          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-1 ">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-1">
             <span className="font-bold text-sm w-20 sm:w-16 shrink-0">Craft</span>
             <div className="relative w-full">
               <div 
                 ref={scrollRefs[0]}
-                className="flex overflow-x-auto scrollbar-hide gap-1  px-1"
+                className="flex overflow-x-auto scrollbar-hide gap-1 px-1"
                 onScroll={() => checkScroll(scrollRefs[0].current, 0)}
               >
                 {styles.map((item) => (
@@ -131,26 +200,11 @@ export default function RoyalCollection() {
                   </button>
                 ))}
               </div>
-              {/* Scroll Indicators */}
-              {/* <div className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-2">
-                {showLeftScroll && (
-                  <div className="w-6 h-6 flex items-center justify-center bg-white/80 backdrop-blur-sm rounded-full shadow-sm border">
-                    <span className="text-xs">←</span>
-                  </div>
-                )}
-              </div> */}
-              {/* <div className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-2">
-                {showRightScroll && (
-                  <div className="w-6 h-6 flex items-center justify-center bg-white/80 backdrop-blur-sm rounded-full shadow-sm border">
-                    <span className="text-xs">→</span>
-                  </div>
-                )}
-              </div> */}
             </div>
           </div>
 
           {/* Finish Row */}
-          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-1 ">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-1">
             <span className="font-bold text-sm w-20 sm:w-16 shrink-0">Finish</span>
             <div className="relative w-full">
               <div 
@@ -172,21 +226,6 @@ export default function RoyalCollection() {
                   </button>
                 ))}
               </div>
-              {/* Scroll Indicators */}
-              {/* <div className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-2">
-                {showLeftScroll && (
-                  <div className="w-6 h-6 flex items-center justify-center bg-white/80 backdrop-blur-sm rounded-full shadow-sm border">
-                    <span className="text-xs">←</span>
-                  </div>
-                )}
-              </div> */}
-              {/* <div className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-2">
-                {showRightScroll && (
-                  <div className="w-6 h-6 flex items-center justify-center bg-white/80 backdrop-blur-sm rounded-full shadow-sm border">
-                    <span className="text-xs">→</span>
-                  </div>
-                )}
-              </div> */}
             </div>
           </div>
 
@@ -213,28 +252,38 @@ export default function RoyalCollection() {
                   </button>
                 ))}
               </div>
-              {/* Scroll Indicators */}
-              {/* <div className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-2">
-                {showLeftScroll && (
-                  <div className="w-6 h-6 flex items-center justify-center bg-white/80 backdrop-blur-sm rounded-full shadow-sm border">
-                    <span className="text-xs">←</span>
-                  </div>
-                )}
-              </div> */}
-              {/* <div className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-2">
-                {showRightScroll && (
-                  <div className="w-6 h-6 flex items-center justify-center bg-white/80 backdrop-blur-sm rounded-full shadow-sm border">
-                    <span className="text-xs">→</span>
-                  </div>
-                )}
-              </div> */}
             </div>
           </div>
+          
+          {/* Available Combinations Preview */}
+          {/* {elephantData.length > 0 && (
+            <div className="mt-4 pt-4 border-t border-gray-200">
+              <p className="text-xs text-gray-500 mb-2">
+                Available designs for current selection:
+              </p>
+              <div className="flex flex-wrap gap-2">
+                {getAvailableCombinations().slice(0, 3).map((elephant, idx) => (
+                  <div 
+                    key={elephant.id}
+                    className="text-xs px-2 py-1 rounded-full bg-gray-100 border border-gray-300"
+                    title={elephant.name}
+                  >
+                    {elephant.sizes.length} sizes
+                  </div>
+                ))}
+                {getAvailableCombinations().length > 3 && (
+                  <div className="text-xs px-2 py-1 rounded-full bg-gray-100 border border-gray-300">
+                    +{getAvailableCombinations().length - 3} more
+                  </div>
+                )}
+              </div>
+            </div>
+          )} */}
         </div>
       </div>
 
       <div className="mt-8 lg:mt-12">
-        <ElephantSizeGuide />
+        <ElephantSizeGuide filters={filters} />
       </div>
 
       {/* Add this to your global CSS or tailwind.config.js */}

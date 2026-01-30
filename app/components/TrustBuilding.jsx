@@ -1,3 +1,5 @@
+
+import Link from "next/link";
 import React from "react";
 
 const TrustBuilding = () => {
@@ -38,7 +40,7 @@ const TrustBuilding = () => {
 
       <div className="max-w-6xl  mx-auto relative z-10 flex flex-col">
         {/* Top Content */}
-        <div className="flex flex-col md:flex-row items-center justify-between gap-7 mb-16">
+        <div className="flex flex-col md:flex-row items-center justify-between gap-4 sm:gap-7 mb-16">
           <div className="relative w-full md:w-[40%] flex justify-center">
             <img
               src="/images/Group-241.svg"
@@ -47,7 +49,7 @@ const TrustBuilding = () => {
             />
           </div>
 
-          <div className="w-full md:w-[60%] text-left space-y-6">
+          <div className="w-full md:w-[60%] text-center  sm:text-left space-y-6">
             <h2
               className="text-xl md:text-[33px] font-bold playfair"
               style={{
@@ -63,7 +65,7 @@ const TrustBuilding = () => {
               Handicraft & Sculptural Excellence
             </h1>
             <div className="space-y-4">
-              <p className="text-gray-700 text-md max-w-xl mona">
+              <p className="text-gray-700  text-md max-w-xl mona">
                 From the Royal City of Jaipur to the World - Handcrafted Statues, 
                 Sculptures & Decor with Timeless Indian Heritage.  
                 <span className="text-black text-md pl-1 font-bold uppercase mona">
@@ -71,13 +73,16 @@ const TrustBuilding = () => {
                 </span>
               </p>
             </div>
-
-            <button className="mt-8 mona px-10 py-4 bg-[#c48b46] text-white rounded-full flex items-center gap-1 hover:bg-[#a6753a] transition-all duration-300 font-medium text-base uppercase">
+            <div className="text-center items-center  sm:items-center flex justify-center sm:justify-start w-full"> 
+            <Link href="/category">
+            <button className=" mona px-10 py-4 bg-[#c48b46] text-white rounded-full flex items-center gap-1 hover:bg-[#a6753a] transition-all duration-300 font-medium text-base uppercase">
               EXPLORE COLLECTIONS
               <span className="text-xl group-hover:translate-y-1 transition-transform duration-300">
                 ↓
               </span>
             </button>
+            </Link>
+            </div>
           </div>
         </div>
 

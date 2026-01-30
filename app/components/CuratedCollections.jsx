@@ -102,7 +102,7 @@ export default function CuratedCollections() {
     };
 
     return (
-        <div className="max-w-7xl items-center mx-auto px-4 sm:px-6 lg:px-12 py-10">
+        <div className="max-w-7xl items-center mx-auto px-4 sm:px-6 lg:px-12">
             <h2 className="playfair text-2xl md:text-4xl text-center flex justify-center font-bold mb-8 letter-spacing-[-0.02em]">
                 Curated Collections - Crafted for Global Markets
             </h2>
@@ -123,7 +123,7 @@ export default function CuratedCollections() {
                     <p className="text-gray-600">No animal products found</p>
                 </div>
             ) : (
-            <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 px-6">
+            <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:px-6">
                 {products.map((item) => (
                     <div 
                         key={item.id} 

@@ -107,7 +107,7 @@ export default function GodFigurines() {
     };
 
     return (
-        <div className="max-w-7xl items-center mx-auto px-4 sm:px-6 lg:px-12 ">
+        <div className="max-w-7xl items-center mt-4 mx-auto px-4 sm:px-6 lg:px-12 ">
            
             <h3 className="playfair text-xl md:text-[30px] text-center flex justify-center font-semibold letter-spacing-[-0.01em] mb-10">
                God Figurines
@@ -122,7 +122,7 @@ export default function GodFigurines() {
                     <p className="text-gray-600">No god products found</p>
                 </div>
             ) : (
-            <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 px-6">
+            <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:px-6">
                 {products.map((item) => (
                     <div 
                         key={item.id} 

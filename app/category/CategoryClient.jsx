@@ -782,11 +782,11 @@ const CategoryPage = () => {
             {/* Header */}
             <header className="bg-white py-2">
                 <div className="max-w-7xl mx-auto px-4 py-6">
-                    <h1 className="text-3xl playfair font-bold text-center text-gray-800 mb-2">Category</h1>
+                    <h1 className="text-3xl playfair font-bold text-center text-gray-800 sm:mb-2">Category</h1>
                 </div>
             </header>
 
-            <div className="max-w-7xl mx-auto px-4 py-8">
+            <div className="max-w-7xl mx-auto px-4 py-4 sm:py-8">
                 <div className="flex flex-col lg:flex-row gap-8">
                     {/* Left Sidebar */}
                     <aside className="w-full lg:w-60 flex-shrink-0">

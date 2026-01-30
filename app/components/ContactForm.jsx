@@ -170,7 +170,7 @@ const ContactForm = () => {
     }
   };
   return (
-    <section className="bg-[#FDF6EB] min-h-screen py-16 font-sans text-[#1A1A1A]">
+    <section className="bg-[#FDF6EB] min-h-screen py-8 sm:py-16 font-sans text-[#1A1A1A]">
       {/* Success/Error Messages */}
       {submitStatus && (
         <div className={`max-w-7xl mx-auto mb-8 p-4 rounded-lg flex items-center space-x-3 ${
@@ -194,7 +194,7 @@ const ContactForm = () => {
           <h3 className="text-2xl md:text-3xl playfair font-bold text-gray-800">
             Custom & Bulk Solutions
           </h3>
-          <h2 className="text-4xl md:text-4xl font-bold mona">
+          <h2 className="text-3xl md:text-4xl font-bold mona">
             Tailored Craftsmanship <br /> for Your Business
           </h2>
           <p className="text-gray-600 text-md max-w-md  mona">
@@ -206,7 +206,7 @@ const ContactForm = () => {
 
         {/* Right Column: Form */}
         <div>
-          <h2 className="text-3xl md:text-3xl playfair font-bold mb-8">
+          <h2 className="text-2xl md:text-3xl playfair font-bold mb-8">
             Contact Our Design Team
           </h2>
 
