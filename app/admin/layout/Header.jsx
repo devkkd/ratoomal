@@ -32,12 +32,12 @@ export default function Header({ sidebarOpen, toggleSidebar }) {
       console.log('✅ Logged out successfully');
 
       // Redirect to login
-      router.push('/login/admin');
+      router.push('/admin');
     } catch (error) {
       console.error('❌ Logout error:', error);
       // Still redirect on error
       localStorage.removeItem('adminToken');
-      router.push('/login/admin');
+      router.push('/admin');
     } finally {
       setIsLoggingOut(false);
     }

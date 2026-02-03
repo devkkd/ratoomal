@@ -20,9 +20,9 @@ import {
 import Image from 'next/image';
 
 const navigation = [
-  { name: 'Dashboard', href: '/admin', icon: HomeIcon },
+  { name: 'Dashboard', href: '/admin/dashboard', icon: HomeIcon },
   { name: 'Products', href: '/admin/products', icon: ArchiveBoxIcon },
-  { name: 'Inquiry', href: '/admin/inquiry', icon: ShoppingCartIcon },
+  { name: 'Product Inquiry', href: '/admin/inquiry', icon: ShoppingCartIcon },
   { name: 'Customer Inquiries', href: '/admin/customer-inquiries', icon: QuestionMarkCircleIcon },
   { name: 'Customers', href: '/admin/customers', icon: UsersIcon },
   { name: 'Category', href: '/admin/categories', icon: ChartBarIcon },
@@ -124,10 +124,10 @@ export default function Sidebar({ isOpen, setIsOpen }) {
         
 
           {/* Logout Button */}
-          <button className="w-full mt-4 px-3 py-2 text-sm font-medium text-red-600 bg-red-50 rounded-lg hover:bg-red-100 transition-colors flex items-center justify-center">
+          {/* <button className="w-full mt-4 px-3 py-2 text-sm font-medium text-red-600 bg-red-50 rounded-lg hover:bg-red-100 transition-colors flex items-center justify-center">
             <ArrowRightOnRectangleIcon className="w-4 h-4 mr-2" />
             Sign Out
-          </button>
+          </button> */}
         </div>
       </aside>
     </>

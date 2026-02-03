@@ -962,7 +962,7 @@ const CategoryPage = () => {
                             )}
                         </div>
 
-                        {/* Product Grid */}
+                        {/* Product Display - Category-wise sliders for "All Products", regular grid for specific categories */}
                         {loading ? (
                             <div className="flex justify-center items-center h-64">
                                 <div className="text-gray-600">Loading products...</div>
@@ -971,7 +971,177 @@ const CategoryPage = () => {
                             <div className="text-center py-12">
                                 <p className="text-gray-600">No products found. Try changing your filters.</p>
                             </div>
+                        ) : activeCategory === "All Products" ? (
+                            // Category-wise sliders for "All Products"
+                            <div className="space-y-12">
+                                {/* Show uncategorized products since current products don't have proper category IDs */}
+                                <div className="category-section">
+                                    <div className="flex items-center justify-between mb-6">
+                                        <h2 className="text-2xl font-bold text-gray-800 playfair">All Products</h2>
+                                        <span className="text-sm text-gray-500">
+                                            {sortedProducts.length} products
+                                        </span>
+                                    </div>
+                                    
+                                    {/* Products Slider */}
+                                    <div className={`${isLoggedIn ? 'category-slider overflow-x-auto' : ''} pb-4`}>
+                                        <div className={`flex gap-6 ${isLoggedIn ? 'min-w-max' : 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3'}`}>
+                                            {(isLoggedIn ? sortedProducts : sortedProducts.slice(0, 3)).map(product => (
+                                                <div 
+                                                    key={product.id} 
+                                                    className={`cursor-pointer relative group flex-shrink-0 ${isLoggedIn ? 'w-[280px]' : 'w-full max-w-[480px]'}`}
+                                                    onClick={() => handleProductClick(product)}
+                                                >
+                                                    <div className="relative w-full h-[280px] sm:h-[330px] bg-gray-100 overflow-hidden rounded-2xl">
+                                                        <div className="w-full h-full flex items-center justify-center bg-gray-100">
+                                                            <img
+                                                                src={product.img}
+                                                                alt={product.name}
+                                                                className="w-full h-full object-cover hover:scale-105 transition duration-300"
+                                                                onError={(e) => {
+                                                                    if (product.thumbnail && product.thumbnail !== product.img) {
+                                                                        e.target.src = product.thumbnail;
+                                                                    } else if (product.images && product.images.length > 0) {
+                                                                        e.target.src = product.images[0];
+                                                                    } else {
+                                                                        e.target.src = '/images/placeholder.png';
+                                                                    }
+                                                                }}
+                                                            />
+                                                        </div>
+
+                                                        <button
+                                                            onClick={(e) => {
+                                                                e.stopPropagation();
+                                                                toggleWishlist(product.id);
+                                                            }}
+                                                            className="absolute top-3 right-3 z-10 p-2 bg-[#FFFFFF80] backdrop-blur-sm rounded-full 
+                                                                       shadow-lg hover:bg-white active:scale-95 
+                                                                       transition-all duration-200"
+                                                        >
+                                                            <svg
+                                                                xmlns="http://www.w3.org/2000/svg"
+                                                                className={`h-5 w-6 transition-colors duration-200 ${isInWishlist(product.id)
+                                                                    ? "fill-red-500 text-red-500"
+                                                                    : "text-gray-800 fill-transparent hover:text-red-400"
+                                                                    }`}
+                                                                viewBox="0 0 24 24"
+                                                                stroke="currentColor"
+                                                                strokeWidth={isInWishlist(product.id) ? 0 : 2}
+                                                            >
+                                                                <path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5" />
+                                                            </svg>
+                                                        </button>
+                                                    </div>
+
+                                                    <div className="mt-3">
+                                                        <h3 className="mona font-semibold text-sm text-black">
+                                                            {product.name}
+                                                        </h3>
+                                                        {product.code && (
+                                                            <p className="mona text-gray-600 font-mono text-xs mt-1">
+                                                                Code: <b>{product.code}</b>
+                                                            </p>
+                                                        )}
+                                                        
+                                                        {/* Add to Inquiry Section */}
+                                                        <div className="mt-3 space-y-2">
+                                                            {/* Quantity Selector */}
+                                                            <div className="flex items-center justify-between">
+                                                                <span className="text-xs hidden sm:flex text-gray-600">Quantity:</span>
+                                                                <div className="flex items-center mx-auto sm:mx-0 border border-gray-300 rounded-md">
+                                                                    <button 
+                                                                        onClick={(e) => {
+                                                                            e.stopPropagation();
+                                                                            const input = e.target.parentElement.querySelector('input');
+                                                                            const currentValue = parseInt(input.value) || 1;
+                                                                            if (currentValue > 6) {
+                                                                                input.value = currentValue - 6;
+                                                                            } else {
+                                                                                input.value = 1;
+                                                                            }
+                                                                        }}
+                                                                        className="px-2 py-1 text-xs text-gray-600 hover:bg-gray-100 rounded-l-md"
+                                                                    >
+                                                                        -
+                                                                    </button>
+                                                                    <input 
+                                                                        type="number" 
+                                                                        min="1" 
+                                                                        step="6"
+                                                                        defaultValue="1"
+                                                                        onClick={(e) => e.stopPropagation()}
+                                                                        className="w-12 px-1 py-1 text-xs text-center border-x border-gray-300 focus:outline-none"
+                                                                    />
+                                                                    <button 
+                                                                        onClick={(e) => {
+                                                                            e.stopPropagation();
+                                                                            const input = e.target.parentElement.querySelector('input');
+                                                                            const currentValue = parseInt(input.value) || 1;
+                                                                            if (currentValue === 1) {
+                                                                                input.value = 6;
+                                                                            } else {
+                                                                                input.value = currentValue + 6;
+                                                                            }
+                                                                        }}
+                                                                        className="px-2 py-1 text-xs text-gray-600 hover:bg-gray-100 rounded-r-md"
+                                                                    >
+                                                                        +
+                                                                    </button>
+                                                                </div>
+                                                            </div>
+                                                            
+                                                            {/* Add to Inquiry Button */}
+                                                            <button
+                                                                onClick={(e) => {
+                                                                    e.stopPropagation();
+                                                                    if (!isLoggedIn) {
+                                                                        router.push('/login');
+                                                                        return;
+                                                                    }
+                                                                    
+                                                                    // Add to inquiry cart with only 3-inch size by default
+                                                                    const quantityInput = e.target.parentElement.parentElement.querySelector('input[type="number"]');
+                                                                    const quantity = parseInt(quantityInput?.value) || 1;
+                                                                    
+                                                                    // Add to cart with only 3-inch size
+                                                                    addToCart(product, ['3'], quantity);
+                                                                    
+                                                                    // Show notification
+                                                                    showNotification('Product added to inquiry cart!', 'cart');
+                                                                }}
+                                                                className="w-full py-2 bg-[#C08237] text-white text-xs font-medium rounded-md hover:bg-[#9C774A] transition-colors flex items-center justify-center gap-1"
+                                                            >
+                                                                <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                                                                </svg>
+                                                                Add to Inquiry
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                        
+                                        {/* Show login prompt for non-logged in users if there are more products */}
+                                        {!isLoggedIn && sortedProducts.length > 3 && (
+                                            <div className="mt-4 text-center">
+                                                <p className="text-sm text-gray-600 mb-2">
+                                                    Showing 3 of {sortedProducts.length} products
+                                                </p>
+                                                <button
+                                                    onClick={() => router.push('/login')}
+                                                    className="text-[#C08237] hover:text-[#9C774A] font-medium text-sm"
+                                                >
+                                                    Login to view all {sortedProducts.length} products
+                                                </button>
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+                            </div>
                         ) : (
+                            // Regular grid for specific categories
                             <>
                                 <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                                     {currentProducts.map(product => (
@@ -1112,8 +1282,8 @@ const CategoryPage = () => {
                                     ))}
                                 </div>
 
-                                {/* Pagination - Show only if there are multiple pages */}
-                                {sortedProducts.length > productsPerPage && (
+                                {/* Pagination - Show only for specific categories, not for "All Products" */}
+                                {activeCategory !== "All Products" && sortedProducts.length > productsPerPage && (
                                     <div className="mt-12">
                                         <div className="flex flex-col items-center">
                                             {/* Pagination Info - Only show for non-logged in users */}

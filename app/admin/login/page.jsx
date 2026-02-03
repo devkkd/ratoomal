@@ -7,8 +7,8 @@ export default function AdminLoginRedirectPage() {
   const router = useRouter();
 
   useEffect(() => {
-    // Redirect to the new login page location
-    router.push('/login/admin');
+    // Redirect to the main admin page
+    router.push('/admin');
   }, [router]);
 
   return (

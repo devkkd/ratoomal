@@ -147,7 +147,7 @@ const ProductDetailPage = () => {
         if (!product) return { mediaItems: [], videoUrl: null };
         
         let mediaItems = [];
-        const thumbnail = product.thumbnail || fallbackImages[0];
+        const thumbnail = product.thumbnail ;
 
         // ✅ VIDEO FIRST in the media list
         if (product.video360) {
@@ -182,9 +182,9 @@ const ProductDetailPage = () => {
         }
         
         // Ensure at least one item
-        if (mediaItems.length === 0) {
-            mediaItems.push({ type: 'image', url: fallbackImages[0] });
-        }
+        // if (mediaItems.length === 0) {
+        //     mediaItems.push({ type: 'image', url: fallbackImages[0] });
+        // }
         
         return {
             mediaItems,
@@ -579,9 +579,7 @@ const ProductDetailPage = () => {
                                                 console.log('Image failed to load:', currentMedia?.url);
                                                 if (thumbnail && thumbnail !== currentMedia?.url) {
                                                     e.target.src = thumbnail;
-                                                } else if (fallbackImages[0]) {
-                                                    e.target.src = fallbackImages[0];
-                                                }
+                                                } 
                                             }}
                                         />
                                     </div>
@@ -975,7 +973,7 @@ const ProductDetailPage = () => {
                         </div>
 
                         {/* Services Card */}
-                        {transformedProduct.services && transformedProduct.services.length > 0 && (
+                        {/* {transformedProduct.services && transformedProduct.services.length > 0 && (
                             <div className="bg-gradient-to-r from-[#F9F5F0] to-[#FFF4E6] rounded-xl p-4 md:p-5 border border-[#E8D9C3]">
                                 <h3 className="text-base md:text-lg font-semibold text-gray-800 mb-3">Our Services</h3>
                                 <div className="space-y-3">
@@ -991,10 +989,10 @@ const ProductDetailPage = () => {
                                     ))}
                                 </div>
                             </div>
-                        )}
+                        )} */}
 
                         {/* Video Info Card - Only show if video exists */}
-                        {videoUrl && (
+                        {/* {videoUrl && (
                             <div className="bg-blue-50 rounded-xl p-4 md:p-5 border border-blue-100">
                                 <div className="flex items-center gap-2 mb-2">
                                     <div className="w-8 h-8 bg-[#C08237] rounded-full flex items-center justify-center">
@@ -1010,7 +1008,7 @@ const ProductDetailPage = () => {
                                     <span>Use mouse/touch to rotate • Scroll to zoom • Click play to start</span>
                                 </div>
                             </div>
-                        )}
+                        )} */}
                     </div>
                 </div>
 
@@ -1023,7 +1021,7 @@ const ProductDetailPage = () => {
                                 Print Specifications
                             </button>
                         </div>
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+                        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
                             {productSpecs.map((spec, idx) => (
                                 <div key={idx} className="p-3 md:p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
                                     <p className="text-xs md:text-sm text-gray-500 font-medium mb-1">{spec.label}</p>

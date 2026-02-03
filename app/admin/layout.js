@@ -53,19 +53,26 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import Sidebar from './layout/Sidebar';
 import Header from './layout/Header';
 
 export default function AdminLayout({ children }) {
   const router = useRouter();
+  const pathname = usePathname();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [isAuthorized, setIsAuthorized] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Check admin token on mount
+  // Check admin token on mount (always run hooks first)
   useEffect(() => {
+    // Skip auth check for /admin route (login page)
+    if (pathname === '/admin') {
+      setIsLoading(false);
+      return;
+    }
+
     const checkAdminToken = async () => {
       try {
         console.log('🔐 Checking admin authorization...');
@@ -86,19 +93,19 @@ export default function AdminLayout({ children }) {
           const errorData = await response.json().catch(() => ({ error: 'Unknown error' }));
           console.log('🔐 ADMIN PROTECTION: ❌ Token invalid or missing → Redirecting to login', errorData);
           setIsAuthorized(false);
-          router.push('/admin/login');
+          router.push('/admin');
         }
       } catch (error) {
         console.error('🔐 ADMIN PROTECTION: ❌ Error checking token → Redirecting to login', error);
         setIsAuthorized(false);
-        router.push('/admin/login');
+        router.push('/admin');
       } finally {
         setIsLoading(false);
       }
     };
 
     checkAdminToken();
-  }, [router]);
+  }, [router, pathname]);
 
   // Detect mobile screen
   useEffect(() => {
@@ -107,6 +114,11 @@ export default function AdminLayout({ children }) {
     window.addEventListener('resize', checkMobile);
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
+
+  // Skip layout for /admin route (login page) - after hooks
+  if (pathname === '/admin') {
+    return children;
+  }
 
   // Show loading while checking token
   if (isLoading) {

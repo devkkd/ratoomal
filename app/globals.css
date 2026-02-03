@@ -92,3 +92,38 @@ a {
   -webkit-line-clamp: 2;
 }
 
+/* Category slider styles */
+.category-slider {
+  overflow-x: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #C08237 #f1f1f1;
+}
+
+.category-slider::-webkit-scrollbar {
+  height: 6px;
+}
+
+.category-slider::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 3px;
+}
+
+.category-slider::-webkit-scrollbar-thumb {
+  background: #C08237;
+  border-radius: 3px;
+}
+
+.category-slider::-webkit-scrollbar-thumb:hover {
+  background: #9C774A;
+}
+
+/* Smooth scrolling for category sliders */
+.category-slider {
+  scroll-behavior: smooth;
+}
+
+/* Product card hover effects for sliders */
+.category-section .group:hover {
+  transform: translateY(-2px);
+  transition: transform 0.2s ease-in-out;
+}

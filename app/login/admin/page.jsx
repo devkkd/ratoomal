@@ -37,7 +37,7 @@ export default function AdminLoginPage() {
         localStorage.setItem('adminToken', response.data.token);
       }
 
-      // Redirect to admin dashboard
+      // Redirect to admin page
       setTimeout(() => {
         router.push('/admin');
       }, 500);
@@ -138,7 +138,7 @@ export default function AdminLoginPage() {
           </form>
 
           {/* Footer Info */}
-          <div className="mt-6 pt-6 border-t border-gray-200">
+          {/* <div className="mt-6 pt-6 border-t border-gray-200">
             <p className="text-sm text-gray-600 text-center">
               Demo Admin Credentials:
               <br />
@@ -146,7 +146,7 @@ export default function AdminLoginPage() {
               <br />
               <span className="font-medium">Password:</span> Admin@123
             </p>
-          </div>
+          </div> */}
         </div>
 
         {/* Background Effect */}
