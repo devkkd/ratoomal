@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import cloudinary from "@/lib/cloudinary";
+import { uploadToR2 } from "@/lib/cloudflare-r2";
 
 export async function POST(request) {
   try {
@@ -13,26 +13,25 @@ export async function POST(request) {
       }, { status: 400 });
     }
 
+    // Check file size (10MB limit)
+    if (file.size > 10000000) {
+      return NextResponse.json({
+        success: false,
+        error: 'File size exceeds 10MB limit'
+      }, { status: 400 });
+    }
+
     // Convert file to buffer
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
 
-    // Upload to Cloudinary
-    const uploadResponse = await new Promise((resolve, reject) => {
-      cloudinary.uploader.upload_stream(
-        {
-          resource_type: "auto",
-          folder: "ratoomal/contact-inquiries",
-          public_id: `contact_${Date.now()}_${file.name.replace(/[^a-zA-Z0-9.]/g, '_')}`,
-          allowed_formats: ['jpg', 'jpeg', 'png', 'pdf', 'doc', 'docx', 'xls', 'xlsx'],
-          max_file_size: 10000000, // 10MB limit
-        },
-        (error, result) => {
-          if (error) reject(error);
-          else resolve(result);
-        }
-      ).end(buffer);
-    });
+    // Generate unique filename
+    const timestamp = Date.now();
+    const sanitizedName = file.name.replace(/[^a-zA-Z0-9.]/g, '_');
+    const fileName = `contact_${timestamp}_${sanitizedName}`;
+
+    // Upload to R2
+    const uploadResponse = await uploadToR2(buffer, fileName, file.type, "ratoomal/contact-inquiries");
 
     return NextResponse.json({
       success: true,
@@ -41,7 +40,7 @@ export async function POST(request) {
         publicId: uploadResponse.public_id,
         originalName: file.name,
         size: file.size,
-        format: uploadResponse.format
+        format: file.type
       }
     });
 

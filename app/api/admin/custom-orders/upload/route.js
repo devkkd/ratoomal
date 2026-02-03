@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import cloudinary from "@/lib/cloudinary";
+import { uploadToR2 } from "@/lib/cloudflare-r2";
 
 export async function POST(req) {
   try {
@@ -16,20 +16,12 @@ export async function POST(req) {
     const uploadPromises = files.map(async (file) => {
       const buffer = Buffer.from(await file.arrayBuffer());
       
-      return new Promise((resolve, reject) => {
-        const uploadStream = cloudinary.uploader.upload_stream(
-          { 
-            folder: "custom-orders",
-            resource_type: "auto" // auto-detect file type
-          },
-          (error, result) => {
-            if (error) reject(error);
-            resolve(result.secure_url);
-          }
-        );
-        
-        uploadStream.end(buffer);
-      });
+      // Generate unique filename
+      const timestamp = Date.now();
+      const fileName = `${timestamp}-${file.name}`;
+      
+      const result = await uploadToR2(buffer, fileName, file.type, "custom-orders");
+      return result.secure_url;
     });
 
     const urls = await Promise.all(uploadPromises);

@@ -1,7 +1,7 @@
 import connectDB from "@/lib/db";
 import User from "@/models/User";
 import { NextResponse } from "next/server";
-import cloudinary from "@/lib/cloudinary";
+import { uploadToR2 } from "@/lib/cloudflare-r2";
 
 export async function POST(req) {
   await connectDB();
@@ -62,9 +62,9 @@ export async function POST(req) {
       );
     }
 
-    // Handle image upload to Cloudinary
+    // Handle image upload to R2
     const verificationImage = formData.get("verificationImage");
-    let cloudinaryResponse = null;
+    let r2Response = null;
     
     if (verificationImage && verificationImage.size > 0) {
       // Check file size (5MB limit)
@@ -86,37 +86,23 @@ export async function POST(req) {
       }
 
       try {
-        // Convert file to base64 for Cloudinary upload
+        // Convert file to buffer for R2 upload
         const bytes = await verificationImage.arrayBuffer();
         const buffer = Buffer.from(bytes);
-        const base64String = buffer.toString('base64');
-        const dataURI = `data:${verificationImage.type};base64,${base64String}`;
+        
+        // Generate unique filename
+        const timestamp = Date.now();
+        const emailPrefix = userData.businessEmail.split('@')[0];
+        const fileName = `verification_${timestamp}_${emailPrefix}.${verificationImage.name.split('.').pop()}`;
 
-        // Upload to Cloudinary
-        cloudinaryResponse = await new Promise((resolve, reject) => {
-          cloudinary.uploader.upload(
-            dataURI,
-            {
-              folder: "business-verifications",
-              resource_type: "auto",
-              public_id: `verification_${Date.now()}_${userData.businessEmail.split('@')[0]}`,
-              transformation: [
-                { quality: "auto:good" },
-                { fetch_format: "auto" }
-              ]
-            },
-            (error, result) => {
-              if (error) reject(error);
-              else resolve(result);
-            }
-          );
-        });
+        // Upload to R2
+        r2Response = await uploadToR2(buffer, fileName, verificationImage.type, "business-verifications");
 
-        // Add Cloudinary URL to userData
-        userData.verificationImage = cloudinaryResponse.secure_url;
+        // Add R2 URL to userData
+        userData.verificationImage = r2Response.secure_url;
 
       } catch (uploadError) {
-        console.error("Cloudinary upload error:", uploadError);
+        console.error("R2 upload error:", uploadError);
         return NextResponse.json(
           { message: "Failed to upload verification image. Please try again." },
           { status: 500 }

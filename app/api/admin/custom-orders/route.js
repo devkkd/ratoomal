@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 import connectDB from "@/lib/db";
 import CustomOrder from "@/models/CustomOrder";
-import cloudinary from "@/lib/cloudinary";
 import { sendEmail } from "@/lib/mailer";
 import { adminNewCustomOrderTemplate } from "@/lib/emailTemplates";
 

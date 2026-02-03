@@ -1,4 +1,4 @@
-import cloudinary from "@/lib/cloudinary";
+import { uploadToR2 } from "@/lib/cloudflare-r2";
 import { NextResponse } from "next/server";
 
 export async function POST(request) {
@@ -15,19 +15,15 @@ export async function POST(request) {
     }
 
     const buffer = Buffer.from(await file.arrayBuffer());
+    
+    // Generate unique filename
+    const timestamp = Date.now();
+    const fileName = `${timestamp}-${file.name}`;
 
     // Determine resource type
     const resourceType = file.type.startsWith("video") ? "video" : "image";
 
-    const upload = await new Promise((resolve, reject) => {
-      cloudinary.uploader.upload_stream(
-        { 
-          folder: folder,
-          resource_type: resourceType
-        },
-        (err, res) => (err ? reject(err) : resolve(res))
-      ).end(buffer);
-    });
+    const upload = await uploadToR2(buffer, fileName, file.type, folder);
 
     return NextResponse.json({
       success: true,

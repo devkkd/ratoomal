@@ -64,8 +64,8 @@ const CustomOrderForm = () => {
     setFiles(validFiles);
   };
 
-  // Upload files to Cloudinary
-  const uploadFilesToCloudinary = async () => {
+  // Upload files to R2
+  const uploadFilesToR2 = async () => {
     if (files.length === 0) return [];
 
     const uploadedUrls = [];
@@ -108,12 +108,12 @@ const CustomOrderForm = () => {
     try {
       setLoading(true);
 
-      // Step 1: Upload files to Cloudinary
-      let cloudinaryUrls = [];
+      // Step 1: Upload files to R2
+      let r2Urls = [];
       if (files.length > 0) {
         try {
-          cloudinaryUrls = await uploadFilesToCloudinary();
-          console.log("Cloudinary URLs:", cloudinaryUrls);
+          r2Urls = await uploadFilesToR2();
+          console.log("R2 URLs:", r2Urls);
         } catch (uploadError) {
           alert(`File upload failed: ${uploadError.message}`);
           setLoading(false);
@@ -124,7 +124,7 @@ const CustomOrderForm = () => {
       // Step 2: Prepare data for database
       const orderData = {
         ...formData,
-        referenceFiles: cloudinaryUrls, // This is the Cloudinary URLs array
+        referenceFiles: r2Urls, // This is the R2 URLs array
       };
 
       console.log("Submitting to database:", orderData);

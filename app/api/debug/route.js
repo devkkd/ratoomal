@@ -45,7 +45,7 @@ export async function GET() {
       },
       security: {
         jwtSecret: process.env.JWT_SECRET ? 'configured' : 'missing',
-        cloudinaryConfigured: !!(process.env.CLOUDINARY_CLOUD_NAME && process.env.CLOUDINARY_API_KEY)
+        r2Configured: !!(process.env.CLOUDFLARE_R2_ENDPOINT && process.env.CLOUDFLARE_R2_ACCESS_KEY_ID)
       },
       timestamp: new Date().toISOString()
     });

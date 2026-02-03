@@ -41,7 +41,7 @@ const UserSchema = new mongoose.Schema({
     required: [true, "Verification proof type is required"],
   },
   verificationImage: {
-    type: String, // Cloudinary URL
+    type: String, // Cloudflare R2 URL
   },
   password: {
     type: String,

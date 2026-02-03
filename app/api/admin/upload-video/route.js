@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import cloudinary from "@/lib/cloudinary";
+import { uploadToR2 } from "@/lib/cloudflare-r2";
 
 export async function POST(request) {
   try {
@@ -28,23 +28,12 @@ export async function POST(request) {
     }
 
     const buffer = Buffer.from(await file.arrayBuffer());
+    
+    // Generate unique filename
+    const timestamp = Date.now();
+    const fileName = `${timestamp}-${file.name}`;
 
-    const uploadResult = await new Promise((resolve, reject) => {
-      cloudinary.uploader.upload_stream(
-        {
-          resource_type: "video",
-          folder: "products/videos",
-          transformation: [
-            { quality: "auto:good" },
-            { fetch_format: "mp4" },
-          ],
-        },
-        (err, result) => {
-          if (err) reject(err);
-          else resolve(result);
-        }
-      ).end(buffer);
-    });
+    const uploadResult = await uploadToR2(buffer, fileName, file.type, "products/videos");
 
     return NextResponse.json({
       success: true,

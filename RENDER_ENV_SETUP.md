@@ -26,11 +26,13 @@ EMAIL_PASS=awpn oqjj crql kesa
 ADMIN_EMAIL=developmentkontentkraftdigital@gmail.com
 ```
 
-### 5. Cloudinary
+### 5. Cloudflare R2 Storage
 ```
-CLOUDINARY_CLOUD_NAME=dngufsprp
-CLOUDINARY_API_KEY=271446737326545
-CLOUDINARY_API_SECRET=3yqkhHzIeH7U17D6iX_Pqd5Xzqo
+CLOUDFLARE_R2_ENDPOINT=https://your-account-id.r2.cloudflarestorage.com
+CLOUDFLARE_R2_ACCESS_KEY_ID=your-access-key-id
+CLOUDFLARE_R2_SECRET_ACCESS_KEY=your-secret-access-key
+CLOUDFLARE_R2_BUCKET_NAME=your-bucket-name
+CLOUDFLARE_R2_PUBLIC_URL=https://your-custom-domain.com
 ```
 
 ### 6. Node Environment

@@ -17,7 +17,7 @@ const nextConfig = {
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: 'res.cloudinary.com',
+        hostname: 'your-custom-domain.com', // Replace with your R2 custom domain
         port: '',
         pathname: '/**',
       },

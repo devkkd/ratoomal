@@ -1,4 +1,6 @@
 // Environment variables checker
+require('dotenv').config({ path: '.env.local' });
+
 const requiredEnvVars = [
   'MONGODB_URI',
   'JWT_SECRET',
@@ -6,9 +8,11 @@ const requiredEnvVars = [
   'EMAIL_USER',
   'EMAIL_PASS',
   'ADMIN_EMAIL',
-  'CLOUDINARY_CLOUD_NAME',
-  'CLOUDINARY_API_KEY',
-  'CLOUDINARY_API_SECRET'
+  'CLOUDFLARE_R2_ENDPOINT',
+  'CLOUDFLARE_R2_ACCESS_KEY_ID',
+  'CLOUDFLARE_R2_SECRET_ACCESS_KEY',
+  'CLOUDFLARE_R2_BUCKET_NAME',
+  'CLOUDFLARE_R2_PUBLIC_URL'
 ];
 
 const optionalEnvVars = [
