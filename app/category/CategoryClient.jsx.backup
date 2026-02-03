@@ -1001,12 +1001,13 @@ const CategoryPage = () => {
                                             </div>
                                             
                                             {/* Products Slider */}
-                                            <div className={`${isLoggedIn ? 'category-slider overflow-x-auto' : ''} pb-4`}>
-                                                <div className={`flex gap-6 ${isLoggedIn ? 'min-w-max' : 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3'}`}>
-                                                    {(isLoggedIn ? categoryProducts : categoryProducts.slice(0, 3)).map(product => (
-                                                        <div 
+                                            <div className="relative pb-4">
+                                                <div className="overflow-x-auto hide-scrollbar">
+                                                    <div className="flex gap-6 pb-4">
+                                                        {categoryProducts.slice(0, 6).map(product => (
+                                                            <div 
                                                             key={product.id} 
-                                                            className={`cursor-pointer relative group shrink-0 ${isLoggedIn ? 'w-[280px]' : 'w-full max-w-[480px]'}`}
+                                                            className="cursor-pointer relative group flex-shrink-0 w-[280px] sm:w-[320px]"
                                                             onClick={() => handleProductClick(product)}
                                                         >
                                                             <div className="relative w-full h-[280px] sm:h-[330px] bg-gray-100 overflow-hidden rounded-2xl">
@@ -1140,17 +1141,17 @@ const CategoryPage = () => {
                                                     ))}
                                                 </div>
                                                 
-                                                {/* Show login prompt for non-logged in users if there are more products */}
-                                                {!isLoggedIn && categoryProducts.length > 3 && (
+                                                {/* Show message if there are more products */}
+                                                {categoryProducts.length > 6 && (
                                                     <div className="mt-4 text-center">
                                                         <p className="text-sm text-gray-600 mb-2">
-                                                            Showing 3 of {categoryProducts.length} products
+                                                            Showing 6 of {categoryProducts.length} products
                                                         </p>
                                                         <button
-                                                            onClick={() => router.push('/login')}
+                                                            onClick={() => handleCategoryChange(category.name)}
                                                             className="text-[#C08237] hover:text-[#9C774A] font-medium text-sm"
                                                         >
-                                                            Login to view all {categoryProducts.length} products
+                                                            View all {categoryProducts.length} products
                                                         </button>
                                                     </div>
                                                 )}

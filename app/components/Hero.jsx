@@ -4,6 +4,7 @@ import React, { useRef } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination, Autoplay, EffectFade } from "swiper/modules";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import SafeVideo from "./SafeVideo";
 
 import "swiper/css";
 import "swiper/css/navigation";
@@ -18,6 +19,7 @@ const Hero = () => {
       id: 1,
       video: "/images/hero/41396-429396744_small.mp4",
       poster: "/images/placeholder.png",
+      fallbackImage: "/images/hero/image-70.svg",
       title: "Discover Premium Fragrances",
       subtitle:
         "Experience luxury perfumes crafted for timeless elegance and lasting impressions.",
@@ -27,6 +29,7 @@ const Hero = () => {
       id: 2,
       video: "/images/hero/128564-741747704_small.mp4",
       poster: "/images/placeholder.png",
+      fallbackImage: "/images/hero/Group-277.svg",
       title: "The Art of Gifting",
       subtitle:
         "Exquisite collectibles and divine figures for your loved ones.",
@@ -36,26 +39,25 @@ const Hero = () => {
       id: 3,
       video: "/images/hero/143323-782178554_small.mp4",
       poster: "/images/placeholder.png",
+      fallbackImage: "/images/hero/image-70.svg",
       title: "Exclusive Collections",
       subtitle: "Curated selections for the discerning connoisseur.",
       ctaText: "View Collection",
     },
   ];
 
-  const handleSlideChange = (swiper) => {
-    // Pause all videos
-    videoRefs.current.forEach((video) => {
-      if (video) {
-        video.pause();
-        video.currentTime = 0;
-      }
-    });
-
-    // Play active slide video
-    const activeVideo = videoRefs.current[swiper.realIndex];
-    if (activeVideo) {
-      activeVideo.play().catch(() => {});
+  const handleVideoError = (index, slide) => {
+    console.warn(`Video failed to load: ${slide.video}, using fallback image`);
+    // Hide video and show fallback image
+    const videoElement = videoRefs.current[index];
+    if (videoElement) {
+      videoElement.style.display = 'none';
     }
+  };
+
+  const handleSlideChange = (swiper) => {
+    // Video handling is now managed by SafeVideo component
+    console.log(`Slide changed to: ${swiper.realIndex}`);
   };
 
   return (
@@ -84,17 +86,17 @@ const Hero = () => {
         {slides.map((slide, index) => (
           <SwiperSlide key={slide.id}>
             <div className="relative w-full h-full">
-              {/* Video */}
-              <video
-                ref={(el) => (videoRefs.current[index] = el)}
-                className="absolute inset-0 w-full h-full object-cover"
+              {/* Safe Video Component */}
+              <SafeVideo
+                src={slide.video}
                 poster={slide.poster}
-                muted
-                playsInline
-                preload="auto"
-              >
-                <source src={slide.video} type="video/mp4" />
-              </video>
+                fallbackImage={slide.fallbackImage}
+                className="absolute inset-0 w-full h-full object-cover"
+                autoPlay={false}
+                muted={true}
+                loop={false}
+                onError={() => handleVideoError(index, slide)}
+              />
 
               {/* Gradient overlay */}
               <div className="absolute inset-0 " />

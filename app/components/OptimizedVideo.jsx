@@ -17,6 +17,17 @@ const OptimizedVideo = ({ src, thumbnail, className }) => {
     }
   }, []);
 
+  const handleVideoError = (e) => {
+    console.error('Video error:', e);
+    setError(true);
+    setIsLoading(false);
+  };
+
+  const handleVideoLoad = () => {
+    setIsLoading(false);
+    setError(false);
+  };
+
   const togglePlayPause = () => {
     if (videoRef.current) {
       if (isPlaying) {
@@ -69,10 +80,13 @@ const OptimizedVideo = ({ src, thumbnail, className }) => {
         className="w-full h-full object-contain"
         muted={isMuted}
         playsInline
-        onLoadedData={handleLoadedData}
-        onError={handleError}
+        onLoadedData={handleVideoLoad}
+        onError={handleVideoError}
         onEnded={() => setIsPlaying(false)}
         poster={thumbnail}
+      >
+        <source src={src} type="video/mp4" />
+        Your browser does not support the video tag.
       />
       
       {/* Video Controls */}

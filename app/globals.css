@@ -127,3 +127,37 @@ a {
   transform: translateY(-2px);
   transition: transform 0.2s ease-in-out;
 }
+/* Category Slider Styles */
+.category-slider {
+  scrollbar-width: thin;
+  scrollbar-color: #C08237 #f1f1f1;
+}
+
+.category-slider::-webkit-scrollbar {
+  height: 6px;
+}
+
+.category-slider::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 3px;
+}
+
+.category-slider::-webkit-scrollbar-thumb {
+  background: #C08237;
+  border-radius: 3px;
+}
+
+.category-slider::-webkit-scrollbar-thumb:hover {
+  background: #9C774A;
+}
+
+/* Smooth scrolling for category sliders */
+.category-slider {
+  scroll-behavior: smooth;
+}
+
+/* Category section spacing */
+.category-section:not(:last-child) {
+  border-bottom: 1px solid #e5e7eb;
+  padding-bottom: 3rem;
+}
