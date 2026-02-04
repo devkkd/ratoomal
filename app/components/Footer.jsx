@@ -41,9 +41,9 @@ const Footer = () => {
               <div>
                 <h4 className="font-bold text-sm mb-6 mona">Our Category</h4>
                 <ul className="space-y-2 text-xs text-gray-600">
-                  <li><a href="#" className="hover:text-amber-700 mona">Animal</a></li>
-                  <li><a href="#" className="hover:text-amber-700 mona" >God Figure</a></li>
-                  <li><a href="#" className="hover:text-amber-700 mona">utility / Decor</a></li>
+                  <li><a href="/animal" className="hover:text-amber-700 mona">Animal</a></li>
+                  <li><a href="/god-figure" className="hover:text-amber-700 mona" >God Figure</a></li>
+                  <li><a href="/utility-decor" className="hover:text-amber-700 mona">utility / Decor</a></li>
                 </ul>
               </div>
 

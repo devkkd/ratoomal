@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useWishlistStore } from '@/store/wishlistStore';
 import { useInquiryCartStore } from '@/store/inquiryCartStore';
 import NotificationToast, { useNotification } from '../components/NotificationToast';
+import ProductCard from '../components/ProductCard';
 
 // Filter options
 const filters = {
@@ -114,6 +115,8 @@ const UtilityDecorPage = () => {
                 setLoading(true);
                 console.log('Fetching utility-decor page data...');
                 
+                let decorCategory = null; // Declare at function level
+                
                 // 1. Fetch all categories to find Utility-Decor category
                 const categoriesResponse = await fetch('/api/categories');
                 if (categoriesResponse.ok) {
@@ -122,7 +125,7 @@ const UtilityDecorPage = () => {
                     
                     if (categoriesData.success && categoriesData.data) {
                         // Find Utility-Decor category (case-insensitive search)
-                        const decorCategory = categoriesData.data.find(cat => 
+                        decorCategory = categoriesData.data.find(cat => 
                             cat.name && (cat.name.toLowerCase().includes("utility") || cat.name.toLowerCase().includes("decor"))
                         );
                         
@@ -159,20 +162,29 @@ const UtilityDecorPage = () => {
                     console.log('Products data:', productsData);
                     
                     if (productsData.success && productsData.data) {
-                        // Filter only utility-decor products
+                        // Filter only utility-decor products by category ID
                         const decorProductsData = productsData.data.filter(product => {
-                            // Check if product belongs to Utility-Decor category
-                            if (product.category) {
-                                const categoryName = typeof product.category === 'string' 
+                            // Check if product belongs to Utility-Decor category by ID
+                            if (product.category && decorCategory) {
+                                const categoryId = typeof product.category === 'string' 
                                     ? product.category 
-                                    : (product.category.name || "");
+                                    : (product.category._id || product.category);
                                 
-                                return categoryName.toLowerCase().includes("utility") || categoryName.toLowerCase().includes("decor");
+                                return categoryId === decorCategory._id;
                             }
                             return false;
                         });
                         
                         console.log('Utility-Decor products found:', decorProductsData.length);
+                        console.log('Utility-Decor category ID used for filtering:', decorCategory?._id || 'No category found');
+                        console.log('Sample filtered product categories:', decorProductsData.slice(0, 3).map(p => ({
+                            name: p.name,
+                            categoryId: typeof p.category === 'string' ? p.category : p.category._id,
+                            categoryName: typeof p.category === 'string' ? 'ID only' : p.category.name
+                        })));
+                        
+                        // Only set products if we found the correct category
+                        if (decorCategory) {
                         
                         // Transform products to match frontend structure
                         const transformedProducts = decorProductsData.map(product => ({
@@ -201,6 +213,12 @@ const UtilityDecorPage = () => {
                         // Extract unique product types
                         const types = [...new Set(transformedProducts.map(p => p.productType).filter(Boolean))];
                         setProductTypes(["All Products", ...types]);
+                        } else {
+                            console.warn('Utility-Decor category not found - no products will be displayed');
+                            setDecorProducts([]);
+                            setFilteredProducts([]);
+                            setSortedProducts([]);
+                        }
                     }
                 }
             } catch (error) {
@@ -626,16 +644,150 @@ const UtilityDecorPage = () => {
                             </div>
                         ) : (
                             <>
-                                {/* Products */}
+                                {/* Products Grid */}
                                 <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                                     {displayedProducts.map(product => (
-                                        <ProductCard
-                                            key={product.id}
-                                            product={product}
-                                            showInquiryButton={true}
-                                            showWishlistButton={true}
-                                            className={!isLoggedIn ? 'opacity-75' : ''}
-                                        />
+                                        <div 
+                                            key={product.id} 
+                                            className={`cursor-pointer w-full max-w-[480px] relative group flex flex-col h-full ${!isLoggedIn ? 'opacity-75' : ''}`}
+                                            onClick={() => handleProductClick(product)}
+                                        >
+                                            {/* Image Section - Fixed Height */}
+                                            <div className="relative w-full h-[280px] sm:h-[330px] bg-gray-100 overflow-hidden rounded-2xl flex-shrink-0">
+                                                <img
+                                                    src={product.img || '/images/placeholder.png'}
+                                                    alt={product.name}
+                                                    className="w-full h-full object-cover hover:scale-105 transition duration-300"
+                                                    onError={(e) => {
+                                                        e.target.src = '/images/placeholder.png';
+                                                    }}
+                                                />
+
+                                                {/* Wishlist Button */}
+                                                <button
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        if (isLoggedIn) {
+                                                            toggleWishlist(product);
+                                                            const isInWish = isInWishlist(product.id);
+                                                            showNotification(
+                                                                isInWish ? 'Removed from wishlist' : 'Added to wishlist', 
+                                                                'wishlist'
+                                                            );
+                                                        } else {
+                                                            router.push('/login');
+                                                        }
+                                                    }}
+                                                    className="absolute top-3 right-3 z-10 p-2 bg-[#FFFFFF80] backdrop-blur-sm rounded-full 
+                                                               shadow-lg hover:bg-white active:scale-95 
+                                                               transition-all duration-200"
+                                                    aria-label={isInWishlist(product.id) ? "Remove from wishlist" : "Add to wishlist"}
+                                                >
+                                                    <svg
+                                                        xmlns="http://www.w3.org/2000/svg"
+                                                        className={`h-5 w-6 transition-colors duration-200 ${isInWishlist(product.id)
+                                                                ? "fill-red-500 text-red-500"
+                                                                : "text-gray-800 fill-transparent hover:text-red-400"
+                                                            }`}
+                                                        viewBox="0 0 24 24"
+                                                        stroke="currentColor"
+                                                        strokeWidth={isInWishlist(product.id) ? 0 : 2}
+                                                    >
+                                                        <path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5" />
+                                                    </svg>
+                                                </button>
+                                            </div>
+
+                                            {/* Content Section - Flexible Height */}
+                                            <div className="mt-3 flex flex-col flex-grow">
+                                                {/* Product Info - Fixed Height */}
+                                                <div className="flex-shrink-0">
+                                                    <h3 className="mona font-semibold text-sm text-black line-clamp-2 min-h-[2.5rem]">
+                                                        {product.name}
+                                                    </h3>
+                                                    {product.code && (
+                                                        <p className="mona text-gray-600 font-mono text-xs mt-1">
+                                                            Code: <b>{product.code}</b>
+                                                        </p>
+                                                    )}
+                                                </div>
+                                                
+                                                {/* Add to Inquiry Section - Push to Bottom */}
+                                                <div className="space-y-2 mt-auto">
+                                                    {/* Quantity Selector */}
+                                                    <div className="flex items-center justify-between">
+                                                        <span className="text-xs hidden sm:flex text-gray-600">Quantity:</span>
+                                                        <div className="flex items-center mx-auto sm:mx-0 border border-gray-300 rounded-md">
+                                                            <button 
+                                                                onClick={(e) => {
+                                                                    e.stopPropagation();
+                                                                    const input = e.target.parentElement.querySelector('input');
+                                                                    const currentValue = parseInt(input.value) || 1;
+                                                                    if (currentValue > 6) {
+                                                                        input.value = currentValue - 6;
+                                                                    } else {
+                                                                        input.value = 1;
+                                                                    }
+                                                                }}
+                                                                className="px-2 py-1 text-xs text-gray-600 hover:bg-gray-100 rounded-l-md"
+                                                            >
+                                                                -
+                                                            </button>
+                                                            <input 
+                                                                type="number" 
+                                                                min="1" 
+                                                                step="6"
+                                                                defaultValue="1"
+                                                                onClick={(e) => e.stopPropagation()}
+                                                                className="w-12 px-1 py-1 text-xs text-center border-x border-gray-300 focus:outline-none"
+                                                            />
+                                                            <button 
+                                                                onClick={(e) => {
+                                                                    e.stopPropagation();
+                                                                    const input = e.target.parentElement.querySelector('input');
+                                                                    const currentValue = parseInt(input.value) || 1;
+                                                                    if (currentValue === 1) {
+                                                                        input.value = 6;
+                                                                    } else {
+                                                                        input.value = currentValue + 6;
+                                                                    }
+                                                                }}
+                                                                className="px-2 py-1 text-xs text-gray-600 hover:bg-gray-100 rounded-r-md"
+                                                            >
+                                                                +
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                    
+                                                    {/* Add to Inquiry Button */}
+                                                    <button
+                                                        onClick={(e) => {
+                                                            e.stopPropagation();
+                                                            if (!isLoggedIn) {
+                                                                router.push('/login');
+                                                                return;
+                                                            }
+                                                            
+                                                            // Add to inquiry cart with only 3-inch size by default
+                                                            const quantityInput = e.target.parentElement.parentElement.querySelector('input[type="number"]');
+                                                            const quantity = parseInt(quantityInput?.value) || 1;
+                                                            
+                                                            // Add to cart with only 3-inch size
+                                                            addToCart(product, ['3'], quantity);
+                                                            
+                                                            // Show notification
+                                                            showNotification('Product added to inquiry cart!', 'cart');
+                                                        }}
+                                                        className="w-full py-2 bg-[#C08237] text-white text-xs font-medium rounded-md hover:bg-[#9C774A] transition-colors flex items-center justify-center gap-1"
+                                                    >
+                                                        <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                                                        </svg>
+                                                        Add to Inquiry
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
                                     ))}
                                 </div>
 
@@ -787,6 +939,14 @@ const UtilityDecorPage = () => {
                     onClick={() => setIsSortOpen(false)}
                 />
             )}
+
+            {/* Notification Toast */}
+            <NotificationToast
+                message={notification.message}
+                type={notification.type}
+                isVisible={notification.isVisible}
+                onClose={hideNotification}
+            />
         </div>
     );
 };

@@ -1017,9 +1017,9 @@ const ProductDetailPage = () => {
                     <div id="full-specs" className="mt-8 md:mt-12 bg-white rounded-xl p-4 md:p-6 shadow-sm border border-gray-100">
                         <div className="flex items-center justify-between mb-4 md:mb-6">
                             <h3 className="text-xl md:text-2xl font-bold text-gray-900">Complete Product Specifications</h3>
-                            <button className="text-xs md:text-sm text-[#C08237] font-medium hover:text-[#a56e2e] transition-colors">
+                            {/* <button className="text-xs md:text-sm text-[#C08237] font-medium hover:text-[#a56e2e] transition-colors">
                                 Print Specifications
-                            </button>
+                            </button> */}
                         </div>
                         <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
                             {productSpecs.map((spec, idx) => (

@@ -1,10 +1,9 @@
 "use client";
 
-import React, { useRef } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination, Autoplay, EffectFade } from "swiper/modules";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import SafeVideo from "./SafeVideo";
 
 import "swiper/css";
 import "swiper/css/navigation";
@@ -13,6 +12,27 @@ import "swiper/css/effect-fade";
 
 const Hero = () => {
   const videoRefs = useRef([]);
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const [videosPlaying, setVideosPlaying] = useState({});
+
+  // Try to play the first video when component mounts
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      const firstVideo = videoRefs.current[0];
+      if (firstVideo && typeof firstVideo.play === 'function') {
+        firstVideo.play()
+          .then(() => {
+            console.log('First video started playing automatically');
+            setVideosPlaying(prev => ({ ...prev, [0]: true }));
+          })
+          .catch(error => {
+            console.warn('Autoplay failed for first video:', error);
+          });
+      }
+    }, 1000); // Wait 1 second for videos to load
+
+    return () => clearTimeout(timer);
+  }, []);
 
   const slides = [
     {
@@ -56,8 +76,42 @@ const Hero = () => {
   };
 
   const handleSlideChange = (swiper) => {
-    // Video handling is now managed by SafeVideo component
     console.log(`Slide changed to: ${swiper.realIndex}`);
+    setCurrentSlide(swiper.realIndex);
+    
+    // Pause all videos first
+    videoRefs.current.forEach((video, index) => {
+      if (video && typeof video.pause === 'function') {
+        video.pause();
+        setVideosPlaying(prev => ({ ...prev, [index]: false }));
+      }
+    });
+    
+    // Play current slide video
+    const currentVideo = videoRefs.current[swiper.realIndex];
+    if (currentVideo && typeof currentVideo.play === 'function') {
+      currentVideo.play()
+        .then(() => {
+          setVideosPlaying(prev => ({ ...prev, [swiper.realIndex]: true }));
+        })
+        .catch(error => {
+          console.warn('Failed to play video on slide change:', error);
+          setVideosPlaying(prev => ({ ...prev, [swiper.realIndex]: false }));
+        });
+    }
+  };
+
+  const handlePlayVideo = (slideIndex) => {
+    const video = videoRefs.current[slideIndex];
+    if (video && typeof video.play === 'function') {
+      video.play()
+        .then(() => {
+          setVideosPlaying(prev => ({ ...prev, [slideIndex]: true }));
+        })
+        .catch(error => {
+          console.warn('Failed to play video manually:', error);
+        });
+    }
   };
 
   return (
@@ -86,20 +140,39 @@ const Hero = () => {
         {slides.map((slide, index) => (
           <SwiperSlide key={slide.id}>
             <div className="relative w-full h-full">
-              {/* Safe Video Component */}
-              <SafeVideo
-                src={slide.video}
-                poster={slide.poster}
-                fallbackImage={slide.fallbackImage}
+              {/* Simple Video Element */}
+              <video
+                ref={(el) => videoRefs.current[index] = el}
                 className="absolute inset-0 w-full h-full object-cover"
-                autoPlay={false}
-                muted={true}
-                loop={false}
+                poster={slide.poster}
+                muted
+                loop
+                playsInline
+                preload="metadata"
                 onError={() => handleVideoError(index, slide)}
-              />
+                onPlay={() => setVideosPlaying(prev => ({ ...prev, [index]: true }))}
+                onPause={() => setVideosPlaying(prev => ({ ...prev, [index]: false }))}
+              >
+                <source src={slide.video} type="video/mp4" />
+                Your browser does not support the video tag.
+              </video>
 
               {/* Gradient overlay */}
               <div className="absolute inset-0 " />
+
+              {/* Play button overlay - show if video is not playing */}
+              {/* {!videosPlaying[index] && (
+                <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-20">
+                  <button
+                    onClick={() => handlePlayVideo(index)}
+                    className="w-16 h-16 bg-white bg-opacity-80 rounded-full flex items-center justify-center hover:bg-opacity-100 transition-all duration-300 shadow-lg"
+                  >
+                    <svg className="w-6 h-6 text-[#C08237] ml-1" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M8 5v14l11-7z"/>
+                    </svg>
+                  </button>
+                </div>
+              )} */}
 
               {/* Content */}
               {/* <div className="relative z-10 h-full flex items-center">

@@ -41,28 +41,20 @@ export default function Utility() {
                     const categoriesData = await categoriesRes.json();
                     
                     if (categoriesData.success && categoriesData.data) {
-                        console.log('All categories:', categoriesData.data.map(c => c.name));
-                        
                         // Find Utility/Decor category (case-insensitive)
                         const utilityCategory = categoriesData.data.find(
                             cat => {
                                 const nameLC = cat.name.toLowerCase().trim();
-                                return nameLC === 'utility' || nameLC === 'utility/decor' || nameLC === 'decor' || nameLC.includes('utility') || nameLC.includes('decor');
+                                return nameLC.includes('utility') || nameLC.includes('decor');
                             }
                         );
                         
-                        console.log('Found Utility category:', utilityCategory);
-                        
                         if (utilityCategory) {
-                            console.log(`Filtering products for category: ${utilityCategory._id}`);
-                            
                             // Filter products by Utility category and get latest 4
                             const utilityProducts = data.data
                                 .filter(product => {
                                     const categoryId = product.category?._id || product.category;
-                                    const matches = categoryId === utilityCategory._id;
-                                    console.log(`Product: ${product.name}, Category ID: ${categoryId}, Matches: ${matches}`);
-                                    return matches;
+                                    return categoryId === utilityCategory._id;
                                 })
                                 .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
                                 .slice(0, 4)
@@ -72,10 +64,9 @@ export default function Utility() {
                                     code: product.code || "",
                                     qty: `Minimum Order Quantity: ${product.minimumOrderQuantity || 100} Piece`,
                                     price: `₹ ${product.price || 0}/Piece`,
-                                    img: product.images?.[0] || '/images/placeholder.png',
+                                    img: product.thumbnail || product.images?.[0] || '/images/placeholder.png',
                                 }));
                             
-                            console.log('Filtered Utility products:', utilityProducts);
                             setProducts(utilityProducts);
                         } else {
                             console.warn('Utility category not found. Available categories:', categoriesData.data.map(c => c.name));
@@ -134,6 +125,9 @@ export default function Utility() {
                                 src={item.img}
                                 alt={item.name}
                                 className="w-full h-full object-cover hover:scale-105 transition duration-300"
+                                onError={(e) => {
+                                    e.target.src = '/images/placeholder.png';
+                                }}
                             />
                             
                             {/* Wishlist Button */}

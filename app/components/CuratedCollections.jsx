@@ -41,7 +41,7 @@ export default function CuratedCollections() {
                     if (categoriesData.success && categoriesData.data) {
                         // Find Animal category
                         const animalCategory = categoriesData.data.find(
-                            cat => cat.name.toLowerCase() === 'animal'
+                            cat => cat.name.toLowerCase().includes('animal')
                         );
                         
                         if (animalCategory) {
@@ -56,7 +56,7 @@ export default function CuratedCollections() {
                                     code: product.code || "",
                                     qty: `Minimum Order Quantity: ${product.minimumOrderQuantity || 100} Piece`,
                                     price: `₹ ${product.price || 0}/Piece`,
-                                    img: product.images?.[0] || '/images/placeholder.png',
+                                    img: product.thumbnail || product.images?.[0] || '/images/placeholder.png',
                                 }));
                             
                             setProducts(animalProducts);
@@ -73,7 +73,7 @@ export default function CuratedCollections() {
                 setLoading(false);
             }
         };
-        
+        console.log(fetchAnimalProducts)
         fetchAnimalProducts();
     }, []);
 
@@ -135,6 +135,9 @@ export default function CuratedCollections() {
                                                     src={item.img}
                                                     alt={item.name}
                                                     className="w-full h-full object-cover hover:scale-105 transition duration-300"
+                                                    onError={(e) => {
+                                                        e.target.src = '/images/placeholder.png';
+                                                    }}
                                                 />
                             
                             {/* Wishlist Button */}

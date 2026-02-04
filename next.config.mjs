@@ -9,7 +9,7 @@ const nextConfig = {
   env: {
     CUSTOM_BASE_URL: process.env.NODE_ENV === 'production' 
       ? (process.env.NEXT_PUBLIC_API_BASE_URL || '')
-      : 'http://localhost:3000'
+      : 'http://localhost:3001'  // Updated to match the actual dev server port
   },
   
   // Configure external image domains
@@ -17,7 +17,7 @@ const nextConfig = {
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: 'your-custom-domain.com', // Replace with your R2 custom domain
+        hostname: 'pub-a7812a845df148fe9eec1889ce42d836.r2.dev',
         port: '',
         pathname: '/**',
       },

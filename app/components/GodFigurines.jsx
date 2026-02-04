@@ -41,28 +41,20 @@ export default function GodFigurines() {
                     const categoriesData = await categoriesRes.json();
                     
                     if (categoriesData.success && categoriesData.data) {
-                        console.log('All categories:', categoriesData.data.map(c => c.name));
-                        
                         // Find God category (case-insensitive, also check for "God Figurines")
                         const godCategory = categoriesData.data.find(
                             cat => {
                                 const nameLC = cat.name.toLowerCase().trim();
-                                return nameLC === 'god' || nameLC === 'god figurines' || nameLC.includes('god');
+                                return nameLC.includes('god');
                             }
                         );
                         
-                        console.log('Found God category:', godCategory);
-                        
                         if (godCategory) {
-                            console.log(`Filtering products for category: ${godCategory._id}`);
-                            
                             // Filter products by God category and get latest 4
                             const godProducts = data.data
                                 .filter(product => {
                                     const categoryId = product.category?._id || product.category;
-                                    const matches = categoryId === godCategory._id;
-                                    console.log(`Product: ${product.name}, Category ID: ${categoryId}, Matches: ${matches}`);
-                                    return matches;
+                                    return categoryId === godCategory._id;
                                 })
                                 .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
                                 .slice(0, 4)
@@ -72,10 +64,9 @@ export default function GodFigurines() {
                                     code: product.code || "",
                                     qty: `Minimum Order Quantity: ${product.minimumOrderQuantity || 100} Piece`,
                                     price: `₹ ${product.price || 0}/Piece`,
-                                    img: product.images?.[0] || '/images/placeholder.png',
+                                    img: product.thumbnail || product.images?.[0] || '/images/placeholder.png',
                                 }));
                             
-                            console.log('Filtered God products:', godProducts);
                             setProducts(godProducts);
                         } else {
                             console.warn('God category not found. Available categories:', categoriesData.data.map(c => c.name));
@@ -134,6 +125,9 @@ export default function GodFigurines() {
                                 src={item.img}
                                 alt={item.name}
                                 className="w-full h-full object-cover hover:scale-105 transition duration-300"
+                                onError={(e) => {
+                                    e.target.src = '/images/placeholder.png';
+                                }}
                             />
                             
                             {/* Wishlist Button */}

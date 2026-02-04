@@ -114,11 +114,11 @@ const ProductCard = ({
   return (
     <>
       <div 
-        className={`border rounded-lg overflow-hidden hover:shadow-lg transition-all duration-300 cursor-pointer group ${className}`}
+        className={`border rounded-lg overflow-hidden hover:shadow-lg transition-all duration-300 cursor-pointer group flex flex-col h-full ${className}`}
         onClick={handleViewProduct}
       >
         {/* Product Image */}
-        <div className="relative h-56 bg-gray-200 overflow-hidden">
+        <div className="relative h-56 bg-gray-200 overflow-hidden flex-shrink-0">
           <img
             src={getProductImage(product)}
             alt={product.name || 'Product'}
@@ -176,9 +176,9 @@ const ProductCard = ({
           </div>
         </div>
 
-        {/* Product Details */}
-        <div className="p-4">
-          <h4 className="font-semibold text-lg mb-1 line-clamp-2 group-hover:text-[#C08237] transition-colors">
+        {/* Product Details - Flex grow to fill remaining space */}
+        <div className="p-4 flex flex-col flex-grow">
+          <h4 className="font-semibold text-lg mb-1 line-clamp-2 group-hover:text-[#C08237] transition-colors min-h-[3.5rem]">
             {product.name || 'Product Name'}
           </h4>
 
@@ -200,8 +200,8 @@ const ProductCard = ({
             )}
           </div>
 
-          {/* Action Buttons */}
-          <div className="flex gap-2">
+          {/* Action Buttons - Push to bottom */}
+          <div className="flex gap-2 mt-auto">
             <button
               onClick={(e) => {
                 e.stopPropagation();

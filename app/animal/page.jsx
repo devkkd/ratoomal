@@ -115,6 +115,8 @@ const AnimalPage = () => {
                 setLoading(true);
                 console.log('Fetching animal page data...');
                 
+                let animalCategory = null; // Declare at function level
+                
                 // 1. Fetch all categories to find Animal category
                 const categoriesResponse = await fetch('/api/categories');
                 if (categoriesResponse.ok) {
@@ -123,7 +125,7 @@ const AnimalPage = () => {
                     
                     if (categoriesData.success && categoriesData.data) {
                         // Find Animal category (case-insensitive search)
-                        const animalCategory = categoriesData.data.find(cat => 
+                        animalCategory = categoriesData.data.find(cat => 
                             cat.name && cat.name.toLowerCase().includes("animal")
                         );
                         
@@ -170,20 +172,29 @@ const AnimalPage = () => {
                     console.log('Products data:', productsData);
                     
                     if (productsData.success && productsData.data) {
-                        // Filter only animal products
+                        // Filter only animal products by category ID
                         const animalProductsData = productsData.data.filter(product => {
-                            // Check if product belongs to Animal category
-                            if (product.category) {
-                                const categoryName = typeof product.category === 'string' 
+                            // Check if product belongs to Animal category by ID
+                            if (product.category && animalCategory) {
+                                const categoryId = typeof product.category === 'string' 
                                     ? product.category 
-                                    : (product.category.name || "");
+                                    : (product.category._id || product.category);
                                 
-                                return categoryName.toLowerCase().includes("animal");
+                                return categoryId === animalCategory._id;
                             }
                             return false;
                         });
                         
                         console.log('Animal products found:', animalProductsData.length);
+                        console.log('Animal category ID used for filtering:', animalCategory?._id || 'No category found');
+                        console.log('Sample filtered product categories:', animalProductsData.slice(0, 3).map(p => ({
+                            name: p.name,
+                            categoryId: typeof p.category === 'string' ? p.category : p.category._id,
+                            categoryName: typeof p.category === 'string' ? 'ID only' : p.category.name
+                        })));
+                        
+                        // Only set products if we found the correct category
+                        if (animalCategory) {
                         
                         // Transform products to match frontend structure
                         const transformedProducts = animalProductsData.map(product => ({
@@ -212,6 +223,12 @@ const AnimalPage = () => {
                         // Extract unique product types
                         const types = [...new Set(transformedProducts.map(p => p.productType).filter(Boolean))];
                         setProductTypes(["All Products", ...types]);
+                        } else {
+                            console.warn('Animal category not found - no products will be displayed');
+                            setAnimalProducts([]);
+                            setFilteredProducts([]);
+                            setSortedProducts([]);
+                        }
                     }
                 }
             } catch (error) {
@@ -695,10 +712,11 @@ const AnimalPage = () => {
                                     {displayedProducts.map(product => (
                                         <div 
                                             key={product.id} 
-                                            className={`cursor-pointer w-full max-w-[480px] relative group ${!isLoggedIn ? 'opacity-75' : ''}`}
+                                            className={`cursor-pointer w-full max-w-[480px] relative group flex flex-col h-full ${!isLoggedIn ? 'opacity-75' : ''}`}
                                             onClick={() => handleProductClick(product)}
                                         >
-                                            <div className="relative w-full h-[280px] sm:h-[330px] bg-gray-100 overflow-hidden rounded-2xl">
+                                            {/* Image Section - Fixed Height */}
+                                            <div className="relative w-full h-[280px] sm:h-[330px] bg-gray-100 overflow-hidden rounded-2xl flex-shrink-0">
                                                 <img
                                                     src={product.img}
                                                     alt={product.name}
@@ -735,18 +753,22 @@ const AnimalPage = () => {
                                                 </button>
                                             </div>
 
-                                            <div className="mt-3">
-                                                <h3 className="mona font-semibold text-sm text-black line-clamp-1">
-                                                    {product.name}
-                                                </h3>
-                                                {product.code && (
-                                                    <p className="mona text-gray-600 font-mono text-xs mt-1">
-                                                        Code: <b>{product.code}</b>
-                                                    </p>
-                                                )}
+                                            {/* Content Section - Flexible Height */}
+                                            <div className="mt-3 flex flex-col flex-grow">
+                                                {/* Product Info - Fixed Height */}
+                                                <div className="flex-shrink-0">
+                                                    <h3 className="mona font-semibold text-sm text-black line-clamp-2 min-h-[2.5rem]">
+                                                        {product.name}
+                                                    </h3>
+                                                    {product.code && (
+                                                        <p className="mona text-gray-600 font-mono text-xs mt-1">
+                                                            Code: <b>{product.code}</b>
+                                                        </p>
+                                                    )}
+                                                </div>
                                                 
-                                                {/* Add to Inquiry Section */}
-                                                <div className="mt-3 space-y-2">
+                                                {/* Add to Inquiry Section - Push to Bottom */}
+                                                <div className="space-y-2 mt-auto">
                                                     {/* Quantity Selector */}
                                                     <div className="flex items-center justify-between">
                                                         <span className="text-xs hidden sm:flex text-gray-600">Quantity:</span>
