@@ -55,7 +55,7 @@ const FAQSection = () => {
   ];
 
   return (
-    <section className="bg-[#fdfbf7] min-h-screen py-16 px-7 sm:px-16 ">
+    <section className="bg-[#fdfbf7]  py-16 px-7 sm:px-16 ">
       <div className="max-w-7xl mx-auto flex flex-col md:flex-row gap-12">
         
         {/* Left Sidebar Title */}

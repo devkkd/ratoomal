@@ -72,9 +72,19 @@ const ProductDetailPage = () => {
             try {
                 setLoading(true);
                 console.log('🆔 Fetching product with ID:', id);
+                console.log('🔐 User logged in status:', isLoggedIn);
                 
                 const res = await fetch(`/api/products/${id}`);
                 const data = await res.json();
+
+                console.log('📦 API Response:', {
+                    success: data.success,
+                    hasData: !!data.data,
+                    isAuthenticated: data.isAuthenticated,
+                    hasVideo: !!data.data?.video360,
+                    videoUrl: data.data?.video360,
+                    message: data.message
+                });
 
                 if (!data.success || !data.data) {
                     console.log('❌ Product not found, using fallback');
@@ -82,7 +92,13 @@ const ProductDetailPage = () => {
                     return;
                 }
 
-                console.log('✅ Product fetched successfully:', data.data);
+                console.log('✅ Product fetched successfully:', {
+                    name: data.data.name,
+                    code: data.data.code,
+                    hasVideo: !!data.data.video360,
+                    videoUrl: data.data.video360,
+                    imagesCount: data.data.images?.length || 0
+                });
                 setProduct(data.data);
                 
             } catch (err) {
@@ -147,16 +163,27 @@ const ProductDetailPage = () => {
         if (!product) return { mediaItems: [], videoUrl: null };
         
         let mediaItems = [];
-        const thumbnail = product.thumbnail ;
+        const thumbnail = product.thumbnail;
+
+        console.log('🎬 Extracting media from product:', {
+            hasVideo: !!product.video360,
+            videoUrl: product.video360,
+            hasThumbnail: !!thumbnail,
+            imagesCount: product.images?.length || 0,
+            isLoggedIn: isLoggedIn
+        });
 
         // ✅ VIDEO FIRST in the media list
         if (product.video360) {
+            console.log('✅ Adding video to media items:', product.video360);
             mediaItems.push({
                 type: 'video',
                 url: product.video360,
                 thumbnail: thumbnail,
                 title: '360° Product View'
             });
+        } else {
+            console.log('⚠️ No video360 found in product data');
         }
         
         // Add thumbnail as first image
@@ -181,10 +208,7 @@ const ProductDetailPage = () => {
             });
         }
         
-        // Ensure at least one item
-        // if (mediaItems.length === 0) {
-        //     mediaItems.push({ type: 'image', url: fallbackImages[0] });
-        // }
+        console.log('📊 Total media items:', mediaItems.length, mediaItems.map(m => m.type));
         
         return {
             mediaItems,
@@ -196,27 +220,52 @@ const ProductDetailPage = () => {
     const { mediaItems, videoUrl, thumbnail } = extractMedia();
     const currentMedia = mediaItems[currentMediaIndex];
 
+    // Debug: Log media state
+    useEffect(() => {
+        console.log('📊 Media State Update:', {
+            totalMediaItems: mediaItems.length,
+            currentIndex: currentMediaIndex,
+            currentMediaType: currentMedia?.type,
+            hasVideo: !!videoUrl,
+            videoUrl: videoUrl,
+            isLoggedIn: isLoggedIn
+        });
+    }, [mediaItems, currentMediaIndex, currentMedia, videoUrl, isLoggedIn]);
+
     // Auto-play video when it's the first/current media (muted for browser policies)
     useEffect(() => {
         if (!videoRef.current) return;
 
+        console.log('🎥 Video effect triggered:', {
+            currentMediaType: currentMedia?.type,
+            currentMediaIndex: currentMediaIndex,
+            hasVideoRef: !!videoRef.current,
+            videoUrl: currentMedia?.url
+        });
+
         if (currentMedia && currentMedia.type === 'video') {
+            console.log('▶️ Attempting to play video:', currentMedia.url);
             videoRef.current.muted = true;
             setIsMuted(true);
             const playPromise = videoRef.current.play();
             if (playPromise && typeof playPromise.then === 'function') {
                 playPromise
-                    .then(() => setIsPlaying(true))
+                    .then(() => {
+                        console.log('✅ Video playing successfully');
+                        setIsPlaying(true);
+                    })
                     .catch((err) => {
-                        console.warn('Autoplay blocked or failed:', err);
+                        console.warn('⚠️ Autoplay blocked or failed:', err);
                         setIsPlaying(false);
                     });
             } else {
                 setIsPlaying(true);
             }
         } else {
-            videoRef.current.pause();
-            setIsPlaying(false);
+            if (videoRef.current) {
+                videoRef.current.pause();
+                setIsPlaying(false);
+            }
         }
     }, [currentMedia, currentMediaIndex]);
 
@@ -347,13 +396,15 @@ const ProductDetailPage = () => {
         return {
             id: product._id || "1",
             name: product.name || "Premium Product",
-            code: product.code || product._id || "N/A", // Add product code
+            code: product.code || product._id || "N/A",
             price: product.price || 2999,
             moq: product.moq || product.minimumOrderQuantity || 50,
             images: mediaItems.filter(item => item.type === 'image').map(item => item.url),
             video360: videoUrl,
             godName: product.godName || "",
             color: product.color || "",
+            material: product.material || "",
+            size: product.size || "",
             suitableFor: product.suitableFor || "",
             usage: product.usage || "",
             posture: product.posture || "",
@@ -362,13 +413,14 @@ const ProductDetailPage = () => {
             appearance: product.appearance || "",
             careInstruction: product.careInstruction || "",
             assemblyRequired: product.assemblyRequired || "",
+            productType: product.productType || "",
             availability: product.availability || "In Stock",
             shortDescription: product.shortDescription || "",
             longDescription: product.longDescription || product.description || `Enhance your space with our beautiful ${product.name}.`,
             features: product.features || ["Premium Quality", "Handmade", "Eco-friendly"],
             services: product.services || [],
             category: product.category?.name || "Statues",
-            subCategory: product.subCategory?.name || "Ganesha"
+            subCategory: product.subCategory?.name || ""
         };
     };
 
@@ -377,11 +429,14 @@ const ProductDetailPage = () => {
 
     /* ================= FIXED: PRODUCT SPECS ================= */
     const productSpecs = [
+        { label: "Product Code", value: transformedProduct?.code || "N/A" },
         { label: "Product Name", value: transformedProduct?.name || "N/A" },
         { label: "Category", value: transformedProduct?.category || "N/A" },
         { label: "Sub Category", value: transformedProduct?.subCategory || "N/A" },
         { label: "God Name", value: transformedProduct?.godName || "N/A" },
         { label: "Color", value: transformedProduct?.color || "N/A" },
+        { label: "Material", value: product?.material || "N/A" },
+        { label: "Size", value: product?.size || "N/A" },
         { label: "Suitable For", value: transformedProduct?.suitableFor || "N/A" },
         { label: "Usage/Application", value: transformedProduct?.usage || "N/A" },
         { label: "Posture", value: transformedProduct?.posture || "N/A" },
@@ -390,8 +445,10 @@ const ProductDetailPage = () => {
         { label: "Appearance", value: transformedProduct?.appearance || "N/A" },
         { label: "Care Instruction", value: transformedProduct?.careInstruction || "N/A" },
         { label: "Assembly Required", value: transformedProduct?.assemblyRequired || "N/A" },
+        { label: "Product Type", value: product?.productType || "N/A" },
         { label: "Availability", value: transformedProduct?.availability || "N/A" },
-    ];
+        // { label: "MOQ (Minimum Order)", value: `${transformedProduct?.moq || 1} pieces` },
+    ].filter(spec => spec.value && spec.value !== "N/A" && spec.value.trim() !== ""); // Filter out N/A values
 
     if (loading) {
         return (
@@ -465,14 +522,31 @@ const ProductDetailPage = () => {
                                         className="w-full h-full object-contain bg-black"
                                         onEnded={handleVideoEnded}
                                         onTimeUpdate={handleTimeUpdate}
-                                        onLoadedData={handleVideoLoaded}
+                                        onLoadedData={() => {
+                                            console.log('✅ Video loaded successfully');
+                                            handleVideoLoaded();
+                                        }}
+                                        onLoadStart={() => {
+                                            console.log('⏳ Video loading started...');
+                                        }}
+                                        onError={(e) => {
+                                            console.error('❌ Video error:', e);
+                                            console.error('Video URL:', currentMedia.url);
+                                        }}
+                                        onCanPlay={() => {
+                                            console.log('✅ Video can play');
+                                        }}
                                         playsInline
-                                        preload="metadata"
+                                        preload="auto"
                                         poster={currentMedia.thumbnail}
                                         muted={isMuted}
-                                        autoPlay={currentMedia?.type === 'video'}
+                                        autoPlay
                                         controls={false}
-                                    />
+                                        style={{ display: 'block', visibility: 'visible' }}
+                                    >
+                                        <source src={currentMedia.url} type="video/mp4" />
+                                        Your browser does not support the video tag.
+                                    </video>
                                     
                                     {/* Video Controls Overlay */}
                                     <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 to-transparent p-3 md:p-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
@@ -610,53 +684,60 @@ const ProductDetailPage = () => {
                             )}
                         </div>
 
-                        {/* Thumbnails Grid - Responsive (Limited for non-authenticated users) */}
+                        {/* Thumbnails Grid - Responsive (Show video thumbnail even for non-authenticated users) */}
                         <div className="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-6 lg:grid-cols-5 gap-2 md:gap-3">
-                            {(isLoggedIn ? mediaItems : mediaItems.slice(0, 2)).map((media, idx) => (
-                                <button
-                                    key={idx}
-                                    onClick={() => {
-                                        if (media.type === 'video' && videoRef.current) {
-                                            videoRef.current.pause();
-                                            setIsPlaying(false);
-                                        }
-                                        setCurrentMediaIndex(idx);
-                                    }}
-                                    className={`relative aspect-square rounded-lg md:rounded-xl overflow-hidden border-2 transition-all ${currentMediaIndex === idx ? 'border-[#C08237] scale-[1.02] shadow-md' : 'border-gray-200 hover:border-gray-300'}`}
-                                    aria-label={`View ${media.type} ${idx + 1}`}
-                                >
-                                    {media.type === 'video' ? (
-                                        <>
+                            {mediaItems.map((media, idx) => {
+                                // For non-logged in users, show video thumbnail and first 2 images
+                                if (!isLoggedIn && media.type !== 'video' && idx > 2) {
+                                    return null;
+                                }
+                                
+                                return (
+                                    <button
+                                        key={idx}
+                                        onClick={() => {
+                                            if (media.type === 'video' && videoRef.current) {
+                                                videoRef.current.pause();
+                                                setIsPlaying(false);
+                                            }
+                                            setCurrentMediaIndex(idx);
+                                        }}
+                                        className={`relative aspect-square rounded-lg md:rounded-xl overflow-hidden border-2 transition-all ${currentMediaIndex === idx ? 'border-[#C08237] scale-[1.02] shadow-md' : 'border-gray-200 hover:border-gray-300'}`}
+                                        aria-label={`View ${media.type} ${idx + 1}`}
+                                    >
+                                        {media.type === 'video' ? (
+                                            <>
+                                                <img 
+                                                    src={media.thumbnail || thumbnail}
+                                                    alt="Video thumbnail"
+                                                    className="w-full h-full object-cover"
+                                                />
+                                                <div className="absolute inset-0 bg-black/30 flex items-center justify-center">
+                                                    <Play size={14} className="text-white md:w-4 md:h-4" />
+                                                </div>
+                                                <div className="absolute top-1 right-1 bg-[#C08237] text-white text-[9px] md:text-[10px] px-1 py-0.5 rounded">
+                                                    VIDEO
+                                                </div>
+                                            </>
+                                        ) : (
                                             <img 
-                                                src={media.thumbnail || thumbnail}
-                                                alt="Video thumbnail"
+                                                src={media.url} 
+                                                alt={`${transformedProduct.name} thumbnail ${idx + 1}`}
                                                 className="w-full h-full object-cover"
+                                                onError={(e) => {
+                                                    e.target.src = fallbackImages[idx % fallbackImages.length];
+                                                }}
                                             />
-                                            <div className="absolute inset-0 bg-black/30 flex items-center justify-center">
-                                                <Play size={14} className="text-white md:w-4 md:h-4" />
-                                            </div>
-                                            <div className="absolute top-1 right-1 bg-[#C08237] text-white text-[9px] md:text-[10px] px-1 py-0.5 rounded">
-                                                VIDEO
-                                            </div>
-                                        </>
-                                    ) : (
-                                        <img 
-                                            src={media.url} 
-                                            alt={`${transformedProduct.name} thumbnail ${idx + 1}`}
-                                            className="w-full h-full object-cover"
-                                            onError={(e) => {
-                                                e.target.src = fallbackImages[idx % fallbackImages.length];
-                                            }}
-                                        />
-                                    )}
-                                </button>
-                            ))}
+                                        )}
+                                    </button>
+                                );
+                            })}
                             
                             {/* Login prompt for more images */}
-                            {!isLoggedIn && mediaItems.length > 2 && (
+                            {!isLoggedIn && mediaItems.filter(m => m.type !== 'video').length > 2 && (
                                 <div className="aspect-square rounded-lg md:rounded-xl border-2 border-dashed border-gray-300 flex flex-col items-center justify-center bg-gray-50 hover:bg-gray-100 transition-colors">
                                     <div className="text-center p-2">
-                                        <div className="text-xs text-gray-500 mb-1">+{mediaItems.length - 2} more</div>
+                                        <div className="text-xs text-gray-500 mb-1">+{mediaItems.filter(m => m.type !== 'video').length - 2} more</div>
                                         <button 
                                             onClick={() => router.push('/login')}
                                             className="text-xs text-[#C08237] font-medium hover:underline"

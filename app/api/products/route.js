@@ -22,7 +22,7 @@ export async function GET(request) {
     await connectDB();
     
     const { searchParams } = new URL(request.url);
-    const limit = parseInt(searchParams.get('limit')) || 100;
+    const limit = parseInt(searchParams.get('limit')) || 1000; // Increased limit to show all products
     const search = searchParams.get('search') || '';
     const page = parseInt(searchParams.get('page')) || 1;
     
@@ -43,14 +43,14 @@ export async function GET(request) {
       };
     }
     
-    // For non-authenticated users, limit results
+    // For non-authenticated users, allow reasonable access but with some limits
     let actualLimit = limit;
     let actualPage = page;
     
     if (!isAuthenticated) {
-      // Non-authenticated users can only see first page with limited results
-      actualLimit = Math.min(limit, 12); // Max 12 products per page
-      actualPage = 1; // Force first page only
+      // Non-authenticated users can see more products but with pagination limits
+      actualLimit = Math.min(limit, 500); // Allow up to 500 products for non-authenticated users
+      // Remove the forced first page restriction to allow pagination
     }
     
     // Calculate skip for pagination

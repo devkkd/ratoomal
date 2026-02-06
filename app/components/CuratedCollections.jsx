@@ -128,9 +128,9 @@ export default function CuratedCollections() {
                     <div 
                         key={item.id} 
                         onClick={() => router.push(`/product/${item.id}`)}
-                        className="cursor-pointer w-full max-w-[480px] relative group"
+                        className="cursor-pointer w-full max-w-[480px] relative group flex flex-col h-full"
                     >
-                        <div className="relative w-full h-[280px] sm:h-[330px] bg-gray-100 overflow-hidden rounded-2xl">
+                        <div className="relative w-full h-[280px] sm:h-[330px] bg-gray-100 overflow-hidden rounded-2xl flex-shrink-0">
                                                 <img
                                                     src={item.img}
                                                     alt={item.name}
@@ -166,18 +166,22 @@ export default function CuratedCollections() {
                             </button>
                         </div>
 
-                        <div className="mt-3">
-                            <h3 className="font-funnel font-semibold text-md text-black">
-                                {item.name}
-                            </h3>
-                            {item.code && (
-                                <p className="font-mono text-gray-600 text-xs mt-1">
-                                    Code: <span className="font-semibold">{item.code}</span>
-                                </p>
-                            )}
+                        {/* Content Section - Flexible Height */}
+                        <div className="mt-3 flex flex-col flex-grow">
+                            {/* Product Info - Fixed Height */}
+                            <div className="flex-shrink-0">
+                                <h3 className="font-funnel font-semibold text-md text-black line-clamp-2 min-h-[2.5rem]">
+                                    {item.name}
+                                </h3>
+                                {item.code && (
+                                    <p className="font-mono text-gray-600 text-xs mt-1">
+                                        Code: <span className="font-semibold">{item.code}</span>
+                                    </p>
+                                )}
+                            </div>
                             
-                            {/* Add to Inquiry Section */}
-                            <div className="mt-3 space-y-2">
+                            {/* Add to Inquiry Section - Push to Bottom */}
+                            <div className="mt-3 space-y-2 mt-auto">
                                 {/* Quantity Selector */}
                                 <div className="flex items-center justify-between">
                                     <div className="text-xs hidden sm:flex  text-gray-600">Quantity:</div>

@@ -14,12 +14,22 @@ const Hero = () => {
   const videoRefs = useRef([]);
   const [currentSlide, setCurrentSlide] = useState(0);
   const [videosPlaying, setVideosPlaying] = useState({});
+  const [videoLoadStatus, setVideoLoadStatus] = useState({});
+
+  // Debug: Log when videos load
+  useEffect(() => {
+    console.log('🎬 Hero Component Mounted - Videos should be visible');
+    console.log('Video load status:', videoLoadStatus);
+    console.log('Videos playing:', videosPlaying);
+  }, [videoLoadStatus, videosPlaying]);
 
   // Try to play the first video when component mounts
   useEffect(() => {
     const timer = setTimeout(() => {
       const firstVideo = videoRefs.current[0];
       if (firstVideo && typeof firstVideo.play === 'function') {
+        // Ensure video is muted for autoplay to work
+        firstVideo.muted = true;
         firstVideo.play()
           .then(() => {
             console.log('First video started playing automatically');
@@ -27,9 +37,22 @@ const Hero = () => {
           })
           .catch(error => {
             console.warn('Autoplay failed for first video:', error);
+            // Try playing again after user interaction
+            const playOnInteraction = () => {
+              firstVideo.play()
+                .then(() => {
+                  console.log('Video started playing after user interaction');
+                  setVideosPlaying(prev => ({ ...prev, [0]: true }));
+                  document.removeEventListener('click', playOnInteraction);
+                  document.removeEventListener('touchstart', playOnInteraction);
+                })
+                .catch(err => console.warn('Still failed to play:', err));
+            };
+            document.addEventListener('click', playOnInteraction, { once: true });
+            document.addEventListener('touchstart', playOnInteraction, { once: true });
           });
       }
-    }, 1000); // Wait 1 second for videos to load
+    }, 500); // Reduced wait time
 
     return () => clearTimeout(timer);
   }, []);
@@ -90,8 +113,11 @@ const Hero = () => {
     // Play current slide video
     const currentVideo = videoRefs.current[swiper.realIndex];
     if (currentVideo && typeof currentVideo.play === 'function') {
+      // Ensure video is muted for autoplay
+      currentVideo.muted = true;
       currentVideo.play()
         .then(() => {
+          console.log('Video playing on slide:', swiper.realIndex);
           setVideosPlaying(prev => ({ ...prev, [swiper.realIndex]: true }));
         })
         .catch(error => {
@@ -104,8 +130,10 @@ const Hero = () => {
   const handlePlayVideo = (slideIndex) => {
     const video = videoRefs.current[slideIndex];
     if (video && typeof video.play === 'function') {
+      video.muted = true; // Ensure muted for autoplay
       video.play()
         .then(() => {
+          console.log('Video playing manually:', slideIndex);
           setVideosPlaying(prev => ({ ...prev, [slideIndex]: true }));
         })
         .catch(error => {
@@ -115,7 +143,7 @@ const Hero = () => {
   };
 
   return (
-    <section className="relative w-full h-[400px] overflow-hidden bg-[#FFF6EB]">
+    <section className="relative w-full sm:h-[400px] overflow-hidden bg-[#FFF6EB]">
       <Swiper
         modules={[Navigation, Pagination, Autoplay, EffectFade]}
         effect="fade"
@@ -140,22 +168,63 @@ const Hero = () => {
         {slides.map((slide, index) => (
           <SwiperSlide key={slide.id}>
             <div className="relative w-full h-full">
+              {/* Loading indicator */}
+              {videoLoadStatus[index] === 'loading' && (
+                <div className="absolute inset-0 flex items-center justify-center bg-gray-200 z-10">
+                  <div className="text-center">
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#C08237] mx-auto mb-2"></div>
+                    <p className="text-gray-600">Loading video...</p>
+                  </div>
+                </div>
+              )}
+
+              {/* Error indicator */}
+              {/* {videoLoadStatus[index] === 'error' && (
+                <div className="absolute inset-0 flex items-center justify-center bg-gray-200 z-10">
+                  <div className="text-center">
+                    <p className="text-red-600">Video failed to load</p>
+                    <img src={slide.fallbackImage} alt="Fallback" className="mt-4 max-w-full h-auto" />
+                  </div>
+                </div>
+              )} */}
+
               {/* Simple Video Element */}
-              <video
+              {/* <video
                 ref={(el) => videoRefs.current[index] = el}
                 className="absolute inset-0 w-full h-full object-cover"
                 poster={slide.poster}
                 muted
                 loop
                 playsInline
-                preload="metadata"
-                onError={() => handleVideoError(index, slide)}
-                onPlay={() => setVideosPlaying(prev => ({ ...prev, [index]: true }))}
-                onPause={() => setVideosPlaying(prev => ({ ...prev, [index]: false }))}
+                preload="auto"
+                autoPlay={index === 0}
+                onLoadedData={() => {
+                  console.log(`✅ Video ${index} loaded successfully`);
+                  setVideoLoadStatus(prev => ({ ...prev, [index]: 'loaded' }));
+                }}
+                onLoadStart={() => {
+                  console.log(`⏳ Video ${index} loading...`);
+                  setVideoLoadStatus(prev => ({ ...prev, [index]: 'loading' }));
+                }}
+                onError={() => {
+                  console.error(`❌ Video ${index} failed to load`);
+                  setVideoLoadStatus(prev => ({ ...prev, [index]: 'error' }));
+                  handleVideoError(index, slide);
+                }}
+                onPlay={() => {
+                  console.log(`▶️ Video ${index} playing`);
+                  setVideosPlaying(prev => ({ ...prev, [index]: true }));
+                }}
+                onPause={() => {
+                  console.log(`⏸️ Video ${index} paused`);
+                  setVideosPlaying(prev => ({ ...prev, [index]: false }));
+                }}
+                style={{ display: 'block', visibility: 'visible' }}
               >
                 <source src={slide.video} type="video/mp4" />
                 Your browser does not support the video tag.
-              </video>
+              </video> */}
+              <img src="/images/banner.svg"/>
 
               {/* Gradient overlay */}
               <div className="absolute inset-0 " />

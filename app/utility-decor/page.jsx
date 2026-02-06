@@ -193,7 +193,7 @@ const UtilityDecorPage = () => {
                             code: product.code || "",
                             price: product.price?.toString() || "0",
                             moq: product.minimumOrderQuantity || product.moq || 0,
-                            img: product.images?.[0],
+                            img: product.thumbnail || product.images?.[0] || '/images/placeholder.png',
                             category: product.subCategory?.name || "",
                             subCategoryId: product.subCategory?._id || "",
                             finish: product.finish || "Natural",

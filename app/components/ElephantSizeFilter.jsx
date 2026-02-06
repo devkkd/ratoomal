@@ -136,7 +136,7 @@ export default function RoyalCollection() {
   };
 
   return (
-    <div className="w-full bg-[#FCF9F3] px-10 py-6 md:p-8  ">
+    <div className="w-full  px-10 py-6 md:p-8  ">
       <div className="max-w-7xl mx-auto flex flex-col lg:flex-row items-center gap-6 lg:gap-8">
         
         {/* Left Section: Branding - 45% width */}

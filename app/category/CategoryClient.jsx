@@ -1543,7 +1543,7 @@ const CategoryPage = () => {
             product.category === categoryId
         );
         
-        // Non-logged in users ke liye sirf 3 products
+        // Non-logged in users can see up to 3 products per category
         if (!isLoggedIn) {
             return categoryProducts.slice(0, 3);
         }
@@ -2447,7 +2447,7 @@ const CategoryPage = () => {
                                                 {categoryProducts.map(product => (
                                                     <div 
                                                         key={product.id} 
-                                                        className="cursor-pointer w-full max-w-[480px] relative group"
+                                                        className="cursor-pointer w-full max-w-[480px] relative group flex flex-col h-full"
                                                         onClick={() => handleProductClick(product)}
                                                     >
                                                         <div className="relative w-full h-[280px] sm:h-[330px] bg-gray-100 overflow-hidden rounded-2xl">
@@ -2492,18 +2492,22 @@ const CategoryPage = () => {
                                                             </button>
                                                         </div>
 
-                                                        <div className="mt-3">
-                                                            <h3 className="mona font-semibold text-sm text-black">
-                                                                {product.name}
-                                                            </h3>
-                                                            {product.code && (
-                                                                <p className="mona text-gray-600 font-mono text-xs mt-1">
-                                                                    Code: <b>{product.code}</b>
-                                                                </p>
-                                                            )}
+                                                        {/* Content Section - Flexible Height */}
+                                                        <div className="mt-3 flex flex-col flex-grow">
+                                                            {/* Product Info - Fixed Height */}
+                                                            <div className="flex-shrink-0">
+                                                                <h3 className="mona font-semibold text-sm text-black line-clamp-2 min-h-[2.5rem]">
+                                                                    {product.name}
+                                                                </h3>
+                                                                {product.code && (
+                                                                    <p className="mona text-gray-600 font-mono text-xs mt-1">
+                                                                        Code: <b>{product.code}</b>
+                                                                    </p>
+                                                                )}
+                                                            </div>
                                                             
-                                                            {/* Add to Inquiry Section */}
-                                                            <div className="mt-3 space-y-2">
+                                                            {/* Add to Inquiry Section - Push to Bottom */}
+                                                            <div className="space-y-2 mt-auto">
                                                                 {/* Quantity Selector */}
                                                                 <div className="flex items-center justify-between">
                                                                     <span className="text-xs hidden sm:flex text-gray-600">Quantity:</span>
@@ -2578,8 +2582,8 @@ const CategoryPage = () => {
                                                 ))}
                                             </div>
                                             
-                                            {/* Login prompt for non-logged in users if there are more than 3 products */}
-                                            {!isLoggedIn && totalCategoryProducts > 3 && (
+                                            {/* Login prompt for non-logged in users if there are more than 12 products */}
+                                            {!isLoggedIn && totalCategoryProducts > 12 && (
                                                 <div className="mt-6 text-center">
                                                     <button
                                                         onClick={() => router.push('/login')}
@@ -2617,7 +2621,7 @@ const CategoryPage = () => {
                                     {currentProducts.map(product => (
                                         <div 
                                             key={product.id} 
-                                            className="cursor-pointer w-full max-w-[480px] relative group"
+                                            className="cursor-pointer w-full max-w-[480px] relative group flex flex-col h-full"
                                             onClick={() => handleProductClick(product)}
                                         >
                                             <div className="relative w-full h-[280px] sm:h-[330px] bg-gray-100 overflow-hidden rounded-2xl">
@@ -2662,18 +2666,22 @@ const CategoryPage = () => {
                                                 </button>
                                             </div>
 
-                                            <div className="mt-3">
-                                                <h3 className="mona font-semibold text-sm text-black">
-                                                    {product.name}
-                                                </h3>
-                                                {product.code && (
-                                                    <p className="mona text-gray-600 font-mono text-xs mt-1">
-                                                        Code: <b>{product.code}</b>
-                                                    </p>
-                                                )}
+                                            {/* Content Section - Flexible Height */}
+                                            <div className="mt-3 flex flex-col flex-grow">
+                                                {/* Product Info - Fixed Height */}
+                                                <div className="flex-shrink-0">
+                                                    <h3 className="mona font-semibold text-sm text-black line-clamp-2 min-h-[2.5rem]">
+                                                        {product.name}
+                                                    </h3>
+                                                    {product.code && (
+                                                        <p className="mona text-gray-600 font-mono text-xs mt-1">
+                                                            Code: <b>{product.code}</b>
+                                                        </p>
+                                                    )}
+                                                </div>
                                                 
-                                                {/* Add to Inquiry Section */}
-                                                <div className="mt-3 space-y-2">
+                                                {/* Add to Inquiry Section - Push to Bottom */}
+                                                <div className="space-y-2 mt-auto">
                                                     {/* Quantity Selector */}
                                                     <div className="flex items-center justify-between">
                                                         <span className="text-xs hidden sm:flex text-gray-600">Quantity:</span>

@@ -49,25 +49,38 @@ export async function GET(request, { params }) {
     let productData = product.toObject();
     
     if (!isAuthenticated) {
-      // Remove sensitive information for non-authenticated users
+      // For non-authenticated users, show basic info but INCLUDE video360
       productData = {
         _id: product._id,
         name: product.name,
-        code: product.code, // Add product code
+        code: product.code,
         thumbnail: product.thumbnail,
         images: product.images ? product.images.slice(0, 2) : [], // Only first 2 images
+        video360: product.video360, // ✅ INCLUDE VIDEO for non-authenticated users
         category: product.category,
         subCategory: product.subCategory,
         price: product.price,
+        moq: product.moq,
         minimumOrderQuantity: product.minimumOrderQuantity,
         finish: product.finish,
+        productType: product.productType,
+        availability: product.availability,
+        shortDescription: product.shortDescription || "Login to view detailed product information",
         // Hide detailed information
-        description: "Login to view detailed product information",
-        specifications: undefined,
-        materials: undefined,
-        dimensions: undefined,
-        weight: undefined,
+        longDescription: undefined,
+        features: undefined,
         services: undefined,
+        godName: undefined,
+        color: undefined,
+        material: undefined,
+        size: undefined,
+        suitableFor: undefined,
+        usage: undefined,
+        posture: undefined,
+        baseShape: undefined,
+        appearance: undefined,
+        careInstruction: undefined,
+        assemblyRequired: undefined,
         isLimitedView: true
       };
     }

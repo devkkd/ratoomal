@@ -203,7 +203,7 @@ const AnimalPage = () => {
                             code: product.code || "",
                             price: product.price?.toString() || "0",
                             moq: product.minimumOrderQuantity || product.moq || 0,
-                            img: product.images?.[0] ,
+                            img: product.thumbnail || product.images?.[0] || '/images/placeholder.png',
                             category: product.subCategory?.name || "",
                             subCategoryId: product.subCategory?._id || "",
                             finish: product.finish || "Natural",
@@ -721,6 +721,9 @@ const AnimalPage = () => {
                                                     src={product.img}
                                                     alt={product.name}
                                                     className="w-full h-full object-cover hover:scale-105 transition duration-300"
+                                                    onError={(e) => {
+                                                        e.target.src = '/images/placeholder.png';
+                                                    }}
                                                 />
 
                                                 {/* Wishlist Button */}
