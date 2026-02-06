@@ -11,7 +11,7 @@ const InquiryStatusModal = ({ inquiry, isOpen, onClose, onUpdate }) => {
 
   const statusOptions = [
     { value: 'pending', label: 'Pending', icon: Clock, color: 'text-yellow-600' },
-    { value: 'reviewed', label: 'Reviewed', icon: MessageSquare, color: 'text-blue-600' },
+    { value: 'reviewed', label: 'Reviewed', icon: MessageSquare, color: 'text-[#C08237]' },
     { value: 'responded', label: 'Responded', icon: CheckCircle, color: 'text-green-600' },
     { value: 'closed', label: 'Closed', icon: XCircle, color: 'text-gray-600' }
   ];

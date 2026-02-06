@@ -102,7 +102,7 @@ export default function CuratedCollections() {
     };
 
     return (
-        <div className="max-w-7xl items-center mx-auto px-4 sm:px-6 lg:px-12">
+        <div className="max-w-7xl  items-center mx-auto px-4 sm:px-6 lg:px-12">
             <h2 className="playfair text-2xl md:text-4xl text-center flex justify-center font-bold mb-8 letter-spacing-[-0.02em]">
                 Curated Collections - Crafted for Global Markets
             </h2>

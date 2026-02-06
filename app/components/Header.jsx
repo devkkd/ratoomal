@@ -470,7 +470,7 @@ const Header = () => {
                 </svg>
               </div>
               {isClient && getCartCount() > 0 && (
-                <span className="absolute -top-1 -right-1 bg-blue-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center min-w-[20px]">
+                <span className="absolute -top-1 -right-1 bg-[#C08237] text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center min-w-[20px]">
                   {getCartCount() > 99 ? '99+' : getCartCount()}
                 </span>
               )}
@@ -940,13 +940,13 @@ const Header = () => {
                   </Link>
                   
                   <Link href="/inquiry-cart" onClick={() => setIsMenuOpen(false)}>
-                    <button className="w-full flex items-center justify-center gap-2 border border-blue-500 text-blue-500 px-5 py-3 rounded-full text-xs font-bold uppercase hover:bg-blue-500 hover:text-white transition-colors">
+                    <button className="w-full flex items-center justify-center gap-2 border border-[#C08237] text-[#C08237] px-5 py-3 rounded-full text-xs font-bold uppercase hover:bg-[#C08237] hover:text-white transition-colors">
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-1.5 6M7 13l-1.5-6M17 21a2 2 0 100-4 2 2 0 000 4zM9 21a2 2 0 100-4 2 2 0 000 4z" />
                       </svg>
                       INQUIRY CART
                       {getCartCount() > 0 && (
-                        <span className="bg-blue-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center min-w-[20px] ml-1">
+                        <span className="bg-[#C08237] text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center min-w-[20px] ml-1">
                           {getCartCount() > 99 ? '99+' : getCartCount()}
                         </span>
                       )}

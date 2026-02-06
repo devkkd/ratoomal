@@ -39,7 +39,7 @@ const WhyRatoomals = () => {
   ];
 
   return (
-    <section className="bg-[#FAF9F6] py-8 sm:py-24 px-6 md:px-20 overflow-hidden">
+    <section className="bg-[#FCF8F1] py-8 sm:py-24 px-6 md:px-20 overflow-hidden">
       <div className="max-w-7xl mx-auto">
         
         {/* Header Section */}

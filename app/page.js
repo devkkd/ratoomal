@@ -16,7 +16,7 @@ import Guarantees from "./components/Guarantees";
 
 export default function HomePage() {
   return (
-    <main className="flex flex-col">
+    <main className="flex flex-col bg-[#FCF8F1]">
 
       <Hero />
       {/* WHY US */}
@@ -34,11 +34,11 @@ export default function HomePage() {
       <section className="-mt-12">
         <ElephantSizeFilter />
 
-        <div className="">
+        <div className="bg-[#FCF8F1] mt-4">
         <CuratedCollections />
         </div>
 
-        <div className="">
+        <div className="bg-[#FCF8F1]">
         <GodFigurines />
         </div>
 

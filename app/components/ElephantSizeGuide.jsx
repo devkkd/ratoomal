@@ -199,7 +199,7 @@ const handleSizeHover = (index) => {
 
   if (filteredSizes.length === 0) {
     return (
-      <div className="w-full bg-[#FCF9F3] border py-6 sm:py-8 md:py-12">
+      <div className="w-full bg-[#FCF8F1] border py-6 sm:py-8 md:py-12">
         <div className="text-center text-gray-500">
           Loading elephant sizes...
         </div>
@@ -208,7 +208,7 @@ const handleSizeHover = (index) => {
   }
 
   return (
-    <div className="w-full bg-[#FCF9F3] py-6 sm:py-8 md:py-12">
+    <div className="w-full bg-[#FCF8F1] py-6 sm:py-8 md:py-12">
       <div 
         id="elephant-container" 
         className="w-full max-w-7xl sm:mx-auto px-3 sm:px-4 md:px-6 lg:px-8"

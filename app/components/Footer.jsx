@@ -2,6 +2,7 @@ import React from 'react';
 import { Instagram, Facebook, Youtube, Linkedin, Mail, Phone, MapPin } from 'lucide-react';
 import ConnectSection from './ConnectSection';
 import Guarantees from './Guarantees';
+import Link from 'next/link';
 
 const Footer = () => {
   return (
@@ -14,7 +15,7 @@ const Footer = () => {
         <Guarantees />
 
       </div>
-      <footer className="bg-[#FCF8F1] pt-12 font-sans text-gray-800">
+      <footer className="bg-[#fdf6e9] pt-12 font-sans text-gray-800">
 
         <div className="max-w-7xl mx-auto px-6">
           {/* Main Footer Content */}
@@ -137,11 +138,13 @@ const Footer = () => {
           <div className='flex justify-between'>
 
 
-            <p className="text-[11px] font-bold text-gray-500">© Ratoomals Handicrafts. All rights reserved.</p>
+            <p className="text-[11px] font-bold text-gray-500">© Ratoomals Handicrafts. All rights reserved. |  Crafted and Powered by <Link href="https://www.kontentkraftdigital.com/" className='text-[#C08237] text-md'> Kontent Kraft Digital </Link></p>
             <p className="text-[11px] font-bold text-gray-500">
-              House of Quality Since 1955. Crafted by artisans. Trusted by global buyers. | Developed by KKD
+              House of Quality Since 1955. Crafted by artisans. Trusted by global buyers.
             </p>
+        
           </div>
+         
         </div>
 
         {/* Decorative Skyline Bottom */}

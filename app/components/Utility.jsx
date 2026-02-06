@@ -98,7 +98,7 @@ export default function Utility() {
     };
 
     return (
-        <div className="max-w-7xl items-center mx-auto px-4 sm:px-6 lg:px-12 mt-4">
+        <div className="max-w-7xl  items-center mx-auto px-4 sm:px-6 lg:px-12 mt-4">
            
             <h3 className="playfair text-xl md:text-[30px] text-center flex justify-center font-semibold letter-spacing-[-0.01em] mb-10">
                Utility / Decor

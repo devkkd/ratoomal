@@ -170,7 +170,7 @@ const ContactForm = () => {
     }
   };
   return (
-    <section className="bg-[#FDF6EB]  py-8 sm:py-16 font-sans text-[#1A1A1A]">
+    <section className="bg-[#fdf6e9]  py-8 sm:py-16 font-sans text-[#1A1A1A]">
       {/* Success/Error Messages */}
       {submitStatus && (
         <div className={`max-w-7xl mx-auto mb-8 p-4 rounded-lg flex items-center space-x-3 ${

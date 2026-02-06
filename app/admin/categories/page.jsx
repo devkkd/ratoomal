@@ -282,7 +282,7 @@ const CategoryAdminPage = () => {
                         <div className="flex items-center gap-2">
                           <button
                             onClick={() => handleEdit(cat)}
-                            className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                            className="p-2 text-[#C08237] hover:bg-blue-50 rounded-lg transition-colors"
                             title="Edit"
                           >
                             <Pencil className="h-4 w-4" />
@@ -327,11 +327,11 @@ const CategoryAdminPage = () => {
           <div className="bg-gradient-to-r from-blue-50 to-white border border-blue-100 rounded-xl p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-blue-700 font-medium">Total Categories</p>
+                <p className="text-sm text-[#C08237] font-medium">Total Categories</p>
                 <p className="text-2xl font-bold text-gray-900 mt-1">{categories.length}</p>
               </div>
               <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-                <Plus className="h-5 w-5 text-blue-600" />
+                <Plus className="h-5 w-5 text-[#C08237]" />
               </div>
             </div>
           </div>

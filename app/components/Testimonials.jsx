@@ -44,7 +44,7 @@ const testimonials = [
 
 const Testimonials = () => {
   return (
-    <section className="sm:py-20 px-6 md:px-16 bg-[#FEFBF4] overflow-hidden">
+    <section className="sm:py-20 px-6 md:px-16 bg-[#FCF8F1] overflow-hidden">
       <div className="max-w-7xl mx-auto">
         
         {/* Header Section */}

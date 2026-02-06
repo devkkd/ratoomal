@@ -3,7 +3,7 @@ import { ArrowRight } from 'lucide-react';
 
 const ConnectSection = () => {
   return (
-    <section className="bg-white py-8 sm:py-20 px-6 md:px-12 lg:px-24 text-[#1A1A1A]">
+    <section className="bg-[#FCF8F1] py-8 sm:py-20 px-6 md:px-12 lg:px-24 text-[#1A1A1A]">
       <div className="max-w-7xl mx-auto">
         
         {/* Header Section */}

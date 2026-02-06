@@ -27,15 +27,23 @@ const TrustBuilding = () => {
   ];
 
   return (
-    <section className="w-full bg-[#fdf6e9] py-4 px-4 md:px-8 font-sans overflow-hidden relative">
-      {/* Top-left shadow */}
-      <div className="absolute top-0 left-0 w-64 h-64 md:w-96 md:h-96 opacity-10 pointer-events-none">
-        <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-[#c48b46] to-transparent rounded-full blur-3xl"></div>
+    <section className="w-full bg-[#FCF8F1] py-4 px-4 md:px-8 font-sans overflow-hidden relative">
+      {/* Top-left decorative image */}
+      <div className="absolute  top-0 left-0 w-52 h-52 md:w-96 md:h-80 pointer-events-none z-0">
+        <img 
+          src="/images/top-left.png" 
+          alt="" 
+          className="w-full h-full object-cover rotate-180"
+        />
       </div>
 
-      {/* Top-right shadow */}
-      <div className="absolute top-0 right-0 w-64 h-64 md:w-96 md:h-96 opacity-10 pointer-events-none">
-        <div className="absolute top-0 right-0 w-full h-full bg-gradient-to-bl from-[#c48b46] to-transparent rounded-full blur-3xl"></div>
+      {/* Top-right decorative image */}
+      <div className="absolute  top-0 right-0 w-32 h-32 md:w-80 md:h-80  ">
+        <img 
+          src="/images/top-right.png" 
+          alt="" 
+          className="w-full h-full object-cover rotate-90"
+        />
       </div>
 
       <div className="max-w-6xl  mx-auto relative z-10 flex flex-col">

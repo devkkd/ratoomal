@@ -224,7 +224,7 @@ const Hero = () => {
                 <source src={slide.video} type="video/mp4" />
                 Your browser does not support the video tag.
               </video> */}
-              <img src="/images/banner.svg"/>
+              <img src="/images/banner.svg" className="w-full h-full object-cover"/>
 
               {/* Gradient overlay */}
               <div className="absolute inset-0 " />

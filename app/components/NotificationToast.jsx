@@ -20,7 +20,7 @@ const NotificationToast = ({ message, type = 'success', isVisible, onClose, dura
       case 'success':
         return <CheckCircle className="w-5 h-5 text-green-500" />;
       case 'cart':
-        return <ShoppingCart className="w-5 h-5 text-blue-500" />;
+        return <ShoppingCart className="w-5 h-5 text-[#C08237]" />;
       case 'wishlist':
         return <Heart className="w-5 h-5 text-red-500" />;
       default:
@@ -33,7 +33,7 @@ const NotificationToast = ({ message, type = 'success', isVisible, onClose, dura
       case 'success':
         return 'bg-green-50 border-green-200';
       case 'cart':
-        return 'bg-blue-50 border-blue-200';
+        return 'bg-white border-[#C08237]';
       case 'wishlist':
         return 'bg-red-50 border-red-200';
       default:
