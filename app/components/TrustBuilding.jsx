@@ -49,7 +49,7 @@ const TrustBuilding = () => {
       <div className="max-w-6xl  mx-auto relative z-10 flex flex-col">
         {/* Top Content */}
         <div className="flex flex-col md:flex-row items-center justify-between gap-4 sm:gap-7 mb-16">
-          <div className="relative w-full md:w-[40%] flex justify-center">
+          <div className="relative w-[60%] md:w-[40%] flex justify-center">
             <img
               src="/images/Group-241.svg"
               alt="Handcrafted Elephant Art"

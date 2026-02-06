@@ -143,7 +143,7 @@ const Hero = () => {
   };
 
   return (
-    <section className="relative w-full sm:h-[400px] overflow-hidden bg-[#FFF6EB]">
+    <section className="relative w-full h-[300px] sm:h-[400px] overflow-hidden bg-[#FFF6EB]">
       <Swiper
         modules={[Navigation, Pagination, Autoplay, EffectFade]}
         effect="fade"
