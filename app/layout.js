@@ -9,7 +9,7 @@ import { Mona_Sans } from "next/font/google";
 import TranslationProvider from "@/app/components/TranslationProvider";
 import LanguageLoader from "@/app/components/LanguageLoader";
 import { Suspense } from "react";
-
+import Script from "next/script";
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -51,6 +51,21 @@ export default function RootLayout({ children }) {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <title>Ratoomal - Handcrafted Heritage Decor</title>
         <meta name="description" content="Ratoomal's Jaipur Heritage - Handcrafted Statues, Sculptures & Decor since 1955" />
+     
+    
+ <Script
+          src="https://www.googletagmanager.com/gtag/js?id=G-Q1083NJZEW"
+          strategy="afterInteractive"
+        />
+        <Script id="google-analytics" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-Q1083NJZEW');
+          `}
+        </Script>
+
       </head>
       <body
         className={`
