@@ -1,6 +1,16 @@
 # *
 User-agent: *
 Allow: /
+Disallow: /admin
+Disallow: /admin/*
+Disallow: /login
+Disallow: /login/*
+Disallow: /signup
+Disallow: /cart
+Disallow: /wishlist
+Disallow: /inquiry-cart
+Disallow: /api/admin/*
+Disallow: /api/auth/*
 
 # Host
 Host: https://ratoomals.com

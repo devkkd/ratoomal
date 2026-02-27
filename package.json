@@ -12,9 +12,7 @@
     "build": "next build",
     "start": "next start",
     "check-env": "node scripts/checkEnv.js",
-    "migrate-to-r2": "node scripts/migrate-to-r2.js",
-    "postbuild": "next-sitemap"
-
+    "migrate-to-r2": "node scripts/migrate-to-r2.js"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.981.0",
