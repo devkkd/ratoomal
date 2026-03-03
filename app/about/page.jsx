@@ -25,7 +25,7 @@ export default function AboutPage() {
         <div className="rounded-2xl overflow-hidden shadow-sm">
           <Image 
             src="/images/about/Maskgroup.svg" 
-            alt="Handcrafted wooden elephants"
+            alt="wooden elephant showpiece"
             width={1200}
             height={600}
             className="w-full object-cover"
@@ -72,7 +72,8 @@ export default function AboutPage() {
         <div className="rounded-lg overflow-hidden h-[300px] relative">
           <Image 
             src="/images/about/Craft.svg" 
-            alt="Artisan carving detail"
+            alt="interior decoration interior decoration
+"
             fill
             className="object-cover"
           />

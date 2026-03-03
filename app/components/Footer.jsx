@@ -152,7 +152,7 @@ const Footer = () => {
           {/* Replace this with your actual SVG skyline image */}
           <img
             src="/images/Group-277.svg"
-            alt="Jaipur Skyline"
+            alt="handicraft items export from india"
             className="w-full h-auto object-bottom opacity-80"
           />
         </div>

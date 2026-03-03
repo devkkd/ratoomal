@@ -51,8 +51,8 @@ export default function RootLayout({ children }) {
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <title>Ratoomal - Handcrafted Heritage Decor</title>
-        <meta name="description" content="Ratoomal's Jaipur Heritage - Handcrafted Statues, Sculptures & Decor since 1955" />
-     
+        <meta name="description" content="Ratoomal's Jaipur Heritage - Handcrafted Statues, Sculptures & Decor since 1955 handicraft export business in india" />
+        
     
  <Script
           src="https://www.googletagmanager.com/gtag/js?id=G-Q1083NJZEW"

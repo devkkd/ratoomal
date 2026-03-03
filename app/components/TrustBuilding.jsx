@@ -52,7 +52,7 @@ const TrustBuilding = () => {
           <div className="relative w-[60%] md:w-[40%] flex justify-center">
             <img
               src="/images/Group-241.svg"
-              alt="Handcrafted Elephant Art"
+              alt="elephant art"
               className="w-full h-auto max-h-[400px] object-cover"
             />
           </div>

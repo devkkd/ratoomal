@@ -30,7 +30,7 @@ const ConnectSection = () => {
               >
                 <img 
                   src="/images/connect/image-118.svg" 
-                  alt="Hawa Mahal Jaipur" 
+                  alt="jaipur handicrafts jaipur" 
                   className="w-full h-full object-cover rounded-2xl"
                 />
               </a>
@@ -73,7 +73,7 @@ const ConnectSection = () => {
               >
                 <img 
                   src="/images/connect/Mask-group.svg" 
-                  alt="Greater Noida Statue" 
+                  alt="brass buddha incense burner" 
                   className="w-full h-full object-cover rounded-2xl"
                 />
               </a>
