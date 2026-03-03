@@ -54,8 +54,9 @@ const ProductCard = ({
     setIsLoading(true);
     
     try {
-      // Add to cart with only 3-inch size by default
-      addToCart(product, ['3'], 1);
+      // Add to cart with first available size or default
+      const defaultSize = product.sizes && product.sizes.length > 0 ? [product.sizes[0]] : ['3"'];
+      addToCart(product, defaultSize, 1);
       showNotification('Product added to inquiry cart!', 'cart');
     } catch (error) {
       console.error('Error adding to inquiry cart:', error);
@@ -128,18 +129,22 @@ const ProductCard = ({
             }}
           />
           
-          {/* Wishlist Button */}
+          {/* Wishlist Button - Perfectly Centered */}
           {showWishlistButton && (
             <button
               onClick={handleWishlistToggle}
-              className={`absolute top-3 right-3 p-2 rounded-full transition-all duration-200 ${
+              className={`absolute top-3 right-3 p-2.5 rounded-full backdrop-blur-sm transition-all duration-300 transform hover:scale-110 shadow-lg flex items-center justify-center ${
                 isInWish 
-                  ? 'bg-red-500 text-white shadow-lg' 
-                  : 'bg-white/80 text-gray-600 hover:bg-red-500 hover:text-white'
+                  ? 'bg-red-500/90 text-white' 
+                  : 'bg-white/90 text-gray-700 hover:bg-red-50'
               }`}
+              aria-label={isInWish ? 'Remove from wishlist' : 'Add to wishlist'}
             >
               <Heart 
-                className={`w-4 h-4 ${isInWish ? 'fill-current' : ''}`} 
+                className={`w-5 h-5 transition-all duration-300 ${
+                  isInWish ? 'fill-current scale-110' : 'hover:scale-110'
+                }`} 
+                strokeWidth={isInWish ? 0 : 2}
               />
             </button>
           )}
@@ -199,6 +204,28 @@ const ProductCard = ({
               </p>
             )}
           </div>
+
+          {/* Available Sizes */}
+          {product.sizes && product.sizes.length > 0 && (
+            <div className="mb-3">
+              <p className="text-xs text-gray-500 mb-1">Available Sizes:</p>
+              <div className="flex flex-wrap gap-1">
+                {product.sizes.slice(0, 4).map((size, index) => (
+                  <span 
+                    key={index}
+                    className="px-2 py-0.5 bg-gray-100 text-gray-700 text-xs rounded"
+                  >
+                    {size}
+                  </span>
+                ))}
+                {product.sizes.length > 4 && (
+                  <span className="px-2 py-0.5 bg-gray-100 text-gray-700 text-xs rounded">
+                    +{product.sizes.length - 4} more
+                  </span>
+                )}
+              </div>
+            </div>
+          )}
 
           {/* Action Buttons - Push to bottom */}
           <div className="flex gap-2 mt-auto">

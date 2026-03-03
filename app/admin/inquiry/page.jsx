@@ -57,34 +57,34 @@ const AdminInquiry = () => {
 
   const debugInquiry = async (inquiryId) => {
     try {
-      console.log(`🔍 Starting debug for inquiry: ${inquiryId}`);
+      // console.log(`🔍 Starting debug for inquiry: ${inquiryId}`);
       const response = await fetch(`/api/admin/inquiry?inquiryId=${inquiryId}&debug=true`);
       const data = await response.json();
       
       if (data.success) {
-        console.log('🔍 DEBUG RESULTS FOR INQUIRY:', inquiryId);
-        console.log('📋 Company:', data.debug.companyName);
-        console.log('📊 Expected Products:', data.debug.summary.expectedProducts);
-        console.log('📊 Processed Products:', data.debug.summary.processedProducts);
-        console.log('✅ Found Products:', data.debug.summary.foundProducts);
-        console.log('❌ Not Found Products:', data.debug.summary.productsNotFound);
-        console.log('🎯 All Products Found:', data.debug.summary.allProductsFound);
-        console.log('');
-        console.log('📦 RAW CART PRODUCTS:', data.debug.rawCartProducts);
-        console.log('');
-        console.log('🔍 DETAILED PRODUCT ANALYSIS:');
+        // console.log('🔍 DEBUG RESULTS FOR INQUIRY:', inquiryId);
+        // console.log('📋 Company:', data.debug.companyName);
+        // console.log('📊 Expected Products:', data.debug.summary.expectedProducts);
+        // console.log('📊 Processed Products:', data.debug.summary.processedProducts);
+        // console.log('✅ Found Products:', data.debug.summary.foundProducts);
+        // console.log('❌ Not Found Products:', data.debug.summary.productsNotFound);
+        // console.log('🎯 All Products Found:', data.debug.summary.allProductsFound);
+        // console.log('');
+        // console.log('📦 RAW CART PRODUCTS:', data.debug.rawCartProducts);
+        // console.log('');
+        // console.log('🔍 DETAILED PRODUCT ANALYSIS:');
         data.debug.productsWithDetails.forEach((product, index) => {
-          console.log(`Product ${product.index}:`);
-          console.log(`  - ID: ${product.cartProduct.productId}`);
-          console.log(`  - Quantity: ${product.cartProduct.quantity}`);
-          console.log(`  - Sizes: ${JSON.stringify(product.cartProduct.selectedSizes)}`);
-          console.log(`  - Found: ${product.found ? '✅' : '❌'}`);
-          console.log(`  - Name: ${product.productName}`);
-          console.log(`  - Code: ${product.productCode}`);
-          if (product.error) {
-            console.log(`  - Error: ${product.error}`);
-          }
-          console.log('');
+          // console.log(`Product ${product.index}:`);
+          // console.log(`  - ID: ${product.cartProduct.productId}`);
+          // console.log(`  - Quantity: ${product.cartProduct.quantity}`);
+          // console.log(`  - Sizes: ${JSON.stringify(product.cartProduct.selectedSizes)}`);
+          // console.log(`  - Found: ${product.found ? '✅' : '❌'}`);
+          // console.log(`  - Name: ${product.productName}`);
+          // console.log(`  - Code: ${product.productCode}`);
+          // if (product.error) {
+          //   console.log(`  - Error: ${product.error}`);
+          // }
+          // console.log('');
         });
         
         alert(`Debug completed! Check console for details.\n\nSummary:\n- Expected: ${data.debug.summary.expectedProducts} products\n- Found: ${data.debug.summary.foundProducts} products\n- Missing: ${data.debug.summary.productsNotFound} products\n- All Found: ${data.debug.summary.allProductsFound ? 'Yes' : 'No'}`);

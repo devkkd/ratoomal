@@ -90,7 +90,7 @@ const UtilityDecorPage = () => {
             }
         }
         
-        console.log('🔐 Utility-Decor Page - Login status check:', loggedIn);
+        // console.log('🔐 Utility-Decor Page - Login status check:', loggedIn);
         setIsLoggedIn(loggedIn);
         return loggedIn;
     };
@@ -105,7 +105,7 @@ const UtilityDecorPage = () => {
 
     // Log wishlist changes
     useEffect(() => {
-        console.log('🔍 Utility-Decor Page - Wishlist changed:', wishlist);
+        // console.log('🔍 Utility-Decor Page - Wishlist changed:', wishlist);
     }, [wishlist]);
 
     // Fetch data from backend
@@ -113,7 +113,7 @@ const UtilityDecorPage = () => {
         const fetchData = async () => {
             try {
                 setLoading(true);
-                console.log('Fetching utility-decor page data...');
+                // console.log('Fetching utility-decor page data...');
                 
                 let decorCategory = null; // Declare at function level
                 
@@ -121,7 +121,7 @@ const UtilityDecorPage = () => {
                 const categoriesResponse = await fetch('/api/categories');
                 if (categoriesResponse.ok) {
                     const categoriesData = await categoriesResponse.json();
-                    console.log('Categories data:', categoriesData);
+                    // console.log('Categories data:', categoriesData);
                     
                     if (categoriesData.success && categoriesData.data) {
                         // Find Utility-Decor category (case-insensitive search)
@@ -129,14 +129,14 @@ const UtilityDecorPage = () => {
                             cat.name && (cat.name.toLowerCase().includes("utility") || cat.name.toLowerCase().includes("decor"))
                         );
                         
-                        console.log('Found utility-decor category:', decorCategory);
+                        // console.log('Found utility-decor category:', decorCategory);
                         
                         if (decorCategory) {
                             // 2. Fetch all subcategories
                             const subCatResponse = await fetch('/api/subcategories');
                             if (subCatResponse.ok) {
                                 const subCatData = await subCatResponse.json();
-                                console.log('All subcategories:', subCatData);
+                                // console.log('All subcategories:', subCatData);
                                 
                                 if (subCatData.success && subCatData.data) {
                                     // Filter subcategories for this category
@@ -148,7 +148,7 @@ const UtilityDecorPage = () => {
                                     const subCatNames = [...new Set(categorySubCats.map(s => s.name).filter(Boolean))];
                                     setDecorCategories(subCatNames);
                                     setDecorSubCategories(categorySubCats);
-                                    console.log('Utility-Decor subcategories:', subCatNames);
+                                    // console.log('Utility-Decor subcategories:', subCatNames);
                                 }
                             }
                         }
@@ -159,7 +159,7 @@ const UtilityDecorPage = () => {
                 const productsResponse = await fetch('/api/products');
                 if (productsResponse.ok) {
                     const productsData = await productsResponse.json();
-                    console.log('Products data:', productsData);
+                    // console.log('Products data:', productsData);
                     
                     if (productsData.success && productsData.data) {
                         // Filter only utility-decor products by category ID
@@ -175,8 +175,8 @@ const UtilityDecorPage = () => {
                             return false;
                         });
                         
-                        console.log('Utility-Decor products found:', decorProductsData.length);
-                        console.log('Utility-Decor category ID used for filtering:', decorCategory?._id || 'No category found');
+                        // console.log('Utility-Decor products found:', decorProductsData.length);
+                        // console.log('Utility-Decor category ID used for filtering:', decorCategory?._id || 'No category found');
                         console.log('Sample filtered product categories:', decorProductsData.slice(0, 3).map(p => ({
                             name: p.name,
                             categoryId: typeof p.category === 'string' ? p.category : p.category._id,
@@ -204,7 +204,7 @@ const UtilityDecorPage = () => {
                             createdAt: product.createdAt || new Date().toISOString()
                         }));
                         
-                        console.log('Transformed products:', transformedProducts);
+                        // console.log('Transformed products:', transformedProducts);
                         
                         setDecorProducts(transformedProducts);
                         setFilteredProducts(transformedProducts);
@@ -296,16 +296,16 @@ const UtilityDecorPage = () => {
     useEffect(() => {
         let filtered = [...decorProducts];
         
-        console.log('Applying filters...');
-        console.log('Selected decorations:', selectedDecor);
-        console.log('Total decor products:', filtered.length);
+        // console.log('Applying filters...');
+        // console.log('Selected decorations:', selectedDecor);
+        // console.log('Total decor products:', filtered.length);
 
         // Filter by selected decorations (subcategories)
         if (selectedDecor.length > 0) {
             filtered = filtered.filter(product =>
                 selectedDecor.includes(product.category)
             );
-            console.log('Filtered by decoration:', filtered.length);
+            // console.log('Filtered by decoration:', filtered.length);
         }
 
         // Filter by product type
@@ -313,7 +313,7 @@ const UtilityDecorPage = () => {
             filtered = filtered.filter(product =>
                 product.productType === activeProductType
             );
-            console.log('Filtered by product type:', filtered.length);
+            // console.log('Filtered by product type:', filtered.length);
         }
 
         // Right sidebar filters

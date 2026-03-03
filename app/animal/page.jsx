@@ -90,7 +90,7 @@ const AnimalPage = () => {
             }
         }
         
-        console.log('🔐 Animal Page - Login status check:', loggedIn);
+        // console.log('🔐 Animal Page - Login status check:', loggedIn);
         setIsLoggedIn(loggedIn);
         return loggedIn;
     };
@@ -105,7 +105,7 @@ const AnimalPage = () => {
 
     // Log wishlist changes
     useEffect(() => {
-        console.log('🔍 Animal Page - Wishlist changed:', wishlist);
+        // console.log('🔍 Animal Page - Wishlist changed:', wishlist);
     }, [wishlist]);
 
     // Fetch data from backend
@@ -113,7 +113,7 @@ const AnimalPage = () => {
         const fetchData = async () => {
             try {
                 setLoading(true);
-                console.log('Fetching animal page data...');
+                // console.log('Fetching animal page data...');
                 
                 let animalCategory = null; // Declare at function level
                 
@@ -121,7 +121,7 @@ const AnimalPage = () => {
                 const categoriesResponse = await fetch('/api/categories');
                 if (categoriesResponse.ok) {
                     const categoriesData = await categoriesResponse.json();
-                    console.log('Categories data:', categoriesData);
+                    // console.log('Categories data:', categoriesData);
                     
                     if (categoriesData.success && categoriesData.data) {
                         // Find Animal category (case-insensitive search)
@@ -129,14 +129,14 @@ const AnimalPage = () => {
                             cat.name && cat.name.toLowerCase().includes("animal")
                         );
                         
-                        console.log('Found animal category:', animalCategory);
+                        // console.log('Found animal category:', animalCategory);
                         
                         if (animalCategory) {
                             // 2. Fetch all subcategories
                             const subCatResponse = await fetch('/api/subcategories');
                             if (subCatResponse.ok) {
                                 const subCatData = await subCatResponse.json();
-                                console.log('All subcategories:', subCatData);
+                                // console.log('All subcategories:', subCatData);
                                 
                                 if (subCatData.success && subCatData.data) {
                                     // Filter subcategories that belong to Animal category
@@ -153,7 +153,7 @@ const AnimalPage = () => {
                                         return false;
                                     });
                                     
-                                    console.log('Animal subcategories:', animalSubCats);
+                                    // console.log('Animal subcategories:', animalSubCats);
                                     
                                     // Get animal names from subcategories
                                     const animalNames = animalSubCats.map(subCat => subCat.name);
@@ -169,7 +169,7 @@ const AnimalPage = () => {
                 const productsResponse = await fetch('/api/products');
                 if (productsResponse.ok) {
                     const productsData = await productsResponse.json();
-                    console.log('Products data:', productsData);
+                    // console.log('Products data:', productsData);
                     
                     if (productsData.success && productsData.data) {
                         // Filter only animal products by category ID
@@ -185,8 +185,8 @@ const AnimalPage = () => {
                             return false;
                         });
                         
-                        console.log('Animal products found:', animalProductsData.length);
-                        console.log('Animal category ID used for filtering:', animalCategory?._id || 'No category found');
+                        // console.log('Animal products found:', animalProductsData.length);
+                        // console.log('Animal category ID used for filtering:', animalCategory?._id || 'No category found');
                         console.log('Sample filtered product categories:', animalProductsData.slice(0, 3).map(p => ({
                             name: p.name,
                             categoryId: typeof p.category === 'string' ? p.category : p.category._id,
@@ -214,7 +214,7 @@ const AnimalPage = () => {
                             createdAt: product.createdAt || new Date().toISOString()
                         }));
                         
-                        console.log('Transformed products:', transformedProducts);
+                        // console.log('Transformed products:', transformedProducts);
                         
                         setAnimalProducts(transformedProducts);
                         setFilteredProducts(transformedProducts);
@@ -306,9 +306,9 @@ const AnimalPage = () => {
     useEffect(() => {
         let filtered = [...animalProducts];
         
-        console.log('Applying filters...');
-        console.log('Selected animals:', selectedAnimal);
-        console.log('Total animal products:', filtered.length);
+        // console.log('Applying filters...');
+        // console.log('Selected animals:', selectedAnimal);
+        // console.log('Total animal products:', filtered.length);
 
         // Filter by selected animals (subcategories)
         if (selectedAnimal.length > 0) {
@@ -328,7 +328,7 @@ const AnimalPage = () => {
                 });
             });
             
-            console.log('After animal filter:', filtered.length);
+            // console.log('After animal filter:', filtered.length);
         }
 
         // Filter by product type
@@ -336,7 +336,7 @@ const AnimalPage = () => {
             filtered = filtered.filter(product => 
                 product.productType === activeProductType
             );
-            console.log('After product type filter:', filtered.length);
+            // console.log('After product type filter:', filtered.length);
         }
 
         // Right sidebar filters
@@ -347,7 +347,7 @@ const AnimalPage = () => {
                     return product.finish === finish;
                 })
             );
-            console.log('After finish filter:', filtered.length);
+            // console.log('After finish filter:', filtered.length);
         }
 
         if (selectedFilters["material"] && selectedFilters["material"].length > 0) {
@@ -356,7 +356,7 @@ const AnimalPage = () => {
                     return product.material === material;
                 });
             });
-            console.log('After Material filter:', filtered.length);
+            // console.log('After Material filter:', filtered.length);
         }
 
         if (selectedFilters["size"] && selectedFilters["size"].length > 0) {
@@ -365,14 +365,14 @@ const AnimalPage = () => {
                     return product.size === size;
                 });
             });
-            console.log('After Size filter:', filtered.length);
+            // console.log('After Size filter:', filtered.length);
         }
 
         if (selectedFilters["producttype"] && selectedFilters["producttype"].length > 0) {
             filtered = filtered.filter(product => 
                 selectedFilters["producttype"].includes(product.productType)
             );
-            console.log('After product type filter:', filtered.length);
+            // console.log('After product type filter:', filtered.length);
         }
 
         if (selectedFilters["businessservices"] && selectedFilters["businessservices"].length > 0) {
@@ -387,7 +387,7 @@ const AnimalPage = () => {
                     return product.services.includes(service);
                 });
             });
-            console.log('After services filter:', filtered.length);
+            // console.log('After services filter:', filtered.length);
         }
 
         setFilteredProducts(filtered);

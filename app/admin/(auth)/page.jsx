@@ -53,14 +53,14 @@ export default function AdminLoginPage() {
     setLoading(true);
 
     try {
-      console.log('🔐 Attempting admin login...');
+      // console.log('🔐 Attempting admin login...');
 
       const response = await axios.post('/api/admin/auth/login', {
         email,
         password,
       });
 
-      console.log('✅ Login successful:', response.data);
+      // console.log('✅ Login successful:', response.data);
 
       setSuccess('Admin login successful! Redirecting...');
       

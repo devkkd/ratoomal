@@ -23,7 +23,7 @@ const ProductDetailPage = () => {
     const [isFullscreen, setIsFullscreen] = useState(false);
     const [showVolumeSlider, setShowVolumeSlider] = useState(false);
     const [quantity, setQuantity] = useState(1);
-    const [selectedSizes, setSelectedSizes] = useState(['3"']);  // Default to only 3 inch size selected
+    const [selectedSizes, setSelectedSizes] = useState([]);  // Will be set dynamically from product
     const [customSize, setCustomSize] = useState('');
     const [showInquiryModal, setShowInquiryModal] = useState(false);
     const videoRef = useRef(null);
@@ -71,28 +71,28 @@ const ProductDetailPage = () => {
         const fetchProduct = async () => {
             try {
                 setLoading(true);
-                console.log('🆔 Fetching product with ID:', id);
-                console.log('🔐 User logged in status:', isLoggedIn);
+                // console.log('🆔 Fetching product with ID:', id);
+                // console.log('🔐 User logged in status:', isLoggedIn);
                 
                 const res = await fetch(`/api/products/${id}`);
                 const data = await res.json();
 
-                console.log('📦 API Response:', {
-                    success: data.success,
-                    hasData: !!data.data,
-                    isAuthenticated: data.isAuthenticated,
-                    hasVideo: !!data.data?.video360,
-                    videoUrl: data.data?.video360,
-                    message: data.message
-                });
+                // console.log('📦 API Response:', {
+                //     success: data.success,
+                //     hasData: !!data.data,
+                //     isAuthenticated: data.isAuthenticated,
+                //     hasVideo: !!data.data?.video360,
+                //     videoUrl: data.data?.video360,
+                //     message: data.message
+                // });
 
                 if (!data.success || !data.data) {
-                    console.log('❌ Product not found, using fallback');
+                    // console.log('❌ Product not found, using fallback');
                     useFallbackProduct();
                     return;
                 }
 
-                console.log('✅ Product fetched successfully:', {
+                console.log('' ,{
                     name: data.data.name,
                     code: data.data.code,
                     hasVideo: !!data.data.video360,
@@ -158,6 +158,13 @@ const ProductDetailPage = () => {
         fetchProduct();
     }, [id, router]);
 
+    // Set default selected size when product loads
+    useEffect(() => {
+        if (product && product.sizes && product.sizes.length > 0 && selectedSizes.length === 0) {
+            setSelectedSizes([product.sizes[0]]); // Select first size by default
+        }
+    }, [product]);
+
     /* ================= FIXED: EXTRACT MEDIA (VIDEO FIRST) ================= */
     const extractMedia = () => {
         if (!product) return { mediaItems: [], videoUrl: null };
@@ -175,7 +182,7 @@ const ProductDetailPage = () => {
 
         // ✅ VIDEO FIRST in the media list
         if (product.video360) {
-            console.log('✅ Adding video to media items:', product.video360);
+            // console.log('✅ Adding video to media items:', product.video360);
             mediaItems.push({
                 type: 'video',
                 url: product.video360,
@@ -183,7 +190,7 @@ const ProductDetailPage = () => {
                 title: '360° Product View'
             });
         } else {
-            console.log('⚠️ No video360 found in product data');
+            // console.log('⚠️ No video360 found in product data');
         }
         
         // Add thumbnail as first image
@@ -208,7 +215,7 @@ const ProductDetailPage = () => {
             });
         }
         
-        console.log('📊 Total media items:', mediaItems.length, mediaItems.map(m => m.type));
+        // console.log('📊 Total media items:', mediaItems.length, mediaItems.map(m => m.type));
         
         return {
             mediaItems,
@@ -541,6 +548,7 @@ const ProductDetailPage = () => {
                                         poster={currentMedia.thumbnail}
                                         muted={isMuted}
                                         autoPlay
+                                        loop
                                         controls={false}
                                         style={{ display: 'block', visibility: 'visible' }}
                                     >
@@ -809,27 +817,51 @@ const ProductDetailPage = () => {
                                 {/* Size Variants - Multiple Selection with Better UI */}
                                 <div className="mb-4">
                                     <p className="text-sm font-medium text-gray-700 mb-3">Available Sizes (Select Multiple):</p>
-                                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-4">
-                                        {["3", "6", "9", "12"].map(size => (
-                                            <button
-                                                key={size}
-                                                onClick={() => {
-                                                    setSelectedSizes(prev => 
-                                                        prev.includes(size + '"')
-                                                            ? prev.filter(s => s !== size + '"')
-                                                            : [...prev, size + '"']
-                                                    );
-                                                }}
-                                                className={`px-4 py-3 text-sm font-medium border-2 rounded-lg transition-all duration-200 ${
-                                                    selectedSizes.includes(size + '"')
-                                                        ? 'bg-[#C08237] text-white border-[#C08237] shadow-md transform scale-105'
-                                                        : 'bg-white text-gray-700 border-gray-300 hover:border-[#C08237] hover:bg-gray-50'
-                                                }`}
-                                            >
-                                                {size}"
-                                            </button>
-                                        ))}
-                                    </div>
+                                    {product.sizes && product.sizes.length > 0 ? (
+                                        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-4">
+                                            {product.sizes.map((size, index) => (
+                                                <button
+                                                    key={index}
+                                                    onClick={() => {
+                                                        setSelectedSizes(prev => 
+                                                            prev.includes(size)
+                                                                ? prev.filter(s => s !== size)
+                                                                : [...prev, size]
+                                                        );
+                                                    }}
+                                                    className={`px-4 py-3 text-sm font-medium border-2 rounded-lg transition-all duration-200 ${
+                                                        selectedSizes.includes(size)
+                                                            ? 'bg-[#C08237] text-white border-[#C08237] shadow-md transform scale-105'
+                                                            : 'bg-white text-gray-700 border-gray-300 hover:border-[#C08237] hover:bg-gray-50'
+                                                    }`}
+                                                >
+                                                    {size}
+                                                </button>
+                                            ))}
+                                        </div>
+                                    ) : (
+                                        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-4">
+                                            {["3\"", "6\"", "9\"", "12\""].map(size => (
+                                                <button
+                                                    key={size}
+                                                    onClick={() => {
+                                                        setSelectedSizes(prev => 
+                                                            prev.includes(size)
+                                                                ? prev.filter(s => s !== size)
+                                                                : [...prev, size]
+                                                        );
+                                                    }}
+                                                    className={`px-4 py-3 text-sm font-medium border-2 rounded-lg transition-all duration-200 ${
+                                                        selectedSizes.includes(size)
+                                                            ? 'bg-[#C08237] text-white border-[#C08237] shadow-md transform scale-105'
+                                                            : 'bg-white text-gray-700 border-gray-300 hover:border-[#C08237] hover:bg-gray-50'
+                                                    }`}
+                                                >
+                                                    {size}
+                                                </button>
+                                            ))}
+                                        </div>
+                                    )}
                                     
                                     {/* Custom Size Input with Better Styling */}
                                     <div className="space-y-2">

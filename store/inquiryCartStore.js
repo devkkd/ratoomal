@@ -18,16 +18,16 @@ export const useInquiryCartStore = create(
     // Initialize store - load from localStorage on mount with expiration check
     initialize: () => {
       if (typeof window === 'undefined') {
-        console.log('🔧 Initialize Cart: Server-side, skipping');
+        // console.log('🔧 Initialize Cart: Server-side, skipping');
         return;
       }
 
-      console.log('🔧 Initialize Cart: Client-side - loading from localStorage');
+      // console.log('🔧 Initialize Cart: Client-side - loading from localStorage');
       
       try {
         // Load cart from localStorage
         const savedCart = localStorage.getItem('inquiry_cart_store');
-        console.log('📦 Retrieved cart from localStorage:', savedCart);
+        // console.log('📦 Retrieved cart from localStorage:', savedCart);
         
         if (savedCart) {
           const parsed = JSON.parse(savedCart);
@@ -57,7 +57,7 @@ export const useInquiryCartStore = create(
             localStorage.setItem('inquiry_cart_store', JSON.stringify({ cart: validCart }));
           }
         } else {
-          console.log('⚠️  No saved cart found in localStorage');
+          // console.log('⚠️  No saved cart found in localStorage');
         }
         
       } catch (error) {

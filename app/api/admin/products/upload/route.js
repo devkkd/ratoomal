@@ -110,6 +110,8 @@ export async function POST(request) {
           video360: row["Video URL"]?.toString() || "",
           services: parseArray(row["Services (comma separated)"] || row["Services"]),
           features: parseArray(row["Features (comma separated)"] || row["Features"]),
+          sizes: parseArray(row["Sizes (comma separated)"] || row["Sizes"]),
+          material: row["Material"]?.toString() || "Plastic",
           availability: row["Availability"]?.toString() || "In Stock",
           description: row["Description"]?.toString() || "",
           shortDescription: row["Short Description"]?.toString() || "",
@@ -125,6 +127,11 @@ export async function POST(request) {
           assemblyRequired: row["Assembly Required"]?.toString() || "",
           productType: row["Product Type"]?.toString() || ""
         };
+
+        console.log(`🔍 Row ${rowNumber} Sizes:`, {
+          rawSizes: row["Sizes (comma separated)"] || row["Sizes"],
+          parsedSizes: productData.sizes
+        });
 
         // Save to database
         const product = await Product.create(productData);

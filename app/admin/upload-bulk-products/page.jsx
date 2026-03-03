@@ -148,6 +148,7 @@ export default function ProductUploadPage() {
           'Video URL': product.video360 || '',
           'Services': Array.isArray(product.services) ? product.services.join(', ') : '',
           'Features': Array.isArray(product.features) ? product.features.join(', ') : '',
+          'Sizes': Array.isArray(product.sizes) ? product.sizes.join(', ') : '',
           'Availability': product.availability,
           'Description': product.description || '',
           'Created At': new Date(product.createdAt).toLocaleString()
@@ -206,14 +207,14 @@ export default function ProductUploadPage() {
       const formData = new FormData();
       formData.append('file', excelFile);
 
-      console.log('📤 Uploading Excel file:', excelFile.name);
+      // console.log('📤 Uploading Excel file:', excelFile.name);
       
       const response = await fetch('/api/admin/products/upload', {
         method: 'POST',
         body: formData,
       }); 
 
-      console.log('📨 Response status:', response.status, response.statusText);
+      // console.log('📨 Response status:', response.status, response.statusText);
       
       // Check if response is OK
       if (!response.ok) {
@@ -226,7 +227,7 @@ export default function ProductUploadPage() {
       let data;
       try {
         const text = await response.text();
-        console.log('📄 Raw response:', text.substring(0, 500));
+        // console.log('📄 Raw response:', text.substring(0, 500));
         
         if (!text || text.trim() === '') {
           throw new Error('Empty response from server');
@@ -272,6 +273,7 @@ export default function ProductUploadPage() {
         'Video URL': 'https://res.cloudinary.com/your-cloud/video/upload/v123/video.mp4',
         'Services (comma separated)': 'Delivery,Installation',
         'Features (comma separated)': 'Durable,Water Resistant',
+        'Sizes (comma separated)': '6 inch, 8 inch, 10 inch, 12 inch',
         'Availability': 'In Stock',
         'Description': 'Product description here',
         'Short Description': 'Short description',
@@ -283,7 +285,6 @@ export default function ProductUploadPage() {
         'Base Shape': 'Round',
         'Finish': 'Matte',
         'Material': 'Plastic',
-        'Size': '6 inch',
         'Appearance': 'Modern',
         'Care Instruction': 'Wipe clean',
         'Assembly Required': 'Yes',

@@ -73,7 +73,11 @@ const ProductSchema = new mongoose.Schema(
     baseShape: String,
     finish: String,
     material: String, // New field for material filter
-    size: String, // New field for size filter
+    sizes: {
+      type: [String],
+      default: [],
+    }, // Multiple sizes support
+    size: String, // Deprecated - keeping for backward compatibility
     appearance: String,
     careInstruction: String,
     assemblyRequired: String,

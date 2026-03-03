@@ -88,7 +88,7 @@ export default function GodFigurines() {
     // Handle add to inquiry cart
     const handleAddToInquiry = (product, quantity, e) => {
         e.stopPropagation();
-        console.log('➕ Adding to inquiry cart:', { product: product.id, quantity });
+        
         
         // Add to inquiry cart with size 3
         addToCart(product, ['3'], quantity);
@@ -136,15 +136,15 @@ export default function GodFigurines() {
                                     e.stopPropagation();
                                     toggleWishlist(item.id);
                                 }}
-                                className="absolute top-3 right-3 z-10 p-2 bg-[#FFFFFF80] backdrop-blur-sm rounded-full 
-                                           shadow-lg hover:bg-white  active:scale-95 
-                                           transition-all duration-200"
+                                className="absolute top-3 right-3 z-10 p-2.5 bg-[#FFFFFF80] backdrop-blur-sm rounded-full 
+                                           shadow-lg hover:bg-white active:scale-95 
+                                           transition-all duration-200 flex items-center justify-center"
                                 aria-label={isInWishlist(item.id) ? "Remove from wishlist" : "Add to wishlist"}
                             >
                                 {/* Heart SVG Icon */}
                                 <svg
                                     xmlns="http://www.w3.org/2000/svg"
-                                    className={`h-5 w-6 transition-colors duration-200 ${
+                                    className={`h-5 w-5 transition-colors duration-200 ${
                                         isInWishlist(item.id) 
                                             ? "fill-red-500 text-red-500" 
                                             : "text-gray-800 fill-transparent hover:text-red-400"

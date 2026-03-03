@@ -33,24 +33,24 @@ const FAQItem = ({ question, answer }) => {
 const FAQSection = () => {
   const faqs = [
     {
-      question: "What kind of company is Ratoomals?",
-      answer: "Ratoomals is a Jaipur-based B2B handicrafts manufacturer and exporter, specializing in handcrafted statues, sculptures, and decorative products. We primarily work with international wholesalers, retailers, interior studios, and importers across global markets."
+      question: "Are you a verified Indian handicraft exporter?",
+      answer: "Yes, we are a certified and experienced Indian handicraft exporter globally.  We follow international quality standards and ensure secure worldwide shipping."
     },
     {
-      question: "What makes Ratoomals' products unique?",
-      answer: "Every Ratoomals product is handcrafted by skilled artisans in Rajasthan, inspired by royal heritage, traditional symbolism, and refined craftsmanship. Our designs balance authentic Indian artistry with contemporary global appeal, making them suitable for premium retail and décor markets worldwide."
+      question: "Do you manufacture your own products?",
+      answer: "Yes, we are a trusted handicraft manufacturer in India, with in-house production facilities. Our skilled artisans maintain strict quality control at every stage."
     },
     {
-      question: "Why are elephants a signature product at Ratoomals?",
-      answer: "In Indian and Rajasthani culture, the elephant represents wisdom, strength, prosperity, and royalty. Jaipur's royal processions and palace art prominently feature elephants, and Ratoomals carries this legacy forward through thoughtfully designed elephant sculptures crafted for global audiences."
+      question: "Can you provide bulk home décor handcrafted order services?",
+      answer: "Yes, we specialise in bulk home décor handcrafted order services.We ensure consistent quality and timely delivery for international orders."
     },
     {
-      question: "Do you sell only in India or internationally as well?",
-      answer: "Ratoomals is an export-focused B2B company. A significant portion of our products are shipped outside India to international buyers, distributors, and décor brands. We are experienced in global trade processes and export compliance."
+      question: "Do you export wooden elephant showpiece collections worldwide?",
+      answer: "Yes, we export wooden elephant showpiece collections worldwide. Each piece is carefully packed to ensure safe global delivery."
     },
     {
-      question: "Can I place bulk or wholesale orders?",
-      answer: "Yes. We specialize in bulk, wholesale, and recurring B2B orders. Whether you are a retailer, distributor, or corporate buyer, our production capabilities are designed to scale while maintaining consistent quality."
+      question: "Do you provide customised product designs?",
+      answer: "Yes, we provide customised designs for international B2B clients.Our team works closely with international B2B partners for exclusive collections."
     }
   ];
 

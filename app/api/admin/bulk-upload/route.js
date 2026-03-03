@@ -192,12 +192,22 @@ export async function POST(request) {
           baseShape: row["Base Shape"]?.toString() || "",
           finish: row["Finish"]?.toString() || "",
           material: row["Material"]?.toString() || "Plastic",
-          size: row["Size"]?.toString() || "6 inch",
+          sizes: row["Sizes"] || row["Sizes (comma separated)"]
+            ? (row["Sizes"] || row["Sizes (comma separated)"]).toString().split(",").map(s => s.trim()).filter(Boolean)
+            : [],
+          size: row["Size"]?.toString() || "", // Deprecated - for backward compatibility
           appearance: row["Appearance"]?.toString() || "",
           careInstruction: row["Care Instruction"]?.toString() || "",
           assemblyRequired: row["Assembly Required"]?.toString() || "",
           productType: row["Product Type"]?.toString() || ""
         };
+
+        // Debug log for sizes
+        console.log(`🔍 [BULK UPLOAD] Row ${rowNo} Sizes:`, {
+          rawSizes: row["Sizes"],
+          rawSizesComma: row["Sizes (comma separated)"],
+          parsedSizes: productData.sizes
+        });
 
         // Check if product code already exists (since it must be unique)
         const existingCodeProduct = await Product.findOne({ code: productData.code });
@@ -287,15 +297,18 @@ export async function GET() {
     ],
     optional_fields: [
       "Sub Category",
+      "MOQ",
       "Image URLs (comma separated)",
       "Video URL",
       "Services (comma separated)",
       "Features (comma separated)",
+      "Sizes (comma separated)",
       "Availability",
       "Description",
       "Short Description",
       "God Name",
       "Color",
+      "Material",
       "Suitable For",
       "Usage",
       "Posture",

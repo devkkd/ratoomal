@@ -19,20 +19,20 @@ export const useWishlistStore = create(
     // Initialize store - load from localStorage on mount
     initialize: () => {
       if (typeof window === 'undefined') {
-        console.log('🔧 Initialize: Server-side, skipping');
+        // console.log('🔧 Initialize: Server-side, skipping');
         return;
       }
 
-      console.log('🔧 Initialize: Client-side - loading from localStorage');
+      // console.log('🔧 Initialize: Client-side - loading from localStorage');
       
       try {
         // Load wishlist from localStorage
         const savedWishlist = localStorage.getItem('wishlist_store');
-        console.log('📦 Retrieved from localStorage:', savedWishlist);
+        // console.log('📦 Retrieved from localStorage:', savedWishlist);
         
         if (savedWishlist) {
           const parsed = JSON.parse(savedWishlist);
-          console.log('✅ Parsed wishlist:', parsed.wishlist);
+          // console.log('✅ Parsed wishlist:', parsed.wishlist);
           set({ wishlist: parsed.wishlist || [] });
         } else {
           console.log('⚠️  No saved wishlist found in localStorage');

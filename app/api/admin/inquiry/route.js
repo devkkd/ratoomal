@@ -826,7 +826,9 @@ export async function POST(request) {
 
     const inquiry = await Inquiry.create(inquiryData);
     
-    console.log("Inquiry created successfully:", inquiry._id);
+    console.log("✅ Inquiry created successfully:", inquiry._id);
+    console.log("📧 User email for confirmation:", user.businessEmail);
+    console.log("📧 Admin email for notification:", process.env.ADMIN_EMAIL);
 
     // Send email to admin
     try {
@@ -844,7 +846,7 @@ export async function POST(request) {
         <p><strong>Message:</strong> ${message}</p>
       `;
 
-      console.log("SENDING CART INQUIRY NOTIFICATION TO ADMIN");
+      console.log("📧 SENDING CART INQUIRY NOTIFICATION TO ADMIN");
 
       await sendEmail({
         to: process.env.ADMIN_EMAIL,
@@ -852,9 +854,79 @@ export async function POST(request) {
         html: emailHtml,
       });
 
-      console.log("CART INQUIRY ADMIN NOTIFICATION SENT ✅");
+      console.log("✅ CART INQUIRY ADMIN NOTIFICATION SENT");
     } catch (err) {
-      console.error("CART INQUIRY EMAIL SEND FAILED ❌", err);
+      console.error("❌ CART INQUIRY EMAIL SEND FAILED:", err.message);
+      // Don't fail the whole request if email fails
+    }
+
+    // Send confirmation email to user
+    try {
+      console.log("📧 PREPARING USER CONFIRMATION EMAIL");
+      console.log("📧 Recipient:", user.businessEmail);
+      
+      const userEmailSubject = `Your Inquiry is Being Processed - Ratoomal`;
+      const userEmailHtml = `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f9f9f9;">
+          <div style="background-color: white; padding: 30px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+            <div style="text-align: center; margin-bottom: 30px;">
+              <h1 style="color: #C18E4D; margin-bottom: 10px;">Thank You for Your Inquiry!</h1>
+              <p style="color: #666; font-size: 16px;">Your request is being processed by our team</p>
+            </div>
+            
+            <div style="background-color: #FFF6EB; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+              <h3 style="color: #2D2D2D; margin-bottom: 15px;">Your Inquiry Summary</h3>
+              <p><strong>Company:</strong> ${user.companyName}</p>
+              <p><strong>Contact Person:</strong> ${user.contactName}</p>
+              <p><strong>Total Products:</strong> ${totalProducts}</p>
+              <p><strong>Total Quantity:</strong> ${totalQuantity} pieces</p>
+              <p><strong>Inquiry Type:</strong> ${inquiryFor.replace(/_/g, ' ').toUpperCase()}</p>
+              <p><strong>Customization:</strong> ${customizationNeeded.replace(/_/g, ' ').toUpperCase()}</p>
+            </div>
+            
+            <div style="background-color: #E8F4FD; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+              <h3 style="color: #2D2D2D; margin-bottom: 15px;">What Happens Next?</h3>
+              <ul style="color: #333; line-height: 1.8; padding-left: 20px;">
+                <li>Our team will review your requirements within 24-48 hours</li>
+                <li>We'll prepare a detailed quotation with pricing and availability</li>
+                <li>You'll receive product catalogs and customization options</li>
+                <li>Our representative will contact you to discuss next steps</li>
+              </ul>
+            </div>
+            
+            <div style="text-align: center; margin-top: 30px; padding-top: 20px; border-top: 1px solid #e0e0e0;">
+              <p style="color: #666; font-size: 14px; margin-bottom: 10px;">
+                Need immediate assistance? Contact us at:
+              </p>
+              <p style="color: #C18E4D; font-weight: bold; margin: 5px 0;">
+                Email: ${process.env.ADMIN_EMAIL || 'info@ratoomal.com'}
+              </p>
+              <p style="color: #C18E4D; font-weight: bold; margin: 5px 0;">
+                Website: https://ratoomal.com
+              </p>
+            </div>
+            
+            <div style="text-align: center; margin-top: 20px;">
+              <p style="color: #999; font-size: 12px;">
+                This is an automated confirmation email. Please do not reply to this email.
+              </p>
+            </div>
+          </div>
+        </div>
+      `;
+
+      console.log("SENDING CONFIRMATION EMAIL TO USER:", user.businessEmail);
+
+      await sendEmail({
+        to: user.businessEmail,
+        subject: userEmailSubject,
+        html: userEmailHtml,
+      });
+
+      console.log("✅ USER CONFIRMATION EMAIL SENT SUCCESSFULLY");
+    } catch (err) {
+      console.error("❌ USER CONFIRMATION EMAIL SEND FAILED:", err.message);
+      console.error("❌ Full error:", err);
       // Don't fail the whole request if email fails
     }
 

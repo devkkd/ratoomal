@@ -65,6 +65,15 @@ export default function AdminLayout({ children }) {
   const [isAuthorized, setIsAuthorized] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
+  // Scroll to top on route change
+  useEffect(() => {
+    window.scrollTo({
+      top: 0,
+      left: 0,
+      behavior: 'instant'
+    });
+  }, [pathname]);
+
   // Check admin token on mount (always run hooks first)
   useEffect(() => {
     // Skip auth check for /admin route (login page)
@@ -75,7 +84,7 @@ export default function AdminLayout({ children }) {
 
     const checkAdminToken = async () => {
       try {
-        console.log('🔐 Checking admin authorization...');
+        // console.log('🔐 Checking admin authorization...');
 
         // Try to get token from cookies first (httpOnly)
         const response = await fetch('/api/admin/verify-token', {
@@ -83,20 +92,20 @@ export default function AdminLayout({ children }) {
           credentials: 'include', // Include cookies
         });
 
-        console.log('📊 Verify token response:', response.status, response.statusText);
+        // console.log('📊 Verify token response:', response.status, response.statusText);
 
         if (response.ok) {
           const data = await response.json();
-          console.log('🔐 ADMIN PROTECTION: ✅ Token verified → Access granted');
+          // console.log('🔐 ADMIN PROTECTION: ✅ Token verified → Access granted');
           setIsAuthorized(true);
         } else {
           const errorData = await response.json().catch(() => ({ error: 'Unknown error' }));
-          console.log('🔐 ADMIN PROTECTION: ❌ Token invalid or missing → Redirecting to login', errorData);
+          // console.log('🔐 ADMIN PROTECTION: ❌ Token invalid or missing → Redirecting to login', errorData);
           setIsAuthorized(false);
           router.push('/admin');
         }
       } catch (error) {
-        console.error('🔐 ADMIN PROTECTION: ❌ Error checking token → Redirecting to login', error);
+        // console.error('🔐 ADMIN PROTECTION: ❌ Error checking token → Redirecting to login', error);
         setIsAuthorized(false);
         router.push('/admin');
       } finally {

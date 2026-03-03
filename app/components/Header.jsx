@@ -129,7 +129,7 @@ const Header = () => {
 
   // Log wishlist changes for debugging
   useEffect(() => {
-    console.log('🔍 Header - Wishlist changed:', wishlist);
+    
   }, [wishlist]);
 
   // Search filter logic
@@ -230,7 +230,7 @@ const Header = () => {
   const handleLanguageChange = (language) => {
     setShowLangDropdown(false);
     changeLanguage(language.code); // This will automatically translate the entire website
-    console.log('Website language changed to:', language.name);
+    
   };
 
   // Handle currency change
@@ -240,7 +240,7 @@ const Header = () => {
     // Here you can implement currency change logic
     Cookies.set('currency', currency.code, { expires: 365 });
     // You might want to update prices or refresh data based on currency
-    console.log('Currency changed to:', currency.code);
+    
   };
 
   // Handle logout - now using the hook

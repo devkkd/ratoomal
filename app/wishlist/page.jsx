@@ -13,27 +13,27 @@ export default function WishlistPage() {
 
   // Mark component as mounted on client (hydration check)
   useEffect(() => {
-    console.log('🎯 WishlistPage mounted on client');
+    // console.log('🎯 WishlistPage mounted on client');
     setIsClient(true);
     // Initialize store from localStorage when component mounts
     if (typeof window !== 'undefined') {
-      console.log('📦 Before initialize - wishlist:', wishlist);
+      // console.log('📦 Before initialize - wishlist:', wishlist);
       initialize();
-      console.log('📦 After initialize - wishlist should update');
+      // console.log('📦 After initialize - wishlist should update');
     }
   }, [initialize]);
 
   // Log wishlist state changes
   useEffect(() => {
-    console.log('🔍 Wishlist Page - Store wishlist:', wishlist);
+    // console.log('🔍 Wishlist Page - Store wishlist:', wishlist);
   }, [wishlist]);
 
   // Fetch products when wishlist changes
   useEffect(() => {
     if (!isClient) return;
 
-    console.log('📋 Wishlist state changed:', wishlist);
-    console.log('📊 Current wishlist length:', wishlist?.length || 0);
+    // console.log('📋 Wishlist state changed:', wishlist);
+    // console.log('📊 Current wishlist length:', wishlist?.length || 0);
 
     const fetchWishlistProducts = async () => {
       try {
@@ -65,7 +65,7 @@ export default function WishlistPage() {
       }
     };
 
-    console.log('📋 Fetching products for wishlist:', wishlist);
+    // console.log('📋 Fetching products for wishlist:', wishlist);
     fetchWishlistProducts();
   }, [wishlist, isClient]);
 

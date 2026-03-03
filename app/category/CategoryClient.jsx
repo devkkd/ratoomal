@@ -2220,8 +2220,8 @@ const CategoryPage = () => {
                 </div>
             )}
 
-            {/* Header */}
-            <header className="bg-white py-2">
+            {/* Header - Sticky below main header */}
+            <header className="bg-white sticky top-[80px] z-30 shadow-sm">
                 <div className="max-w-7xl mx-auto px-4 py-6">
                     <h1 className="text-3xl playfair font-bold text-center text-gray-800 sm:mb-2">Category</h1>
                 </div>
@@ -2231,7 +2231,7 @@ const CategoryPage = () => {
                 <div className="flex flex-col lg:flex-row gap-8">
                     {/* Left Sidebar */}
                     <aside className="w-full lg:w-60 shrink-0">
-                        <div className="sticky top-8">
+                        <div className="sticky top-[168px]">
                             <div className="bg-white rounded-lg border border-gray-300 overflow-hidden">
                                 <div className="py-3 px-2">
                                     <div className="space-y-3">
@@ -2320,8 +2320,9 @@ const CategoryPage = () => {
 
                     {/* Main Content */}
                     <main className="flex-1">
-                        {/* Top Toolbar */}
-                        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
+                        {/* Top Toolbar - Sticky below category header */}
+                        <div className="sticky top-[168px] z-20 bg-[#FDFBF7]/95 backdrop-blur-sm py-4 -mx-4 px-4 mb-4 border-b border-gray-200">
+                            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                             <div className="flex flex-wrap gap-2 ">
                                 {categoryTabs.map((category) => (
                                     <button
@@ -2377,6 +2378,7 @@ const CategoryPage = () => {
                                 >
                                     Filters <img src='/images/icons/setting-4.svg' className="w-4 h-4" />
                                 </button>
+                            </div>
                             </div>
                         </div>
 
@@ -2473,13 +2475,13 @@ const CategoryPage = () => {
                                                                     e.stopPropagation();
                                                                     toggleWishlist(product.id);
                                                                 }}
-                                                                className="absolute top-3 right-3 z-10 p-2 bg-[#FFFFFF80] backdrop-blur-sm rounded-full 
+                                                                className="absolute top-3 right-3 z-10 p-2.5 bg-[#FFFFFF90] backdrop-blur-sm rounded-full 
                                                                            shadow-lg hover:bg-white active:scale-95 
-                                                                           transition-all duration-200"
+                                                                           transition-all duration-200 flex items-center justify-center"
                                                             >
                                                                 <svg
                                                                     xmlns="http://www.w3.org/2000/svg"
-                                                                    className={`h-5 w-6 transition-colors duration-200 ${isInWishlist(product.id)
+                                                                    className={`h-5 w-5 transition-colors duration-200 ${isInWishlist(product.id)
                                                                         ? "fill-red-500 text-red-500"
                                                                         : "text-gray-800 fill-transparent hover:text-red-400"
                                                                         }`}
@@ -2647,13 +2649,13 @@ const CategoryPage = () => {
                                                         e.stopPropagation();
                                                         toggleWishlist(product.id);
                                                     }}
-                                                    className="absolute top-3 right-3 z-10 p-2 bg-[#FFFFFF80] backdrop-blur-sm rounded-full 
+                                                    className="absolute top-3 right-3 z-10 p-2.5 bg-[#FFFFFF90] backdrop-blur-sm rounded-full 
                                                                shadow-lg hover:bg-white active:scale-95 
-                                                               transition-all duration-200"
+                                                               transition-all duration-200 flex items-center justify-center"
                                                 >
                                                     <svg
                                                         xmlns="http://www.w3.org/2000/svg"
-                                                        className={`h-5 w-6 transition-colors duration-200 ${isInWishlist(product.id)
+                                                        className={`h-5 w-5 transition-colors duration-200 ${isInWishlist(product.id)
                                                             ? "fill-red-500 text-red-500"
                                                             : "text-gray-800 fill-transparent hover:text-red-400"
                                                             }`}

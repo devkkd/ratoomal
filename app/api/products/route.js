@@ -63,7 +63,7 @@ export async function GET(request) {
       .sort({ createdAt: -1 })
       .skip(skip)
       .limit(actualLimit)
-      .select('name code _id thumbnail images category subCategory price createdAt minimumOrderQuantity finish productType services material size');
+      .select('name code _id thumbnail images category subCategory price createdAt minimumOrderQuantity finish productType services material sizes size');
     
     // Get total count for pagination
     const totalCount = await Product.countDocuments(query);

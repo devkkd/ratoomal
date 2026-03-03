@@ -45,10 +45,10 @@ const WhyRatoomals = () => {
         {/* Header Section */}
         <div className="mb-20 sm:mx-6">
           <h2 className="text-[#1A1A1A] text-center sm:text-left playfair font-semibold text-4xl mb-4">
-            Why Ratoomal's
+           Why Ratoomal's stands Out 
           </h2>
           <h2 className="text-[#1A1A1A] text-3xl md:text-4xl font-bold leading-tight my-8">
-            Craftsmanship You Can Trust — Global Supply You Can Scale
+           Trusted Indian Handicraft Exporter with Reliable Craftsmanship and Scalable Global Supply
           </h2>
         </div>
 

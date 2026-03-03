@@ -150,6 +150,88 @@ export async function POST(req) {
       // Don't fail the signup if email fails
     }
 
+    // 📩 Send confirmation email to user
+    try {
+      console.log("🔄 Attempting to send user confirmation email...");
+      console.log("📧 User email:", user.businessEmail);
+      
+      const { sendEmail } = await import("@/lib/mailer");
+      
+      const userEmailSubject = "Your Business Access Request is Being Processed - Ratoomal";
+      const userEmailHtml = `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f9f9f9;">
+          <div style="background-color: white; padding: 30px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+            <div style="text-align: center; margin-bottom: 30px;">
+              <h1 style="color: #C18E4D; margin-bottom: 10px;">Thank You for Your Registration!</h1>
+              <p style="color: #666; font-size: 16px;">Your business access request is being processed</p>
+            </div>
+            
+            <div style="background-color: #FFF6EB; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+              <h3 style="color: #2D2D2D; margin-bottom: 15px;">Registration Details</h3>
+              <p><strong>Company Name:</strong> ${user.companyName}</p>
+              <p><strong>Contact Person:</strong> ${user.contactName}</p>
+              <p><strong>Business Email:</strong> ${user.businessEmail}</p>
+              <p><strong>Country:</strong> ${user.country}</p>
+              <p><strong>Business Type:</strong> ${user.businessType}</p>
+              <p><strong>Purpose:</strong> ${user.purpose}</p>
+            </div>
+            
+            <div style="background-color: #E8F4FD; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+              <h3 style="color: #2D2D2D; margin-bottom: 15px;">What Happens Next?</h3>
+              <ul style="color: #333; line-height: 1.8; padding-left: 20px;">
+                <li>Our team will review your business verification documents</li>
+                <li>We'll verify your business credentials and requirements</li>
+                <li>You'll receive an approval email within 24-48 hours</li>
+                <li>Once approved, you can access our B2B portal and product catalog</li>
+                <li>Our representative will contact you to discuss your business needs</li>
+              </ul>
+            </div>
+            
+            <div style="background-color: #FFF9E6; padding: 15px; border-left: 4px solid #C18E4D; margin-bottom: 20px;">
+              <p style="color: #666; margin: 0; font-size: 14px;">
+                <strong>⏱️ Processing Time:</strong> Your request is currently under review. 
+                Our team typically processes applications within 24-48 business hours.
+              </p>
+            </div>
+            
+            <div style="text-align: center; margin-top: 30px; padding-top: 20px; border-top: 1px solid #e0e0e0;">
+              <p style="color: #666; font-size: 14px; margin-bottom: 10px;">
+                Need immediate assistance? Contact us at:
+              </p>
+              <p style="color: #C18E4D; font-weight: bold; margin: 5px 0;">
+                Email: ${process.env.ADMIN_EMAIL || 'info@ratoomal.com'}
+              </p>
+              <p style="color: #C18E4D; font-weight: bold; margin: 5px 0;">
+                Website: https://ratoomal.com
+              </p>
+            </div>
+            
+            <div style="text-align: center; margin-top: 20px;">
+              <p style="color: #999; font-size: 12px;">
+                This is an automated confirmation email. Please do not reply to this email.
+              </p>
+            </div>
+          </div>
+        </div>
+      `;
+      
+      await sendEmail({
+        to: user.businessEmail,
+        subject: userEmailSubject,
+        html: userEmailHtml,
+      });
+      
+      console.log("✅ User confirmation email sent successfully to:", user.businessEmail);
+    } catch (emailError) {
+      console.error("❌ Failed to send user confirmation email:", {
+        message: emailError.message,
+        stack: emailError.stack,
+        code: emailError.code,
+        command: emailError.command
+      });
+      // Don't fail the signup if email fails
+    }
+
     return NextResponse.json({
       success: true,
       message: "Business verification request submitted successfully!",

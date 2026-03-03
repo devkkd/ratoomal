@@ -48,6 +48,8 @@ const INITIAL_FORM = {
   posture: "",
   baseShape: "",
   finish: "",
+  material: "",
+  sizes: "", // Comma-separated sizes
   appearance: "",
   careInstruction: "",
   assemblyRequired: "",
@@ -235,6 +237,9 @@ const handleSubmit = async (e) => {
       features: form.features
         ? form.features.split(",").map(f => f.trim()).filter(Boolean)
         : [],
+      sizes: form.sizes
+        ? form.sizes.split(",").map(s => s.trim()).filter(Boolean)
+        : [],
       availability: isStock ? "In Stock" : "Out of Stock",
     };
 
@@ -276,6 +281,7 @@ const handleSubmit = async (e) => {
       subCategory: product.subCategory?._id || product.subCategory || "",
       services: product.services?.join(", ") || "",
       features: product.features?.join(", ") || "",
+      sizes: product.sizes?.join(", ") || "",
     });
     
     // Set existing media
@@ -895,6 +901,7 @@ const handleSubmit = async (e) => {
                 {[
                   { key: "godName", label: "God Name", icon: <Star className="h-4 w-4" /> },
                   { key: "color", label: "Color", icon: <Palette className="h-4 w-4" /> },
+                  { key: "material", label: "Material", icon: <Layers className="h-4 w-4" /> },
                   { key: "suitableFor", label: "Suitable For", icon: <Users className="h-4 w-4" /> },
                   { key: "usage", label: "Usage", icon: <Target className="h-4 w-4" /> },
                   { key: "posture", label: "Posture", icon: <Layout className="h-4 w-4" /> },
@@ -923,6 +930,38 @@ const handleSubmit = async (e) => {
                     </div>
                   </div>
                 ))}
+                
+                {/* Sizes Field - Full Width - DYNAMIC SIZES FEATURE */}
+                <div className="md:col-span-2 lg:col-span-3">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Available Sizes (comma separated)
+                  </label>
+                  <div className="relative">
+                    <Tag className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+                    <input
+                      type="text"
+                      placeholder="6 inch, 8 inch, 10 inch, 12 inch"
+                      value={form.sizes}
+                      onChange={(e) => setForm({...form, sizes: e.target.value})}
+                      className="pl-10 w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#C08237] focus:border-transparent"
+                    />
+                  </div>
+                  <p className="mt-2 text-sm text-gray-500">
+                    Enter multiple sizes separated by commas (e.g., "6 inch, 8 inch, 10 inch")
+                  </p>
+                  {form.sizes && (
+                    <div className="mt-3 flex flex-wrap gap-2">
+                      {form.sizes.split(",").map((size, idx) => {
+                        const trimmedSize = size.trim();
+                        return trimmedSize ? (
+                          <span key={idx} className="px-3 py-1 bg-[#C08237] bg-opacity-10 text-[white] rounded-full text-sm font-medium">
+                            {trimmedSize}
+                          </span>
+                        ) : null;
+                      })}
+                    </div>
+                  )}
+                </div>
               </div>
             )}
 

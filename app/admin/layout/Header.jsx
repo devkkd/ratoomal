@@ -21,7 +21,7 @@ export default function Header({ sidebarOpen, toggleSidebar }) {
   const handleLogout = async () => {
     try {
       setIsLoggingOut(true);
-      console.log('🔐 Attempting logout...');
+      // console.log('🔐 Attempting logout...');
 
       // Call logout API
       await axios.post('/api/admin/auth/logout');
@@ -29,7 +29,7 @@ export default function Header({ sidebarOpen, toggleSidebar }) {
       // Clear localStorage
       localStorage.removeItem('adminToken');
 
-      console.log('✅ Logged out successfully');
+      // console.log('✅ Logged out successfully');
 
       // Redirect to login
       router.push('/admin');
@@ -77,12 +77,12 @@ export default function Header({ sidebarOpen, toggleSidebar }) {
 
         <div className="flex items-center space-x-3">
           {/* Notifications */}
-          <div className="relative">
+          {/* <div className="relative">
             <button className="relative p-2 text-gray-600 rounded-lg hover:bg-gray-100">
               <BellIcon className="w-5 h-5" />
               <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full"></span>
             </button>
-          </div>
+          </div> */}
 
           {/* User Profile Dropdown */}
           <Popover className="relative">

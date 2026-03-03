@@ -73,26 +73,19 @@ export default function CuratedCollections() {
                 setLoading(false);
             }
         };
-        console.log(fetchAnimalProducts)
+        
         fetchAnimalProducts();
     }, []);
 
     // Handle wishlist toggle
     const handleWishlistToggle = async (productId, e) => {
         e.stopPropagation();
-        console.log('🔄 CuratedCollections - Toggling wishlist for product:', productId);
-        console.log('Current wishlist state:', wishlist);
-        console.log('Is in wishlist before toggle:', isInWishlist(productId));
-        
         await toggleWishlist(productId);
-        
-        console.log('Is in wishlist after toggle:', isInWishlist(productId));
     };
 
     // Handle add to inquiry cart
     const handleAddToInquiry = (product, quantity, e) => {
         e.stopPropagation();
-        console.log('➕ Adding to inquiry cart:', { product: product.id, quantity });
         
         // Add to inquiry cart with size 3
         addToCart(product, ['3'], quantity);
@@ -104,10 +97,12 @@ export default function CuratedCollections() {
     return (
         <div className="max-w-7xl  items-center mx-auto px-4 sm:px-6 lg:px-12">
             <h2 className="playfair text-2xl md:text-4xl text-center flex justify-center font-bold mb-8 letter-spacing-[-0.02em]">
-                Curated Collections - Crafted for Global Markets
+               Curated Handcrafted Home Décor Collections for Global Markets
+
             </h2>
             <h5 className="mona text-md md:text-lg text-center md:mx-20 mb-10">
-                Our range spans <span className="font-bold pl-1 pr-1"> classic Indian icons, wildlife figures, and elegant decor accents all handcrafted </span>for export, resale, or bespoke commercial applications.
+                At Ratoomals, our collection includes traditional Indian icons, wildlife sculptures, and elegant accents, all of which are  <span className="font-bold pl-1 pr-1"> handcrafted home decor </span> items designed for export, resale, and bespoke commercial projects around the world.
+ 
             </h5>
 
             <h3 className="playfair text-xl md:text-[30px] text-center flex justify-center font-semibold letter-spacing-[-0.01em] my-10">
@@ -143,15 +138,15 @@ export default function CuratedCollections() {
                             {/* Wishlist Button */}
                             <button
                                 onClick={(e) => handleWishlistToggle(item.id, e)}
-                                className="absolute top-3 right-3 z-10 p-2 bg-[#FFFFFF80] backdrop-blur-sm rounded-full 
-                                           shadow-lg hover:bg-white  active:scale-95 
-                                           transition-all duration-200"
+                                className="absolute top-3 right-3 z-10 p-2.5 bg-[#FFFFFF80] backdrop-blur-sm rounded-full 
+                                           shadow-lg hover:bg-white active:scale-95 
+                                           transition-all duration-200 flex items-center justify-center"
                                 aria-label={isInWishlist(item.id) ? "Remove from wishlist" : "Add to wishlist"}
                             >
                                 {/* Heart SVG Icon */}
                                 <svg
                                     xmlns="http://www.w3.org/2000/svg"
-                                    className={`h-5 w-6 transition-colors duration-200 ${
+                                    className={`h-5 w-5 transition-colors duration-200 ${
                                         isInWishlist(item.id) 
                                             ? "fill-red-500 text-red-500" 
                                             : "text-gray-800 fill-transparent hover:text-red-400"

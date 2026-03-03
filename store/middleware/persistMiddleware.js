@@ -13,7 +13,7 @@ export const persistMiddleware = (config) => (set, get, api) =>
         try {
           // Save inquiry cart data
           if (state.cart !== undefined) {
-            console.log('💾 Saving inquiry cart to localStorage:', state.cart);
+            
             localStorage.setItem('inquiry_cart_store', JSON.stringify({
               cart: state.cart,
               lastUpdated: new Date().toISOString()
@@ -21,7 +21,7 @@ export const persistMiddleware = (config) => (set, get, api) =>
           }
           // Save wishlist data (for backward compatibility)
           else if (state.wishlist !== undefined) {
-            console.log('💾 Saving wishlist to localStorage:', state.wishlist);
+            
             localStorage.setItem('wishlist_store', JSON.stringify({
               wishlist: state.wishlist,
             }));

@@ -24,6 +24,22 @@ const nextConfig = {
     ],
   },
   
+  // Configure webpack to handle video files
+  webpack: (config) => {
+    config.module.rules.push({
+      test: /\.(mp4|webm|ogg|mp3|wav|flac|aac)$/,
+      use: {
+        loader: 'file-loader',
+        options: {
+          publicPath: '/_next/static/videos/',
+          outputPath: 'static/videos/',
+          name: '[name].[hash].[ext]',
+        },
+      },
+    });
+    return config;
+  },
+  
   // Empty turbopack config to silence the warning
   turbopack: {},
 };

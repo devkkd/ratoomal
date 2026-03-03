@@ -16,10 +16,10 @@ const TrustBuilding = () => {
       imgSrc: "/images/trust/Legacy.svg",
       label: "70+ Years Legacy",
     },
-    {
-      imgSrc: "/images/trust/Antiques.svg",
-      label: "Salvaged Antiques",
-    },
+    // {
+    //   imgSrc: "/images/trust/Antiques.svg",
+    //   label: "Salvaged Antiques",
+    // },
     {
       imgSrc: "/images/trust/Presence.svg",
       label: "Global Presence",
@@ -66,19 +66,18 @@ const TrustBuilding = () => {
                 WebkitTextFillColor: "transparent",
               }}
             >
-              Ratoomal’s Jaipur’s Heritage
+              Ratoomals: Jaipur’s Heritage
             </h2>
 
             <h1 className="text-4xl font-semibold text-black leading-[1.1] mona">
-              Handicraft & Sculptural Excellence
+             Handicraft & Sculptural Excellence
             </h1>
             <div className="space-y-4">
               <p className="text-gray-700  text-md max-w-xl mona">
-                From the Royal City of Jaipur to the World - Handcrafted Statues, 
-                Sculptures & Decor with Timeless Indian Heritage.  
-                <span className="text-black text-md pl-1 font-bold uppercase mona">
+              From the royal city of Jaipur to the global market, Ratoomals specialises in creating premium-quality statues, sculptures, and décor items, all of which are a true representation of the heritage of India. At Ratoomals, we have been in the business of <span className="text-black text-md pl-1 font-bold uppercase mona"> handmade craftsmanship since 1955 </span>and are a prominent Indian handicraft exporter.
+                {/* <span className="text-black text-md pl-1 font-bold uppercase mona">
                   HANDMADE ARTISTRY SINCE 1955
-                </span>
+                </span> */}
               </p>
             </div>
             <div className="text-center items-center  sm:items-center flex justify-center sm:justify-start w-full"> 
@@ -96,7 +95,7 @@ const TrustBuilding = () => {
 
         {/* Bottom: Icon Features Grid */}
         <div className="relative max-w-6xl mx-7 px-4 md:px-0 ">
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-6 md:gap-8 justify-items-center">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6 md:gap-8 justify-items-center">
             {features.map((item, index) => (
               <div
                 key={index}

@@ -4,6 +4,7 @@ import "./globals.css";
 import Header from "@/app/components/Header";
 import Footer from "@/app/components/Footer";
 import WhatsAppButton from "@/app/components/WhatsAppButton";
+import ScrollToTop from "@/app/components/ScrollToTop";
 import { usePathname } from "next/navigation"; 
 import { Mona_Sans } from "next/font/google";
 import TranslationProvider from "@/app/components/TranslationProvider";
@@ -77,6 +78,7 @@ export default function RootLayout({ children }) {
         `}
       >
         <TranslationProvider>
+          <ScrollToTop />
           <LanguageLoader />
           {/* Only show website header if NOT admin route */}
           {!isAdminRoute && (

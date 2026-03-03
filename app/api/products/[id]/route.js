@@ -65,6 +65,7 @@ export async function GET(request, { params }) {
         finish: product.finish,
         productType: product.productType,
         availability: product.availability,
+        sizes: product.sizes || [], // ✅ INCLUDE SIZES for non-authenticated users
         shortDescription: product.shortDescription || "Login to view detailed product information",
         // Hide detailed information
         longDescription: undefined,

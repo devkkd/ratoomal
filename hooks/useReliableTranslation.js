@@ -22,11 +22,11 @@ const languages = [
   useEffect(() => {
     const initializeTranslation = async () => {
       try {
-        console.log('🚀 Starting advanced translation system initialization...');
+        
         
         // Get saved language
         const savedLanguage = localStorage.getItem('selectedLanguage') || 'en';
-        console.log('📱 Detected saved language:', savedLanguage);
+        
         
         // Initialize the translation service
         await advancedTranslationService.initialize();
@@ -36,7 +36,7 @@ const languages = [
         
         // Apply saved language if not English
         if (savedLanguage !== 'en') {
-          console.log('🔄 Applying saved language:', savedLanguage);
+          
           setIsLoading(true);
           
           setTimeout(async () => {
@@ -45,7 +45,7 @@ const languages = [
           }, 1000);
         }
         
-        console.log('✅ Advanced translation system initialized');
+        
         
       } catch (error) {
         console.error('❌ Error initializing translation:', error);
@@ -70,11 +70,11 @@ const languages = [
 
       // Don't process if already in the same language
       if (currentLanguage === languageCode) {
-        console.log('✅ Already in the selected language:', languageCode);
+        
         return;
       }
 
-      console.log('🔄 Changing language from', currentLanguage, 'to', languageCode);
+      
       
       // Show loading
       setIsLoading(true);
@@ -84,7 +84,7 @@ const languages = [
       
       if (success) {
         setCurrentLanguage(languageCode);
-        console.log(`✅ Website language changed to: ${language.name}`);
+        
       } else {
         console.error('❌ Failed to change language to:', language.name);
       }

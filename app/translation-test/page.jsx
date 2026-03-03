@@ -113,7 +113,7 @@ export default function TranslationTest() {
                 if (window.translationDebug) {
                   window.translationDebug.logStatus();
                 } else {
-                  console.log('Translation debug not available');
+                  // console.log('Translation debug not available');
                 }
               }}
               className="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded text-white text-sm"

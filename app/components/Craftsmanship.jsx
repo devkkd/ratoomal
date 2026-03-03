@@ -11,24 +11,24 @@ export default function ArtOfAuthenticity() {
 
    
       <h1 className="playfair text-[30px] sm:text-[50px] font-semibold text-[#C08237] mt-8 my-7">
-      Where Royal Rajasthan Craftsmanship
+      Royal Rajasthan Craftsmanship by Ratoomals – Leading Handicraft Manufacturer in India
       </h1>
 
     <div className="space-y-6 ">
       <p className="mona  text-[16px] max-w-6xl mt-4">
-     <span className="font-bold text-[#121212] pr-1">Rooted in Jaipur, Rajasthan - the land of Maharajas and master craftsmen - Ratoomal’s represents over six decades of heritage artistry</span>meticulously handcrafted for international markets. 
+     Ratoomals, based in Jaipur, Rajasthan, the ancient home of Maharajas and skilled craftsmen, is proud to carry forward the legacy of over six decades of artistic heritage. We are one of the best <span className="font-bold text-[#121212] pr-1"> handicraft manufacturer in India </span>, crafting pieces that epitomise the precision of the Maharajas, the symbolism of the culture, and the elegance of the ages. 
       </p>
       <p className="mona text-[16px] max-w-6xl mt-4 text-center items-center  mx-auto">
-Our products are designed and crafted with the  <span className="font-bold text-[#121212] pl-1">same precision, symbolism, and cultural integrity that once adorned royal palaces.</span>
+Our product range is a blend of wooden, metal, resin, and hybrid designs, which showcase not only the traditional craftsmanship of India but also the contemporary global sensibilities. Ratoomals is proud to be an established manufacturer, exporter, and B2B supplier for the international market.
       </p>
-      <p className="mona text-[16px] max-w-6xl mt-4 text-center  items-center  mx-auto">
+      {/* <p className="mona text-[16px] max-w-6xl mt-4 text-center  items-center  mx-auto">
 We specialize in  <span className="font-bold text-[#121212] pl-1">wooden, metal, resin, and mixed-material handicrafts</span> that reflect both timeless <span className="font-bold text-[#121212] pl-1">Indian traditions</span> and contemporary global tastes. 
       </p>
 
 
        <p className="mona text-[16px] max-w-6xl mt-4 text-center  items-center  mx-auto">
 We are a trusted manufacturer, exporter, wholesaler, and B2B partner for home décor, corporate gifting, interior design studios, and boutique retailers worldwide.
-      </p>
+      </p> */}
      
       </div>
 
