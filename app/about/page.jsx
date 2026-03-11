@@ -12,10 +12,11 @@ export default function AboutPage() {
         <h1 className="playfair font-bold text-3xl md:text-4xl mb-8">About Ratoomal’s</h1>
         <div className="space-y-6 text-sm md:text-base leading-relaxed">
           <p>
-            <span className="font-bold">Founded in 1955 in Jaipur, India, Ratoomal's</span> is a family-owned handicrafts manufacturing and export house with a legacy spanning nearly seven decades.
+            <span className="font-bold">Founded in 1955 in Jaipur, India, Ratoomal’s</span>is a renowned family-owned wooden handicraft exporter in Jaipur with nearly seven decades of excellence.
           </p>
           <p>
-            What began as a small, tradition-led enterprise has evolved into a trusted global partner for handcrafted decor, gifting, and utility products – rooted in <span className="font-bold">Indian craftsmanship and refined for international markets.</span>
+            Our specialty lies in high-quality handmade décor, gifts and utility items with a combination of authentic Indian craftwork, and international standards of quality for the international market.
+
           </p>
         </div>
       </section>
@@ -35,37 +36,37 @@ export default function AboutPage() {
       </section>
 
       {/* --- Section 3: The Journey --- */}
-      <section className="max-w-3xl mx-auto text-center space-y-12 mb-8">
+      <section className="max-w-3xl mx-auto text-center space-y-6 mb-8">
         <div className="space-y-1 ">
-          <h2 className="playfair text-lg font-bold">Our Journey Is Defined By Continuity:</h2>
+          <h2 className="playfair text-lg font-bold">Our journey reflects long-term values,</h2>
           <p className="playfair text-lg font-bold">
-            of values, of skills passed down through generations, and of long-standing relationships with clients and artisans alike.
+           generations of work, and reliable relationships. Being specialists in wooden home design,
           </p>
         </div>
         <p className="playfair text-lg font-bold">
-          While markets have evolved, our commitment to authenticity, quality, and integrity remains unchanged.
+          we believe in authenticity, quality, and integrity and adapt to the global market requirements.
         </p>
       </section>
 
       {/* --- Section 4: Our Craft & Capabilities --- */}
       <section className="max-w-7xl mx-auto grid md:grid-cols-2 gap-8 items-center  pt-6">
         <div className="space-y-4">
-          <h2 className="mona text-2xl font-bold">Our Craft & Capabilities</h2>
+          <h2 className="mona text-2xl font-bold">Timeless Decorative Art Supported by Artistry and Design in  Large-scale production</h2>
           <p className="text-sm text-[#0E0E0E]">
-           At the heart of <b> Ratoomal’s </b> lies a deep collaboration with skilled artisans across Rajasthan. These partnerships, nurtured over decades, allow us to preserve traditional techniques while adapting designs, finishes, and specifications to meet contemporary global requirements.
+          Our experience in the field of home interior has been based on good relations with artisans in Rajasthan. This approach allows us to preserve traditional craftsmanship while continuously refining designs and finishes to meet modern global standards.
           </p>
           
           <div className="space-y-3">
-            <h3 className="font-bold text-md mona">We operate our own manufacturing and finishing facilities, enabling:</h3>
+            <h3 className="font-bold text-md mona">Having our own manufacturing and finishing plants, we guarantee:</h3>
             <ul className="font-bold text-sm md:text-xs">
               <li>→ Consistent quality control</li>
-              <li className="font-bold">→ Scalable production for international demand</li>
-              <li>→ Customization across materials, finishes, and product categories</li>
+              <li className="font-bold">→ International production on a large scale.</li>
+              <li>→ Personalisation of materials and finishes.</li>
             </ul>
           </div>
           
           <p className="mona text-xs text-[#0E0E0E]">
-            This integrated approach ensures reliability without compromising the soul of handcrafted work.
+           The combination of this methodology provides stability and does not lose the handcrafted quality.
           </p>
         </div>
 
@@ -91,16 +92,13 @@ export default function AboutPage() {
           />
         </div>
         <div className="space-y-4 text-center md:text-right ">
-          <h2 className="mona text-2xl font-bold">Global Presence & Partnerships</h2>
+          <h2 className="mona text-2xl font-bold">Premium Wooden Elephant Showpiece Exporter with Global Partnerships</h2>
           <div className="space-y-5 text-sm md:text-base leading-relaxed text-[#4A4A4A]">
             <p className='text-sm text-[#0E0E0E]'>
-              Ratoomal's supplies handcrafted décor, gifting, and utility products to <strong>wholesalers, importers, buying houses, and retail brands</strong> across multiple international markets.
+            Ratoomal sells collections of handcrafted décor and wooden elephant showpieces to wholesalers, importers, buying houses, and retail brands throughout the world.
             </p>
             <p className='text-sm text-[#0E0E0E]'>
-              Our focus is firmly B2B—built on trust, repeat business, and long-term alignment rather than transactional volume.
-            </p>
-            <p className='text-sm text-[#0E0E0E]'>
-              We position ourselves not as a vendor, but as a <strong>sourcing partner</strong> — one that understands timelines, compliance, export standards, and the nuances of global trade.
+              We have a good B2B orientation which is based on trust, repeat business and long-term associations. We are not just a supplier but a trusted sourcing company; we know schedules, compliance, export, and international trade regulations.
             </p>
           </div>
         </div>
@@ -109,16 +107,16 @@ export default function AboutPage() {
       {/* --- Section 6: Our Values --- */}
     <section id="values" className="max-w-7xl mx-auto py-16">
   <div className="text-center mb-12">
-    <h2 className="mona text-2xl font-bold mb-6">Our Values</h2>
-    <p className="text-sm mona font-bold">Every partnership and product at Ratoomal’s is guided by a clear set of principles:</p>
+    <h2 className="mona text-2xl font-bold mb-6">Excellence in Décor and Design Guided by Strong Values</h2>
+    <p className="text-sm mona font-bold">At Ratoomal, we have a firm idea of what we want to do with our décor and design, and it is guided by the following principles that define each and every partnership and product:</p>
   </div>
 
   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
     {[
-      { id: "01", title: "Craft Authenticity", desc: "Respecting traditional skills while adapting them thoughtfully for modern markets." },
-      { id: "02", title: "Consistent Quality", desc: "Delivering dependable standards across production cycles and geographies." },
-      { id: "03", title: "Transparent Business Practices", desc: "Clear communication, ethical production, and accountability at every stage." },
-      { id: "04", title: "Long-Term Partnerships", desc: "Building enduring relationships with clients, artisans, and collaborators." }
+      { id: "01", title: "Craft Authenticity", desc: "We respect the old skills, but we are also considerate of adjusting them to suit the new global markets." },
+      { id: "02", title: "Consistent Quality", desc: "We have consistent quality standards in production cycles and in regions." },
+      { id: "03", title: "Transparent Business Practices", desc: "We are ethical in production, we communicate effectively, and we are fully accountable." },
+      { id: "04", title: "Long-Term Partnerships", desc: "We develop long-term relationships with customers, craftsmen and international partners." }
     ].map((item, index) => (
       <div 
         key={item.id} 
@@ -138,32 +136,32 @@ export default function AboutPage() {
       <section id="vision" className="max-w-7xl mx-auto grid md:grid-cols-2 gap-6">
         <div className="bg-[#FCF9F4] p-4  rounded-2xl border border-stone-300">
           <h2 className="mona text-2xl font-bold mb-6">Our Vision</h2>
-          <p className="font-bold text-xs mb-4">To be a trusted global sourcing partner for handcrafted décor and gifting products from India.</p>
-          <p className="text-xs text-gray-600">A vision grounded in consistency, credibility, and the belief that heritage craftsmanship can scale responsibly for the world.</p>
+          <p className="font-bold text-xs mb-4">To be a sourcing partner that is trusted globally in terms of handcrafted décor and gifting products of India.</p>
+          <p className="text-xs text-gray-600"> Our vision is anchored on consistency, credibility and the idea that heritage craftsmanship can be scaled responsibly to serve international markets.</p>
         </div>
         
         <div className="bg-[#FCF9F4] p-4 rounded-2xl border border-stone-300">
           <h2 className="mona text-2xl font-bold mb-6">Our Philosophy</h2>
-          <p className="font-bold text-xs mb-4">We believe true luxury is quiet - defined by provenance, precision, and trust earned over time.</p>
-          <p className="text-xs text-gray-600"><strong>Ratoomal’s</strong> stands for craftsmanship without compromise, scale without dilution, and growth rooted in heritage.</p>
+          <p className="font-bold text-xs mb-4">We think that the real luxury is not pronounced but rather determined by the authenticity, accuracy, and trust, which are gained over the course of time.</p>
+          <p className="text-xs text-gray-600"> The Ratoomal is a symbol of uncompromised craftsmanship, responsible growth and heritage-based excellence.</p>
         </div>
       </section>
 
 
       {/* --- Section 8: Our History (Timeline) --- */}
       <section id="history" className="max-w-7xl mx-auto py-20 px-4">
-  <h2 className="mona text-2xl font-bold text-center mb-12">Our History - A Legacy by Decades</h2>
+  <h2 className="mona text-2xl font-bold text-center mb-12">Eight Years of Mastery in Home Interior Design</h2>
   
   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
     {[
-      { year: "1955", title: "The Foundation", desc: "Ratoomal's was established with a singular philosophy: uncompromising quality and honest craftsmanship. The foundation laid during this decade still defines the company's values today." },
-      { year: "1965", title: "Craft Takes Form", desc: "The business expanded its artisan base, refining techniques and beginning structured production while remaining deeply rooted in handmade processes." },
-      { year: "1975", title: "Design Meets Discipline", desc: "With growing experience, Ratoomal's strengthened its focus on product design consistency and quality control, setting internal standards that would later support international trade.", highlight: true },
-      { year: "1985", title: "Expanding Product Diversity", desc: "New materials and categories were introduced, broadening the portfolio while preserving the integrity of handcrafted methods." },
-      { year: "1995", title: "Preparing for Global Markets", desc: "Ratoomal's evolved from local heritage brand into a business ready for international exposure, aligning craftsmanship with global buyer expectations." },
-      { year: "2005", title: "Global Presence", desc: "With over five decades of experience, Ratoomal's began actively serving buyers across USA, Canada, Japan, Middle East, Asia Europe, and the Americas, forming long-term trade relationships based on trust and quality." },
-      { year: "2015", title: "Modern Indian Handicrafts", desc: "Traditional inspiration was consciously fused with contemporary artistic skills and techniques, creating modern handicrafts that resonated with international interiors while preserving cultural depth." },
-      { year: "2025", title: "House of Quality Since 1955", desc: "Today, Ratoomal's stands as a House of Quality, offering 10,000+ SKUs, export-ready processes, and a reputation built on six decades of buyer satisfaction and artisan respect." }
+      { year: "1955", title: "The Foundation", desc: "The foundation of Ratoomal was made on a definite principle, which was quality and honest craftsmanship. Our home interior designs are still guided by these founding values." },
+      { year: "1965", title: "Craft Takes Form", desc: "We increased our artisan base, perfected the old methods and brought in the organised production without losing the authenticity of the handmade." },
+      { year: "1975", title: "Design Meets Discipline", desc: "An increased emphasis on designing consistency and quality control brought us to international standards in the future.", highlight:true },
+      { year: "1985", title: "Expanding Product Diversity", desc: "We added new materials and collections to our range, without undermining handcrafted integrity." },
+      { year: "1995", title: "Preparing for Global Markets", desc: "Ratoomal has aligned its craftsmanship to the expectations of the buyers around the world and moved towards international trade preparedness." },
+      { year: "2005", title: "Global Presence", desc: "We started serving customers in the USA, Canada, Japan, the Middle East, Asia, Europe, and the Americas, having fifty years of experience." },
+      { year: "2015", title: "Modern Indian Handicrafts", desc: "The fusion of the traditional art with the modern techniques was done in a way that resulted in products that would be used in the global interiors." },
+      { year: "2025", title: "House of Quality Since 1955", desc: "Ratoomal today provides 10,000+ SKUs, export-ready systems and a track record of trust, quality and long-term artisan relationships." }
     ].map((item, idx) => (
       <div 
         key={idx} 
@@ -228,10 +226,10 @@ export default function AboutPage() {
       {/* --- Footer Text --- */}
       <section className="max-w-4xl mx-auto text-center py-4">
         <p className="playfair text-xl  font-bold ">
-          At Ratoomal’s, craftsmanship is not merely a product it is a legacy.
+         At Ratoomal, art is not a product but a heritage of generations of art and hard work,
         </p>
         <p className="playfair text-xl  font-bold  mt-2">
-          And that legacy is protected.
+          And  we are so devoted to that legacy to maintain and defend it with integrity.
         </p>
       </section>
     </main>

@@ -4,18 +4,18 @@ import Image from 'next/image';
 const Guarantees = () => {
   const guaranteeData = [
     {
-      title: "Uncompromised Quality Control",
-      description: "Every piece is meticulously inspected to meet strict quality standards before dispatch.",
+      title: "No compromise on quality control.",
+      description: "All our elephant art and handcrafted products are carefully inspected in terms of quality prior to delivery, maintaining high standards and a perfect finish.",
       image: "/images/connect/Vector.svg",
     },
     {
       title: "Dedicated Buyer Support",
-      description: "At Ratoomals, every buyer receives attentive, professional service before, during, and after the order.",
+      description: "At Ratoomal, every customer is given quality and attentive service at all levels – starting with the inquiry and ending with post-delivery arrangements.",
       image: "/images/connect/Vector-2.svg",
     },
     {
       title: "On-Time Delivery Commitment",
-      description: "Your orders are produced and prepared to ship within the promised timelines, without compromise.",
+      description: "We also follow rigorous production timetables so that orders are ready and dispatched within the stipulated timetables without failure.",
       image: "/images/connect/Vector-1.svg",
     },
   ];
@@ -26,7 +26,7 @@ const Guarantees = () => {
         {/* Section Heading */}
         <div className="text-center mb-16">
           <h2 className="text-3xl playfair md:text-3xl font-bold text-gray-900 mb-4">
-            Our Guarantees
+           Trusted Excellence in Elephant Art & Craftsmanship
           </h2>
         
         </div>
@@ -78,7 +78,7 @@ const Guarantees = () => {
                 WebkitTextFillColor: 'transparent',
               }}
             >
-              Because at Ratoomal's, it isn't words that define us — it's the craftsmanship that speaks for itself.
+              At Ratoomal’s, our identity is not defined by words, but by the excellence of craftsmanship that speaks for itself.
             </span>
         </div>
       </div>
