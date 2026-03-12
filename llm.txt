@@ -1,0 +1,36 @@
+# Ratoomal - Handcrafted Wooden Figurines E-commerce Platform
+
+## Project Overview
+Ratoomal is a Next.js-based e-commerce platform specializing in handcrafted wooden figurines, including animal sculptures, god figurines, and utility decor items. The platform features a customer-facing storefront and a comprehensive admin panel.
+
+### Frontend Routes
+- `/` - Homepage with hero, collections, testimonials
+- `/about` - About page
+- `/contact-us` - Contact form and inquiry submission
+- `/faq` - Frequently asked questions
+- `/category` - Product categories listing
+- `/animal` - Animal figurines collection
+- `/god-figure` - God figurines collection
+- `/utility-decor` - Utility and decor items
+- `/product/[id]` - Individual product details
+- `/exhibitions` - Exhibitions listing
+- `/exhibitions/[id]` - Exhibition details
+- `/wishlist` - User wishlist (requires auth)
+- `/inquiry-cart` - Inquiry cart for bulk orders
+- `/login` - Customer login
+
+
+## Key Features
+
+### Customer Features
+- Browse products by category (Animals, God Figures, Utility Decor)
+- Product filtering by size (especially for elephant figurines)
+- Wishlist functionality
+- Inquiry cart for bulk order requests
+- Contact form and inquiry submission
+- Exhibition browsing
+- Multi-language support (translation hooks)
+- WhatsApp integration for quick contact
+
+
+

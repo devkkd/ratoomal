@@ -1,5 +1,19 @@
-"use client";
 import Image from 'next/image';
+
+export const metadata = {
+  title: 'Decorative Art Experts in India | About Ratoomals Decorative Art Collection',
+  description: 'Learn about Ratoomals, a trusted name in decorative art known for premium handcrafted pieces, artistic décor, and timeless designs that enhance homes and interiors.',
+  keywords: 'Ratoomal, wooden handicrafts, Jaipur exporter, handmade decor, wooden elephant showpiece, Indian craftsmanship, home decor exporter',
+  alternates: {
+    canonical: 'https://www.ratoomals.com/about',
+  },
+  openGraph: {
+    title: 'About Ratoomal\'s - Premium Wooden Handicraft Exporter',
+    description: 'Discover our journey of excellence in handcrafted wooden décor since 1955. Trusted global sourcing partner for authentic Indian craftsmanship.',
+    type: 'website',
+    images: ['/images/about/Maskgroup.svg'],
+  },
+};
 
 export default function AboutPage() {
   return (
@@ -73,8 +87,7 @@ export default function AboutPage() {
         <div className="rounded-lg overflow-hidden h-[300px] relative">
           <Image 
             src="/images/about/Craft.svg" 
-            alt="interior decoration interior decoration
-"
+            alt="handicraft manufacturer in india"
             fill
             className="object-cover"
           />
@@ -86,7 +99,7 @@ export default function AboutPage() {
         <div className="rounded-lg overflow-hidden h-[300px] relative">
           <Image 
             src="/images/about/image-176.svg" // Replace with your image path
-            alt="Handcrafted elephant stapler"
+            alt="decor and design"
             fill
             className="object-cover"
           />

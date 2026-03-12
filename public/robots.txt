@@ -1,19 +1,22 @@
-# *
+# Ratoomal - Handcrafted Wooden Figurines
+# robots.txt
+
+# Allow all crawlers
 User-agent: *
 Allow: /
-Disallow: /admin
-Disallow: /admin/*
-Disallow: /login
-Disallow: /login/*
-Disallow: /signup
-Disallow: /cart
-Disallow: /wishlist
-Disallow: /inquiry-cart
-Disallow: /api/admin/*
-Disallow: /api/auth/*
+# Allow product and category pages
+Allow: /product/
+Allow: /category/
+Allow: /animal/
+Allow: /god-figure/
+Allow: /utility-decor/
+Allow: /exhibitions/
 
-# Host
-Host: https://ratoomals.com
+# Allow important pages
+Allow: /about
+Allow: /contact-us
+Allow: /faq
 
-# Sitemaps
-Sitemap: https://ratoomals.com/sitemap.xml
+# Sitemap location
+Sitemap: https://www.ratoomal.com/sitemap.xml
+

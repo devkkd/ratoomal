@@ -1,6 +1,7 @@
 "use client";
 import React, { useState } from 'react';
 import { ChevronDown } from 'lucide-react'; // Optional: using lucide-react for the arrow icon
+import Link from 'next/link';
 
 const FAQItem = ({ question, answer }) => {
   const [isOpen, setIsOpen] = useState(true); // Defaulting to open to match image layout
@@ -33,24 +34,24 @@ const FAQItem = ({ question, answer }) => {
 const FAQSection = () => {
   const faqs = [
     {
-      question: "Are you a verified Indian handicraft exporter?",
-      answer: "Yes, we are a certified and experienced Indian handicraft exporter globally.  We follow international quality standards and ensure secure worldwide shipping."
+      question: "What kind of company is Ratoomals?",
+      answer: "Ratoomals is a heritage handicraft exporter in Jaipur, Specializing in handcrafted décor and artistic creations that celebrate the timeless heritage and craftsmanship of Rajasthan, which are aimed at international customers and high-end home interior collections."
     },
     {
-      question: "Do you manufacture your own products?",
-      answer: "Yes, we are a trusted handicraft manufacturer in India, with in-house production facilities. Our skilled artisans maintain strict quality control at every stage."
+      question: "What makes Ratoomals' products unique?",
+      answer: "Ratoomal’s products are a blend of traditional craftsmanship, heritage designs, and artistry. All the pieces are genuine elephant art and cultural inspiration, which makes them unique to the collector and beautiful in interior spaces."
     },
     {
-      question: "Can you provide bulk home décor handcrafted order services?",
-      answer: "Yes, we specialise in bulk home décor handcrafted order services.We ensure consistent quality and timely delivery for international orders."
+      question: "Why are elephants a signature product at Ratoomals?",
+      answer: "In Rajasthan, the elephants are associated with power, wealth, and royalty. Ratoomals honors this tradition by producing exquisitely made elephant art and wooden elephant showpiece collections that are appreciated all over the world."
     },
     {
-      question: "Do you export wooden elephant showpiece collections worldwide?",
-      answer: "Yes, we export wooden elephant showpiece collections worldwide. Each piece is carefully packed to ensure safe global delivery."
+      question: "Do you sell only in India or internationally as well?",
+      answer: "Ratoomals has domestic and foreign markets. The company is a leading exporter of handicrafts in Jaipur and provides home decor, gifting, and home interior products to international customers."
     },
     {
-      question: "Do you provide customised product designs?",
-      answer: "Yes, we provide customised designs for international B2B clients.Our team works closely with international B2B partners for exclusive collections."
+      question: "Can I place bulk or wholesale orders?",
+      answer: "Yes, Ratoomals accepts bulk and wholesale orders by retailers, importers, and interior brands in need of high-quality handmade decor, such as wooden elephant showpiece collections and heritage-inspired crafts."
     }
   ];
 
@@ -74,11 +75,13 @@ const FAQSection = () => {
           </div>
 
           {/* Action Button */}
+          <Link href="/faq">
           <div className="mt-12">
             <button className="bg-[#121212] text-white px-8 py-3 rounded-full text-sm font-semibold flex items-center hover:bg-gray-800 transition-colors">
               See All FAQ's <span className="ml-2">→</span>
             </button>
           </div>
+          </Link>
         </div>
 
       </div>

@@ -5,17 +5,17 @@ const Guarantees = () => {
   const guaranteeData = [
     {
       title: "No compromise on quality control.",
-      description: "All our elephant art and handcrafted products are carefully inspected in terms of quality prior to delivery, maintaining high standards and a perfect finish.",
+      description: "We are focused on quality. All the wooden elephant showpiece and handmade decorations are thoroughly checked before shipping. We have very high quality control, and all our products are in fine detailing, durability, and finish.",
       image: "/images/connect/Vector.svg",
     },
     {
-      title: "Dedicated Buyer Support",
-      description: "At Ratoomal, every customer is given quality and attentive service at all levels – starting with the inquiry and ending with post-delivery arrangements.",
+      title: "Reliable Client Assistance",
+      description: "Our team is responsive in communication, starting with the initial enquiry up to the post-delivery arrangement, making the buying experience of the global partners seamless.",
       image: "/images/connect/Vector-2.svg",
     },
     {
-      title: "On-Time Delivery Commitment",
-      description: "We also follow rigorous production timetables so that orders are ready and dispatched within the stipulated timetables without failure.",
+      title: "Timely Order Dispatch",
+      description: "We also have scheduled production planning, which means that orders are made and delivered in time, and our foreign customers can have a steady supply of goods and business operations.",
       image: "/images/connect/Vector-1.svg",
     },
   ];

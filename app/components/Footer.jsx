@@ -88,13 +88,13 @@ const Footer = () => {
               <div>
                 <h4 className="font-bold text-sm mb-6 mona">Follow us on</h4>
                 <div className="space-y-2">
-                  <a href="#" className="flex items-center gap-2 text-xs text-gray-600 hover:text-amber-700">
+                  <a href="https://www.instagram.com/ratoomals.handicrafts/" className="flex items-center gap-2 text-xs text-gray-600 hover:text-amber-700">
                     <img src="/images/icons/instagram-logo-vector-illustrati-2.svg" className="w-6" /> @ratoomal
                   </a>
-                  <a href="#" className="flex items-center gap-2 text-xs text-gray-600 hover:text-amber-700">
+                  <a href="https://www.facebook.com/p/Ratoomals-Handicrafts-100070512023977/" className="flex items-center gap-2 text-xs text-gray-600 hover:text-amber-700">
                     <img src="/images/icons/g21.svg" className="w-6" /> @ratoomal
                   </a>
-                  <a href="#" className="flex items-center gap-2 text-xs text-gray-600 hover:text-amber-700">
+                  <a href="https://www.youtube.com/@ratoomalshandicrafts5539?app=desktop" className="flex items-center gap-2 text-xs text-gray-600 hover:text-amber-700">
                     <img src="/images/icons/Group.svg" className="w-6     " /> @ratoomal
                   </a>
                   <a href="#" className="flex items-center gap-2 text-xs text-gray-600 hover:text-amber-700">
