@@ -25,6 +25,7 @@ const ExhibitionDetailPage = () => {
       try {
         setLoading(true);
         const response = await fetch(`/api/exhibitions/${params.id}`);
+        if (!response.ok) throw new Error(`HTTP error: ${response.status}`);
         const data = await response.json();
 
         if (data.success) {

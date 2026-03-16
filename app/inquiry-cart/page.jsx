@@ -203,7 +203,7 @@ const InquiryCartPage = () => {
       return (
         <div className="min-h-screen bg-[#FFF6EB] py-8">
           <div className="max-w-4xl mx-auto px-4">
-            <h1 className="text-3xl playfair font-bold text-gray-900 mb-8 text-center">Inquiry Submitted Successfully!</h1>
+            <h2 className="text-3xl playfair font-bold text-gray-900 mb-8 text-center">Inquiry Submitted Successfully!</h2>
             <div className="text-center py-16">
               {/* Success Icon */}
               <div className="flex justify-center mb-8">
@@ -275,7 +275,7 @@ const InquiryCartPage = () => {
     return (
       <div className="min-h-screen bg-[#FFF6EB] py-8">
         <div className="max-w-4xl mx-auto px-4">
-          <h1 className="text-3xl playfair font-bold text-gray-900 mb-8">Inquiry Cart</h1>
+          <h2 className="text-3xl playfair font-bold text-gray-900 mb-8">Inquiry Cart</h2>
           <div className="text-center py-16">
             <ShoppingCart className="mx-auto h-24 w-24 text-gray-400 mb-4" />
             <h2 className="text-2xl font-semibold text-gray-900 mb-2">Your inquiry cart is empty</h2>

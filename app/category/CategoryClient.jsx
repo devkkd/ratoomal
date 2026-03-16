@@ -2220,20 +2220,43 @@ const CategoryPage = () => {
                 </div>
             )}
 
-            {/* Header - Sticky below main header */}
-            <header className="bg-white sticky top-[80px] z-30 shadow-sm">
-                <div className="max-w-7xl mx-auto px-4 py-6">
-                    <h1 className="text-3xl playfair font-bold text-center text-gray-800 sm:mb-2">Category</h1>
+            {/* Page Header - NOT sticky, just normal flow */}
+            <header className="bg-white">
+                <div className="max-w-7xl mx-auto px-4 py-2 md:py-3 ">
+                    <div className="text-center space-y-1 md:space-y-1">
+                        {/* Decorative Line */}
+                        {/* <div className="flex items-center justify-center gap-2 md:gap-3 ">
+                            <div className="h-px w-8 md:w-10 bg-gradient-to-r from-transparent to-[#C08237]"></div>
+                            <svg className="w-3 h-3 md:w-4 md:h-4 text-[#C08237]" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M10 3.5a1.5 1.5 0 013 0V4a1 1 0 001 1h3a1 1 0 011 1v3a1 1 0 01-1 1h-.5a1.5 1.5 0 000 3h.5a1 1 0 011 1v3a1 1 0 01-1 1h-3a1 1 0 01-1-1v-.5a1.5 1.5 0 00-3 0v.5a1 1 0 01-1 1H6a1 1 0 01-1-1v-3a1 1 0 00-1-1h-.5a1.5 1.5 0 010-3H4a1 1 0 001-1V6a1 1 0 011-1h3a1 1 0 001-1v-.5z" />
+                            </svg>
+                            <div className="h-px w-8 md:w-10 bg-gradient-to-l from-transparent to-[#C08237]"></div>
+                        </div> */}
+                        
+                        {/* Main Heading - Smaller Size */}
+                        <h1 className="text-xl md:text-3xl playfair font-bold text-gray-900 tracking-tight">
+                            Explore Our Collection
+                        </h1>
+                        
+                        {/* Subtitle */}
+                        <p className="text-gray-600 text-xs md:text-sm mona max-w-2xl mx-auto">
+                            Discover handcrafted treasures across our curated categories
+                        </p>
+                    </div>
                 </div>
             </header>
 
-            <div className="max-w-7xl mx-auto px-4 py-4 sm:py-8">
-                <div className="flex flex-col lg:flex-row gap-8">
-                    {/* Left Sidebar */}
-                    <aside className="w-full lg:w-60 shrink-0">
-                        <div className="sticky top-[168px]">
-                            <div className="bg-white rounded-lg border border-gray-300 overflow-hidden">
-                                <div className="py-3 px-2">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2 sm:py-6 ">
+                <div className="flex flex-col lg:flex-row gap-6 lg:gap-10">
+                    {/* Left Sidebar - Hidden on mobile, shown on desktop */}
+                    <aside className="hidden lg:block lg:w-64 shrink-0">
+                        <div className="sticky top-[160px] md:top-[180px] space-y-4">
+                            {/* Categories Section */}
+                            <div className="bg-white rounded-xl border border-gray-200 overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+                                <div className="bg-gradient-to-r from-[#C08237] to-[#9C774A] px-4 py-3.5">
+                                    <h3 className="text-white font-bold text-sm uppercase tracking-wide">Categories</h3>
+                                </div>
+                                <div className="py-3 px-2 max-h-[400px] overflow-y-auto">
                                     <div className="space-y-3">
                                         {backendCategories.map(category => {
                                             const categorySubCats = getFilteredSubCategories(category._id);
@@ -2319,78 +2342,162 @@ const CategoryPage = () => {
                     </aside>
 
                     {/* Main Content */}
-                    <main className="flex-1">
-                        {/* Top Toolbar - Sticky below category header */}
-                        <div className="sticky top-[168px] z-20 bg-[#FDFBF7]/95 backdrop-blur-sm py-4 -mx-4 px-4 mb-4 border-b border-gray-200">
-                            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-                            <div className="flex flex-wrap gap-2 ">
-                                {categoryTabs.map((category) => (
+                    <main className="flex-1 min-w-0">
+                        {/* Top Toolbar - Sticky below Explore Our Collection header */}
+                        <div className="sticky top-[80px] md:top-[140px] z-40 bg-white py-4 -mx-4 px-4 mb-6  shadow-sm">
+                            <div className="flex flex-col gap-4">
+                                {/* Mobile: Categories Button + Sort + Clear Filter */}
+                                <div className="flex lg:hidden items-center gap-2.5 w-full relative">
                                     <button
-                                        key={category}
-                                        onClick={() => handleCategoryChange(category)}
-                                        className={`px-4 py-2 rounded-full text-[12px] mona font-medium transition-colors ${activeCategory === category
-                                            ? 'bg-[#C08237] text-white'
-                                            : 'bg-white border border-gray-400 text-gray-900 hover:bg-gray-50'
-                                            } ${category === "All Products" && !isLoggedIn ? 'opacity-50 cursor-not-allowed' : ''}`}
-                                        title={category === "All Products" && !isLoggedIn ? "Login to view All Products" : ""}
-                                        disabled={category === "All Products" && !isLoggedIn}
+                                        onClick={() => setIsFilterOpen(true)}
+                                        className="flex-1 flex items-center justify-center gap-2 bg-gradient-to-r from-[#C08237] to-[#9C774A] text-white px-4 py-3 rounded-xl text-sm font-medium shadow-md hover:shadow-lg transition-all"
                                     >
-                                        {category}
+                                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                                        </svg>
+                                        Categories & Filters
                                     </button>
-                                ))}
-                            </div>
+                                    
+                                    <div className="relative">
+                                        <button
+                                            onClick={() => setIsSortOpen(!isSortOpen)}
+                                            className="flex items-center justify-center bg-white border-2 border-gray-300 p-3 rounded-xl hover:border-[#C08237] transition-colors"
+                                            title="Sort"
+                                        >
+                                            <svg className="w-5 h-5 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12" />
+                                            </svg>
+                                        </button>
 
-                            <div className="flex gap-3 relative">
-                                <div className="relative">
-                                    <button
-                                        onClick={() => setIsSortOpen(!isSortOpen)}
-                                        className="flex mona items-center gap-2 bg-white border border-gray-400 text-sm hover:bg-gray-50 px-3 py-2 rounded-full text-[12px] mona font-medium transition-colors"
-                                    >
-                                        Sort By <img src='/images/icons/arrow-3.svg' className={`w-4 h-4 transition-transform ${isSortOpen ? 'rotate-180' : ''}`} />
-                                    </button>
-
-                                    {isSortOpen && (
-                                        <div className="absolute right-0 top-full mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 z-50">
-                                            <div className="py-2">
-                                                {sortOptions.map((option) => (
-                                                    <button
-                                                        key={option}
-                                                        onClick={() => handleSort(option)}
-                                                        className={`flex justify-between hover:bg-[#C08237] hover:text-white items-center w-full px-4 py-2 text-left text-sm ${selectedSort === option ? 'text-[white] bg-[#C08237] font-medium' : 'text-gray-700'
-                                                            }`}
-                                                    >
-                                                        <span className="mona">{option}</span>
-                                                        {selectedSort === option && (
-                                                            <svg className="w-4 h-4 text-[#C08237]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
-                                                            </svg>
-                                                        )}
-                                                    </button>
-                                                ))}
+                                        {/* Sort Dropdown for Mobile */}
+                                        {isSortOpen && (
+                                            <div className="absolute right-0 top-full mt-2 w-48 bg-white rounded-lg shadow-xl border border-gray-200 z-[60]">
+                                                <div className="py-2">
+                                                    {sortOptions.map((option) => (
+                                                        <button
+                                                            key={option}
+                                                            onClick={() => handleSort(option)}
+                                                            className={`flex justify-between hover:bg-[#C08237] hover:text-white items-center w-full px-4 py-2 text-left text-sm ${selectedSort === option ? 'text-white bg-[#C08237] font-medium' : 'text-gray-700'
+                                                                }`}
+                                                        >
+                                                            <span>{option}</span>
+                                                            {selectedSort === option && (
+                                                                <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
+                                                                </svg>
+                                                            )}
+                                                        </button>
+                                                    ))}
+                                                </div>
                                             </div>
-                                        </div>
+                                        )}
+                                    </div>
+
+                                    {/* Clear Filter Button - Only show if filters are active */}
+                                    {(selectedCategories.length > 0 || Object.values(selectedFilters).some(arr => arr.length > 0)) && (
+                                        <button
+                                            onClick={clearAllFilters}
+                                            className="flex items-center justify-center bg-red-50 border-2 border-red-300 p-3 rounded-xl hover:bg-red-100 hover:border-red-400 transition-all"
+                                            title="Clear all filters"
+                                        >
+                                            <svg className="w-5 h-5 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                                            </svg>
+                                        </button>
                                     )}
                                 </div>
 
-                                <button
-                                    onClick={() => setIsFilterOpen(true)}
-                                    className="flex mona items-center gap-2 bg-white border border-gray-400 text-sm hover:bg-gray-50 px-3 py-2 rounded-full text-[12px] mona font-medium transition-colors"
-                                >
-                                    Filters <img src='/images/icons/setting-4.svg' className="w-4 h-4" />
-                                </button>
-                            </div>
+                                {/* Desktop: Category Tabs + Sort/Filter */}
+                                <div className="hidden lg:flex justify-between items-center gap-4">
+                                    <div className="flex flex-wrap gap-2.5">
+                                        {categoryTabs.map((category) => (
+                                            <button
+                                                key={category}
+                                                onClick={() => handleCategoryChange(category)}
+                                                className={`px-5 py-2.5 rounded-full text-sm mona font-medium transition-all shadow-sm ${activeCategory === category
+                                                    ? 'bg-gradient-to-r from-[#C08237] to-[#9C774A] text-white shadow-md scale-105'
+                                                    : 'bg-white border-2 border-gray-300 text-gray-900 hover:border-[#C08237] hover:shadow-md'
+                                                    } ${category === "All Products" && !isLoggedIn ? 'opacity-50 cursor-not-allowed' : ''}`}
+                                                title={category === "All Products" && !isLoggedIn ? "Login to view All Products" : ""}
+                                                disabled={category === "All Products" && !isLoggedIn}
+                                            >
+                                                {category}
+                                            </button>
+                                        ))}
+                                    </div>
+
+                                    <div className="flex gap-3 relative">
+                                        <div className="relative">
+                                            <button
+                                                onClick={() => setIsSortOpen(!isSortOpen)}
+                                                className="flex mona items-center gap-2 bg-white border-2 border-gray-300 text-sm hover:border-[#C08237] hover:shadow-md px-4 py-2.5 rounded-full font-medium transition-all"
+                                            >
+                                                Sort By <img src='/images/icons/arrow-3.svg' className={`w-4 h-4 transition-transform ${isSortOpen ? 'rotate-180' : ''}`} />
+                                            </button>
+
+                                            {isSortOpen && (
+                                                <div className="absolute right-0 top-full mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 z-50">
+                                                    <div className="py-2">
+                                                        {sortOptions.map((option) => (
+                                                            <button
+                                                                key={option}
+                                                                onClick={() => handleSort(option)}
+                                                                className={`flex justify-between hover:bg-[#C08237] hover:text-white items-center w-full px-4 py-2 text-left text-sm ${selectedSort === option ? 'text-[white] bg-[#C08237] font-medium' : 'text-gray-700'
+                                                                    }`}
+                                                            >
+                                                                <span className="mona">{option}</span>
+                                                                {selectedSort === option && (
+                                                                    <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
+                                                                    </svg>
+                                                                )}
+                                                            </button>
+                                                        ))}
+                                                    </div>
+                                                </div>
+                                            )}
+                                        </div>
+
+                                        {/* Filter Button for Desktop */}
+                                        <button
+                                            onClick={() => setIsFilterOpen(true)}
+                                            className="flex mona items-center gap-2 bg-white border-2 border-gray-300 text-sm hover:border-[#C08237] hover:shadow-md px-4 py-2.5 rounded-full font-medium transition-all"
+                                        >
+                                            Filters <img src='/images/icons/setting-4.svg' className="w-4 h-4" />
+                                        </button>
+                                    </div>
+                                </div>
+
+                                {/* Mobile: Horizontal Scrollable Category Tabs */}
+                                <div className="lg:hidden overflow-x-auto -mx-4 px-4 scrollbar-thin scrollbar-thumb-[#C08237] scrollbar-track-gray-200">
+                                    <div className="flex gap-2.5 min-w-max pb-2">
+                                        {categoryTabs.map((category) => (
+                                            <button
+                                                key={category}
+                                                onClick={() => handleCategoryChange(category)}
+                                                className={`px-4 py-2.5 rounded-full text-xs font-medium whitespace-nowrap transition-all ${activeCategory === category
+                                                    ? 'bg-gradient-to-r from-[#C08237] to-[#9C774A] text-white shadow-md scale-105'
+                                                    : 'bg-white border-2 border-gray-300 text-gray-900 hover:border-[#C08237]'
+                                                    } ${category === "All Products" && !isLoggedIn ? 'opacity-50' : ''}`}
+                                                disabled={category === "All Products" && !isLoggedIn}
+                                            >
+                                                {category}
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
                         {/* Results Count */}
-                        <div className="mb-6 flex justify-between items-center">
+                        {/* <div className="mb-8 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 bg-white p-4 rounded-xl border border-gray-200 shadow-sm">
                             <div>
-                                <p className="text-gray-600">
+                                <p className="text-gray-700 font-medium">
                                     {getDisplayText()}
                                 </p>
                                 {!isLoggedIn && sortedProducts.length > productsPerPage && (
-                                    <p className="text-sm text-gray-500 mt-1">
-                                        <span className="text-yellow-600 font-medium">
+                                    <p className="text-sm text-gray-500 mt-1.5">
+                                        <span className="text-amber-600 font-medium">
                                             Login to view all {sortedProducts.length} products and access all pages
                                         </span>
                                     </p>
@@ -2399,12 +2506,15 @@ const CategoryPage = () => {
                             {(selectedCategories.length > 0 || Object.values(selectedFilters).some(arr => arr.length > 0)) && (
                                 <button
                                     onClick={clearAllFilters}
-                                    className="text-sm text-[#C08237] hover:text-[#9C774A] font-medium"
+                                    className="text-sm text-[#C08237] hover:text-[#9C774A] font-semibold flex items-center gap-1.5 transition-colors"
                                 >
+                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                                    </svg>
                                     Clear all filters
                                 </button>
                             )}
-                        </div>
+                        </div> */}
 
                         {/* Product Display */}
                         {loading ? (
@@ -2426,26 +2536,32 @@ const CategoryPage = () => {
                                     
                                     return (
                                         <div key={category._id} className="category-section">
-                                            <div className="flex items-center justify-between mb-6">
-                                                <h2 className="text-2xl font-bold text-gray-800 playfair">{category.name}</h2>
+                                            <div className="flex items-center justify-between mb-6 pb-4 border-b-2 border-gray-200">
+                                                <div className="flex items-center gap-3">
+                                                    <div className="w-1 h-8 bg-gradient-to-b from-[#C08237] to-[#9C774A] rounded-full"></div>
+                                                    <h2 className="text-2xl md:text-3xl font-bold text-gray-900 playfair">{category.name}</h2>
+                                                </div>
                                                 <div className="flex items-center gap-4">
-                                                    <span className="text-sm text-gray-500">
+                                                    <span className="text-sm text-gray-600 bg-gray-100 px-3 py-1.5 rounded-full font-medium">
                                                         {isLoggedIn 
                                                             ? `${totalCategoryProducts} products` 
-                                                            : `Showing ${categoryProducts.length} of ${totalCategoryProducts} products`
+                                                            : `${categoryProducts.length} of ${totalCategoryProducts}`
                                                         }
                                                     </span>
                                                     <button
                                                         onClick={() => handleCategoryChange(category.name)}
-                                                        className="text-sm text-[#C08237] hover:text-[#9C774A] font-medium"
+                                                        className="text-sm text-[#C08237] hover:text-[#9C774A] font-semibold flex items-center gap-1 transition-colors"
                                                     >
-                                                        View All →
+                                                        View All 
+                                                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                                                        </svg>
                                                     </button>
                                                 </div>
                                             </div>
                                             
-                                            {/* Products Grid - Always 3 columns, no slider */}
-                                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                                            {/* Products Grid - 2 columns mobile, 4 columns desktop */}
+                                            <div className="grid grid-cols-2 lg:grid-cols-4 gap-5 lg:gap-7">
                                                 {categoryProducts.map(product => (
                                                     <div 
                                                         key={product.id} 
@@ -2586,12 +2702,16 @@ const CategoryPage = () => {
                                             
                                             {/* Login prompt for non-logged in users if there are more than 12 products */}
                                             {!isLoggedIn && totalCategoryProducts > 12 && (
-                                                <div className="mt-6 text-center">
+                                                <div className="mt-8 text-center bg-gradient-to-r from-amber-50 to-orange-50 p-6 rounded-xl border-2 border-amber-200">
+                                                    <p className="text-gray-700 mb-3 font-medium">Want to see all products?</p>
                                                     <button
                                                         onClick={() => router.push('/login')}
-                                                        className="text-[#C08237] hover:text-[#9C774A] font-medium text-sm border border-[#C08237] px-4 py-2 rounded-lg"
+                                                        className="bg-gradient-to-r from-[#C08237] to-[#9C774A] text-white font-semibold px-6 py-3 rounded-lg hover:shadow-lg transition-all inline-flex items-center gap-2"
                                                     >
-                                                        Login to view all {totalCategoryProducts} products in {category.name}
+                                                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
+                                                        </svg>
+                                                        Login to view all {totalCategoryProducts} products
                                                     </button>
                                                 </div>
                                             )}
@@ -2619,7 +2739,7 @@ const CategoryPage = () => {
                         ) : (
                             // Regular grid for specific categories
                             <>
-                                <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                                <div className="grid grid-cols-2 lg:grid-cols-4 gap-5 lg:gap-7">
                                     {currentProducts.map(product => (
                                         <div 
                                             key={product.id} 
@@ -2760,16 +2880,16 @@ const CategoryPage = () => {
 
                                 {/* Pagination - Show only for specific categories */}
                                 {activeCategory !== "All Products" && sortedProducts.length > productsPerPage && (
-                                    <div className="mt-12">
+                                    <div className="mt-12 pt-8 border-t-2 border-gray-200">
                                         <div className="flex flex-col items-center">
                                             {!isLoggedIn && (
-                                                <div className="mb-4 text-center">
-                                                    <p className="text-sm text-gray-600">
-                                                        Page <span className="font-semibold">{currentPage}</span> of <span className="font-semibold">{totalPages}</span>
-                                                        <span className="ml-2 text-yellow-600">
+                                                <div className="mb-6 text-center bg-amber-50 px-6 py-4 rounded-xl border border-amber-200">
+                                                    <p className="text-sm text-gray-700">
+                                                        Page <span className="font-bold text-[#C08237]">{currentPage}</span> of <span className="font-bold text-[#C08237]">{totalPages}</span>
+                                                        <span className="ml-2 text-amber-700">
                                                             • <button 
                                                                 onClick={() => router.push('/login')}
-                                                                className="text-[#C08237] font-medium hover:underline"
+                                                                className="text-[#C08237] font-semibold hover:underline"
                                                             >
                                                                 Login
                                                             </button> to view all pages
@@ -2778,7 +2898,7 @@ const CategoryPage = () => {
                                                 </div>
                                             )}
                                             
-                                            <div className="flex flex-wrap justify-center gap-2">
+                                            <div className="flex flex-wrap justify-center gap-2.5">
                                                 {renderPagination()}
                                             </div>
                                         </div>
@@ -2799,60 +2919,137 @@ const CategoryPage = () => {
 
                 <div className={`absolute right-0 top-0 h-full w-full max-w-sm bg-white shadow-2xl transition-transform duration-300 ${isFilterOpen ? 'translate-x-0' : 'translate-x-full'}`}>
                     <div className="h-full flex flex-col">
-                        <div className="flex items-center justify-between p-6 border-b border-gray-200">
-                            <h2 className="text-xl mona font-bold text-gray-800">Filters</h2>
+                        <div className="flex items-center justify-between p-6 border-b-2 border-gray-200 bg-gradient-to-r from-[#FDFBF7] to-white">
+                            <h2 className="text-xl mona font-bold text-gray-900">
+                                <span className="lg:hidden">Categories & Filters</span>
+                                <span className="hidden lg:inline">Filters</span>
+                            </h2>
                             <button
                                 onClick={() => setIsFilterOpen(false)}
                                 className="p-2 hover:bg-gray-100 rounded-full transition-colors"
                             >
-                                <img src="/images/icons/close-circle.svg" className="w-7 h-7" alt="Close" />
+                                <svg className="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                                </svg>
                             </button>
                         </div>
 
                         <div className="flex-1 overflow-y-auto p-6 space-y-6">
-                            {Object.entries(filters).map(([title, options]) => (
-                                <div key={title}>
-                                    <button
-                                        onClick={() => toggleSection(title)}
-                                        className="flex justify-between items-center w-full mb-4"
-                                    >
-                                        <h3 className="text-sm mona font-semibold text-gray-800">{title}</h3>
-                                        <ChevronRight
-                                            className={`w-4 h-4 transition-transform ${expandedSections[title] ? 'rotate-90' : ''}`}
-                                        />
-                                    </button>
-
-                                    {expandedSections[title] && (
-                                        <div className="space-y-2 pl-2">
-                                            {options.map(option => (
-                                                <label key={option} className="flex items-center gap-2 cursor-pointer py-1">
-                                                    <input
-                                                        type="checkbox"
-                                                        checked={isFilterChecked(title, option)}
-                                                        onChange={() => handleFilterChange(title, option)}
-                                                        className="w-4 h-4 text-[#C08237] border-gray-300 rounded focus:ring-[#C08237]"
+                            {/* Categories Section - Only show on mobile */}
+                            <div className="lg:hidden pb-6 border-b border-gray-200">
+                                <h3 className="text-lg font-bold text-gray-800 mb-4">Categories</h3>
+                                <div className="space-y-3">
+                                    {backendCategories.map(category => {
+                                        const categorySubCats = getFilteredSubCategories(category._id);
+                                        const isParentSelected = selectedCategories.includes(category._id);
+                                        
+                                        return (
+                                            <div key={category._id}>
+                                                <button
+                                                    onClick={() => toggleSection(category._id)}
+                                                    className="flex justify-between items-center w-full p-2 hover:bg-gray-50 rounded"
+                                                >
+                                                    <span className="font-medium text-sm text-gray-700">{category.name}</span>
+                                                    <ChevronRight
+                                                        className={`w-4 h-4 transition-transform ${expandedSections[category._id] ? 'rotate-90' : ''}`}
                                                     />
-                                                    <span className="text-sm text-gray-600 hover:text-gray-900">{option}</span>
-                                                </label>
-                                            ))}
-                                        </div>
-                                    )}
+                                                </button>
+
+                                                {expandedSections[category._id] && categorySubCats.length > 0 && (
+                                                    <div className="pl-2 space-y-2 mt-2">
+                                                        <div className="relative mb-3">
+                                                            <Search className="absolute left-3 top-2.5 w-4 h-4 text-gray-400" />
+                                                            <input
+                                                                type="text"
+                                                                placeholder={`Search in ${category.name}`}
+                                                                value={searchTerms[category._id] || ''}
+                                                                onChange={(e) => handleSearchChange(category._id, e.target.value)}
+                                                                className="w-full pl-9 pr-3 py-2 text-sm border border-gray-200 rounded-md bg-gray-50 outline-none"
+                                                            />
+                                                        </div>
+
+                                                        <div className="max-h-48 overflow-y-auto space-y-2 pr-2">
+                                                            <label className="flex items-center gap-2 cursor-pointer mb-2 pb-2 border-b border-gray-100">
+                                                                <input
+                                                                    type="checkbox"
+                                                                    checked={isParentSelected}
+                                                                    onChange={() => handleSidebarCategoryChange(category._id)}
+                                                                    className="w-4 h-4 text-[#C08237] border-gray-300 rounded focus:ring-[#C08237]"
+                                                                />
+                                                                <span className="text-sm font-medium text-gray-800">All {category.name}</span>
+                                                            </label>
+                                                            
+                                                            {categorySubCats.map(subCat => {
+                                                                const isSelected = selectedCategories.includes(`${category._id}-${subCat._id}`);
+                                                                
+                                                                return (
+                                                                    <label key={subCat._id} className="flex items-center gap-2 cursor-pointer pl-4">
+                                                                        <input
+                                                                            type="checkbox"
+                                                                            checked={isSelected}
+                                                                            onChange={() => handleSidebarCategoryChange(category._id, subCat._id)}
+                                                                            className="w-4 h-4 text-[#C08237] border-gray-300 rounded focus:ring-[#C08237]"
+                                                                        />
+                                                                        <span className="text-sm text-gray-600 hover:text-gray-900">{subCat.name}</span>
+                                                                    </label>
+                                                                );
+                                                            })}
+                                                        </div>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        );
+                                    })}
                                 </div>
-                            ))}
+                            </div>
+
+                            {/* Filters Section */}
+                            <div>
+                                <h3 className="text-lg font-bold text-gray-800 mb-4">Filters</h3>
+                                {Object.entries(filters).map(([title, options]) => (
+                                    <div key={title} className="mb-6">
+                                        <button
+                                            onClick={() => toggleSection(title)}
+                                            className="flex justify-between items-center w-full mb-3"
+                                        >
+                                            <h4 className="text-sm font-semibold text-gray-800">{title}</h4>
+                                            <ChevronRight
+                                                className={`w-4 h-4 transition-transform ${expandedSections[title] ? 'rotate-90' : ''}`}
+                                            />
+                                        </button>
+
+                                        {expandedSections[title] && (
+                                            <div className="space-y-2 pl-2">
+                                                {options.map(option => (
+                                                    <label key={option} className="flex items-center gap-2 cursor-pointer py-1">
+                                                        <input
+                                                            type="checkbox"
+                                                            checked={isFilterChecked(title, option)}
+                                                            onChange={() => handleFilterChange(title, option)}
+                                                            className="w-4 h-4 text-[#C08237] border-gray-300 rounded focus:ring-[#C08237]"
+                                                        />
+                                                        <span className="text-sm text-gray-600 hover:text-gray-900">{option}</span>
+                                                    </label>
+                                                ))}
+                                            </div>
+                                        )}
+                                    </div>
+                                ))}
+                            </div>
                         </div>
 
-                        <div className="p-6 border-t border-gray-200 bg-gray-50 flex gap-3">
+                        <div className="p-6 border-t-2 border-gray-200 bg-gradient-to-r from-[#FDFBF7] to-white flex gap-3">
                             <button
                                 onClick={clearAllFilters}
-                                className="flex-1 py-3 bg-white border border-gray-400 text-gray-700 font-medium rounded-lg hover:bg-gray-50 transition-colors"
+                                className="flex-1 py-3 bg-white border-2 border-gray-300 text-gray-700 font-semibold rounded-xl hover:bg-gray-50 hover:border-gray-400 transition-all"
                             >
                                 Clear All
                             </button>
                             <button
                                 onClick={() => setIsFilterOpen(false)}
-                                className="flex-1 py-3 bg-[#C08237] text-white font-medium rounded-lg hover:bg-[#9C774A] transition-colors"
+                                className="flex-1 py-3 bg-gradient-to-r from-[#C08237] to-[#9C774A] text-white font-semibold rounded-xl hover:shadow-lg transition-all"
                             >
-                                Apply Filters
+                                Apply
                             </button>
                         </div>
                     </div>

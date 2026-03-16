@@ -99,9 +99,9 @@ const VerifyBusiness = () => {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
             </svg>
           </div>
-          <h1 className="text-3xl playfair font-semibold text-[#1A1A1A] mb-4">
+          <h2 className="text-3xl playfair font-semibold text-[#1A1A1A] mb-4">
             Request Submitted Successfully
-          </h1>
+          </h2>
           <p className="text-sm mona text-gray-600">
             Thank you for submitting your business verification request. 
             Our team will review your application and get back to you shortly.

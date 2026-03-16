@@ -35,7 +35,7 @@ const ConnectSection = () => {
                 />
               </a>
               <a 
-                href="https://maps.google.com/?q=2,+Ratan+Niwas,+Opposite+Anukampa+Mansion,+M.I.+Road,+Jaipur+302001,+Rajasthan,+India"
+                href="https://maps.app.goo.gl/fhEa6XjxA7g89kXx7?g_st=ic"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-1/2 block hover:opacity-90 transition-opacity"
@@ -50,7 +50,7 @@ const ConnectSection = () => {
             <div className="space-y-4 pt-4">
               <h5 className="text-xl mona font-bold">Ratoomal's Handicraft's</h5>
               <p className="text-sm leading-relaxed mona text-gray-700">
-                <span className="font-bold mona text-black">Address :</span> 2, Ratan Niwas, Opposite Anukampa Mansion, M.I. Road, Jaipur — 302001, Rajasthan, India.
+                <span className="font-bold mona text-black">Address :</span>D-13, Industrial Area, Hawa Sadak, Sharma Colony, Bais Godam, Jaipur, Rajasthan 302001
               </p>
               <p className="text-sm text-gray-700 mona">
                 <span className="font-bold mona text-black">Phone :</span> +91-9828358847 / +91-9414069594

@@ -36,6 +36,7 @@ export default function CuratedCollections() {
                 if (data.success && data.data) {
                     // Fetch categories to find Animal category ID
                     const categoriesRes = await fetch('/api/categories');
+                    if (!categoriesRes.ok) throw new Error('Failed to fetch categories');
                     const categoriesData = await categoriesRes.json();
                     
                     if (categoriesData.success && categoriesData.data) {
@@ -49,7 +50,7 @@ export default function CuratedCollections() {
                             const animalProducts = data.data
                                 .filter(product => product.category?._id === animalCategory._id || product.category === animalCategory._id)
                                 .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
-                                .slice(0, 4)
+                                .slice(0, 5)
                                 .map(product => ({
                                     id: product._id,
                                     name: product.name || "Unnamed Product",
@@ -118,7 +119,7 @@ export default function CuratedCollections() {
                     <p className="text-gray-600">No animal products found</p>
                 </div>
             ) : (
-            <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:px-6">
+            <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 sm:px-6">
                 {products.map((item) => (
                     <div 
                         key={item.id} 

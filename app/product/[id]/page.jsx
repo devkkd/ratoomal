@@ -75,6 +75,7 @@ const ProductDetailPage = () => {
                 // console.log('🔐 User logged in status:', isLoggedIn);
                 
                 const res = await fetch(`/api/products/${id}`);
+                if (!res.ok && res.status !== 404) throw new Error(`HTTP error: ${res.status}`);
                 const data = await res.json();
 
                 // console.log('📦 API Response:', {

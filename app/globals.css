@@ -161,3 +161,88 @@ a {
   border-bottom: 1px solid #e5e7eb;
   padding-bottom: 3rem;
 }
+
+/* Mobile Sidebar Animations */
+@keyframes slide-in {
+  from {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-slide-in {
+  animation: slide-in 0.3s ease-out;
+}
+
+.animate-fade-in {
+  animation: fade-in 0.3s ease-out;
+}
+
+/* Smooth transitions for mobile sidebar */
+.mobile-sidebar-transition {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Custom scrollbar for mobile sidebar */
+.mobile-sidebar-scroll::-webkit-scrollbar {
+  width: 4px;
+}
+
+.mobile-sidebar-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.mobile-sidebar-scroll::-webkit-scrollbar-thumb {
+  background: #C08237;
+  border-radius: 2px;
+}
+
+.mobile-sidebar-scroll::-webkit-scrollbar-thumb:hover {
+  background: #a66f2e;
+}
+
+/* Custom Scrollbar Styles for Category Tabs */
+.scrollbar-thin::-webkit-scrollbar {
+  height: 6px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-track {
+  background: #e5e7eb;
+  border-radius: 3px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  background: #C08237;
+  border-radius: 3px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb:hover {
+  background: #a66f2e;
+}
+
+/* Firefox scrollbar */
+.scrollbar-thin {
+  scrollbar-width: thin;
+  scrollbar-color: #C08237 #e5e7eb;
+}
+
+/* Smooth scroll behavior */
+.scrollbar-thin {
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+}

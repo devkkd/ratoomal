@@ -38,6 +38,7 @@ export default function GodFigurines() {
                 if (data.success && data.data) {
                     // Fetch categories to find God category ID
                     const categoriesRes = await fetch('/api/categories');
+                    if (!categoriesRes.ok) throw new Error('Failed to fetch categories');
                     const categoriesData = await categoriesRes.json();
                     
                     if (categoriesData.success && categoriesData.data) {
@@ -113,7 +114,7 @@ export default function GodFigurines() {
                     <p className="text-gray-600">No god products found</p>
                 </div>
             ) : (
-            <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:px-6">
+            <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 sm:px-6">
                 {products.map((item) => (
                     <div 
                         key={item.id} 

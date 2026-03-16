@@ -17,6 +17,8 @@ const Header = () => {
   const [searchResults, setSearchResults] = useState([]);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState(null);
+  const [mobileDropdown, setMobileDropdown] = useState(null);
+  const [mobileSubDropdown, setMobileSubDropdown] = useState(null);
   const [categories, setCategories] = useState([]);
   const [subCategories, setSubCategories] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -704,21 +706,38 @@ const Header = () => {
       {/* Mobile Sidebar */}
       {isMenuOpen && (
         <div className="fixed inset-0 z-[100] lg:hidden">
-          <div className="fixed inset-0 bg-black/50" onClick={() => setIsMenuOpen(false)} />
-          <div className="fixed top-0 left-0 w-[80%] h-full bg-[#FFF6EB] p-6 shadow-xl overflow-y-auto">
-            <div className="flex justify-between items-center mb-8">
-              <img src="/images/Group-56121.svg" alt="logo" className="h-8" />
-              <button onClick={() => setIsMenuOpen(false)}>
-                <X size={24} />
-              </button>
+          {/* Backdrop with animation */}
+          <div 
+            className="fixed inset-0 bg-black/60 backdrop-blur-sm transition-opacity duration-300" 
+            onClick={() => setIsMenuOpen(false)} 
+          />
+          
+          {/* Sidebar with slide animation */}
+          <div className="fixed top-0 left-0 w-[85%] max-w-sm h-full bg-gradient-to-b from-[#FFF6EB] to-[#FFF9F0] shadow-2xl overflow-y-auto animate-slide-in">
+            {/* Header */}
+            <div className="sticky top-0 bg-[#FFF6EB]/95 backdrop-blur-md z-10 px-6 py-4 border-b border-[#D4C4B0]/30 shadow-sm">
+              <div className="flex justify-between items-center">
+                <img src="/images/Group-56121.svg" alt="logo" className="h-9" />
+                <button 
+                  onClick={() => setIsMenuOpen(false)}
+                  className="p-2 hover:bg-[#C08237]/10 rounded-full transition-colors"
+                >
+                  <X size={24} className="text-[#C08237]" />
+                </button>
+              </div>
             </div>
             
-            {/* Mobile Language and Currency */}
-            <div className="mb-6 space-y-4">
-              <div className="flex items-center justify-between border-b pb-2">
-                <span className="text-sm font-medium">Language</span>
+            {/* Language and Currency Section */}
+            <div className="px-6 py-4 space-y-3 bg-white/40 border-b border-[#D4C4B0]/20">
+              <div className="flex items-center justify-between bg-white rounded-lg px-4 py-3 shadow-sm">
+                <div className="flex items-center gap-2">
+                  <svg className="w-4 h-4 text-[#C08237]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129" />
+                  </svg>
+                  <span className="text-sm font-semibold text-gray-700">Language</span>
+                </div>
                 <select 
-                  className="bg-transparent text-sm border border-[#D4C4B0] rounded px-2 py-1 outline-none focus:border-[#C08237]"
+                  className="bg-transparent text-sm font-medium text-[#C08237] border-none outline-none cursor-pointer"
                   value={getCurrentLanguageInfo().name}
                   onChange={(e) => {
                     const lang = languageOptions.find(l => l.name === e.target.value);
@@ -730,10 +749,16 @@ const Header = () => {
                   ))}
                 </select>
               </div>
-              <div className="flex items-center justify-between border-b pb-2">
-                <span className="text-sm font-medium">Currency</span>
+              
+              <div className="flex items-center justify-between bg-white rounded-lg px-4 py-3 shadow-sm">
+                <div className="flex items-center gap-2">
+                  <svg className="w-4 h-4 text-[#C08237]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  <span className="text-sm font-semibold text-gray-700">Currency</span>
+                </div>
                 <select 
-                  className="bg-transparent text-sm border-none outline-none"
+                  className="bg-transparent text-sm font-medium text-[#C08237] border-none outline-none cursor-pointer"
                   value={selectedCurrency}
                   onChange={(e) => handleCurrencyChange({code: e.target.value.split(' ')[0], symbol: e.target.value.split(' ')[1]})}
                 >
@@ -746,91 +771,164 @@ const Header = () => {
               </div>
             </div>
             
-            <ul className="space-y-5">
-              {navigationLinks.map((link) => (
-                <li key={link.name} className="border-b border-gray-200 pb-3">
-                  <div className="flex justify-between items-center">
-                    {link.isMainCategory ? (
-                      <div className="flex items-center justify-between w-full">
-                        <button 
-                          onClick={() => {
-                            router.push('/category');
-                            setIsMenuOpen(false);
-                          }}
-                          className="text-[11px] font-bold text-gray-800 uppercase tracking-widest cursor-pointer"
-                        >
-                          {link.name}
-                        </button>
-                        {link.hasDropdown && (
-                          <button
+            {/* Navigation Links */}
+            <div className="px-4 py-4">
+              <ul className="space-y-2">
+                {navigationLinks.map((link) => (
+                  <li key={link.name} className="bg-white rounded-xl shadow-sm overflow-hidden border border-[#D4C4B0]/20 hover:shadow-md transition-shadow">
+                    {/* Main Link */}
+                    <div className="flex justify-between items-center px-4 py-3">
+                      {link.isMainCategory ? (
+                        <div className="flex items-center justify-between w-full">
+                          <button 
                             onClick={() => setActiveDropdown(activeDropdown === link.name ? null : link.name)}
-                            className="p-2 hover:bg-gray-100 rounded"
+                            className="flex items-center gap-2 text-xs font-bold text-gray-800 uppercase tracking-wide flex-1 text-left"
                           >
-                            <ChevronRight size={16} className={`transition-transform ${activeDropdown === link.name ? 'rotate-90' : ''}`} />
+                            <svg className="w-4 h-4 text-[#C08237]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+                            </svg>
+                            {link.name}
                           </button>
-                        )}
-                      </div>
-                    ) : (
-                      <>
-                        <Link 
-                          href={link.href} 
-                          onClick={() => !link.hasDropdown && setIsMenuOpen(false)}
-                          className="text-[11px] font-bold text-gray-800 uppercase tracking-widest"
-                        >
-                          {link.name}
-                        </Link>
-                        {link.hasDropdown && (
-                          <button
-                            onClick={() => setActiveDropdown(activeDropdown === link.name ? null : link.name)}
-                            className="p-2 hover:bg-gray-100 rounded"
-                          >
-                            <ChevronRight size={16} className={`transition-transform ${activeDropdown === link.name ? 'rotate-90' : ''}`} />
-                          </button>
-                        )}
-                      </>
-                    )}
-                  </div>
-                  
-                  {/* Mobile Dropdown */}
-                  {link.hasDropdown && activeDropdown === link.name && (
-                    <ul className="mt-3 ml-4 space-y-4 border-l-2 border-[#C08237] pl-4">
-                      {/* Main CATEGORY dropdown in mobile */}
-                      {link.isMainCategory && (
+                          {link.hasDropdown && (
+                            <button
+                              onClick={() => setActiveDropdown(activeDropdown === link.name ? null : link.name)}
+                              className="p-2 hover:bg-[#C08237]/10 rounded-lg transition-colors"
+                            >
+                              <ChevronRight 
+                                size={18} 
+                                className={`text-[#C08237] transition-transform duration-300 ${activeDropdown === link.name ? 'rotate-90' : ''}`} 
+                              />
+                            </button>
+                          )}
+                        </div>
+                      ) : (
                         <>
-                          {isLoading ? (
-                            <li className="text-sm text-gray-500 py-2">Loading categories...</li>
-                          ) : categories.length === 0 ? (
-                            <li className="text-sm text-gray-500 py-2">No categories available</li>
+                          {link.hasDropdown ? (
+                            <button 
+                              onClick={() => setActiveDropdown(activeDropdown === link.name ? null : link.name)}
+                              className="flex items-center gap-2 text-xs font-bold text-gray-800 uppercase tracking-wide flex-1 text-left"
+                            >
+                            {link.name === 'HOME' && (
+                              <svg className="w-4 h-4 text-[#C08237]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                              </svg>
+                            )}
+                            {link.name === 'ABOUT' && (
+                              <svg className="w-4 h-4 text-[#C08237]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                              </svg>
+                            )}
+                            {link.name === 'CUSTOM ORDERS' && (
+                              <svg className="w-4 h-4 text-[#C08237]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                              </svg>
+                            )}
+                            {link.name === 'CONTACT US' && (
+                              <svg className="w-4 h-4 text-[#C08237]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                              </svg>
+                            )}
+                            {link.name === 'EXHIBITIONS' && (
+                              <svg className="w-4 h-4 text-[#C08237]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                              </svg>
+                            )}
+                            {link.name}
+                          </button>
                           ) : (
-                            <>
-                              {categories.map(category => {
-                                const categorySubCats = getSubCategoriesForCategory(category._id);
-                                return (
-                                  <li key={category._id} className="border-b border-gray-100 pb-2 mb-2">
-                                    <button
-                                      onClick={() => {
-                                        handleCategoryNavigation(category.name, category._id);
-                                      }}
-                                      className={`flex items-center justify-between w-full text-sm font-bold uppercase py-2 text-left transition-colors ${
-                                        isLoggedIn 
-                                          ? 'text-gray-700 hover:text-[#C08237]' 
-                                          : 'text-gray-500 hover:text-yellow-600'
-                                      }`}
-                                      title={!isLoggedIn ? "Login required to access this category" : ""}
-                                    >
-                                      <span>{category.name}</span>
-                                      {/* {!isLoggedIn && (
-                                        <svg className="w-3 h-3 text-yellow-500" fill="currentColor" viewBox="0 0 20 20">
-                                          <path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd" />
-                                        </svg>
-                                      )} */}
-                                    </button>
-                                    {/* Show subcategories in mobile */}
-                                    {categorySubCats.length > 0 && (
-                                      <ul className="ml-4 mt-2 space-y-1 border-l-2 border-[#C08237]/30 pl-3">
-                                        {categorySubCats.map(subCat => (
-                                          <li key={subCat._id}>
+                            <Link 
+                              href={link.href} 
+                              onClick={() => setIsMenuOpen(false)}
+                              className="flex items-center gap-2 text-xs font-bold text-gray-800 uppercase tracking-wide"
+                            >
+                              {link.name === 'HOME' && (
+                                <svg className="w-4 h-4 text-[#C08237]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                                </svg>
+                              )}
+                              {link.name === 'CUSTOM ORDERS' && (
+                                <svg className="w-4 h-4 text-[#C08237]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                </svg>
+                              )}
+                              {link.name === 'CONTACT US' && (
+                                <svg className="w-4 h-4 text-[#C08237]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                                </svg>
+                              )}
+                              {link.name === 'EXHIBITIONS' && (
+                                <svg className="w-4 h-4 text-[#C08237]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                                </svg>
+                              )}
+                              {link.name}
+                            </Link>
+                          )}
+                          {link.hasDropdown && (
+                            <button
+                              onClick={() => setActiveDropdown(activeDropdown === link.name ? null : link.name)}
+                              className="p-2 hover:bg-[#C08237]/10 rounded-lg transition-colors"
+                            >
+                              <ChevronRight 
+                                size={18} 
+                                className={`text-[#C08237] transition-transform duration-300 ${activeDropdown === link.name ? 'rotate-90' : ''}`} 
+                              />
+                            </button>
+                          )}
+                        </>
+                      )}
+                    </div>
+                    
+                    {/* Dropdown Content with Animation */}
+                    {link.hasDropdown && activeDropdown === link.name && (
+                      <div className="bg-gradient-to-b from-[#FFF9F0] to-white border-t border-[#D4C4B0]/20 animate-fade-in">
+                        {/* Main CATEGORY dropdown in mobile */}
+                        {link.isMainCategory && (
+                          <div className="px-3 py-3 space-y-2">
+                            {isLoading ? (
+                              <div className="text-sm text-gray-500 py-3 text-center">
+                                <div className="inline-block animate-spin rounded-full h-5 w-5 border-b-2 border-[#C08237]"></div>
+                                <p className="mt-2">Loading categories...</p>
+                              </div>
+                            ) : categories.length === 0 ? (
+                              <div className="text-sm text-gray-500 py-3 text-center">No categories available</div>
+                            ) : (
+                              <>
+                                {categories.map(category => {
+                                  const categorySubCats = getSubCategoriesForCategory(category._id);
+                                  const isExpanded = mobileDropdown === category._id;
+                                  
+                                  return (
+                                    <div key={category._id} className="bg-white rounded-lg shadow-sm border border-[#D4C4B0]/20 overflow-hidden">
+                                      <button
+                                        onClick={() => {
+                                          if (categorySubCats.length > 0) {
+                                            setMobileDropdown(isExpanded ? null : category._id);
+                                          }
+                                        }}
+                                        className="w-full flex items-center justify-between px-3 py-2.5 text-left text-xs font-bold uppercase transition-colors hover:bg-[#C08237]/5"
+                                      >
+                                        <div className="flex items-center gap-2">
+                                          <div className="w-1.5 h-1.5 rounded-full bg-[#C08237]"></div>
+                                          <span className={`${isLoggedIn ? 'text-gray-700' : 'text-gray-500'}`}>
+                                            {category.name}
+                                          </span>
+                                        </div>
+                                        
+                                        {categorySubCats.length > 0 && (
+                                          <ChevronRight 
+                                            size={16} 
+                                            className={`text-[#C08237] transition-transform duration-300 ${isExpanded ? 'rotate-90' : ''}`} 
+                                          />
+                                        )}
+                                      </button>
+                                      
+                                      {/* Subcategories with smooth animation */}
+                                      {categorySubCats.length > 0 && isExpanded && (
+                                        <div className="bg-[#FFF9F0] border-t border-[#D4C4B0]/20 px-3 py-2 space-y-1 animate-fade-in">
+                                          {categorySubCats.map(subCat => (
                                             <button
+                                              key={subCat._id}
                                               onClick={() => {
                                                 handleSubCategoryNavigation(
                                                   category.name, 
@@ -839,85 +937,73 @@ const Header = () => {
                                                   subCat._id
                                                 );
                                               }}
-                                              className={`flex items-center justify-between w-full text-xs font-medium py-1 text-left transition-colors ${
+                                              className={`flex items-center gap-2 w-full px-3 py-2 rounded-md text-xs font-medium text-left transition-all ${
                                                 isLoggedIn 
-                                                  ? 'text-gray-600 hover:text-[#C08237]' 
-                                                  : 'text-gray-400 hover:text-yellow-600'
+                                                  ? 'text-gray-600 hover:bg-[#C08237] hover:text-white hover:pl-4' 
+                                                  : 'text-gray-400'
                                               }`}
-                                              title={!isLoggedIn ? "Login required to access this subcategory" : ""}
                                             >
+                                              <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                                              </svg>
                                               <span>{subCat.name}</span>
-                                              {/* {!isLoggedIn && (
-                                                <svg className="w-2.5 h-2.5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
-                                                  <path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd" />
-                                                </svg>
-                                              )} */}
                                             </button>
-                                          </li>
-                                        ))}
-                                      </ul>
-                                    )}
-                                  </li>
-                                );
-                              })}
-                              <li className="border-t border-gray-200 pt-2 mt-2">
-                                <Link
-                                  href="/custom-orders"
-                                  onClick={() => setIsMenuOpen(false)}
-                                  className="text-sm font-medium text-gray-600 uppercase py-2 block hover:text-[#C08237] transition-colors"
-                                >
-                                  CUSTOM ORDERS
-                                </Link>
-                              </li>
-                            </>
-                          )}
-                        </>
-                      )}
-                      
-                      {/* Individual manual category dropdowns in mobile - REMOVED */}
-                      {/* {link.isCategory && (
-                        ... removed content ...
-                      )} */}
-                      
-                      {/* Static dropdowns (ABOUT) */}
-                      {!link.isMainCategory && !link.isCategory && link.hasDropdown && (
-                        <>
-                          {link.subItems.map(sub => (
-                            <li key={sub.label}>
+                                          ))}
+                                        </div>
+                                      )}
+                                    </div>
+                                  );
+                                })}
+                                
+                                <div className="pt-2 mt-2 border-t border-[#D4C4B0]/30">
+                                  <Link
+                                    href="/custom-orders"
+                                    onClick={() => setIsMenuOpen(false)}
+                                    className="flex items-center gap-2 px-3 py-2.5 bg-[#C08237] text-white rounded-lg text-xs font-bold uppercase hover:bg-[#a66f2e] transition-colors shadow-sm"
+                                  >
+                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                                    </svg>
+                                    CUSTOM ORDERS
+                                  </Link>
+                                </div>
+                              </>
+                            )}
+                          </div>
+                        )}
+                        
+                        {/* Static dropdowns (ABOUT) */}
+                        {!link.isMainCategory && !link.isCategory && link.hasDropdown && (
+                          <div className="px-3 py-3 space-y-1">
+                            {link.subItems.map(sub => (
                               <Link 
+                                key={sub.label}
                                 href={sub.href} 
                                 onClick={() => setIsMenuOpen(false)}
-                                className="text-[10px] font-bold text-gray-500 uppercase block"
+                                className="flex items-center gap-2 px-3 py-2 rounded-md text-xs font-semibold text-gray-600 uppercase hover:bg-[#C08237] hover:text-white hover:pl-4 transition-all"
                               >
+                                <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                                </svg>
                                 {sub.label}
                               </Link>
-                            </li>
-                          ))}
-                        </>
-                      )}
-                    </ul>
-                  )}
-                </li>
-              ))}
-            </ul>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            </div>
 
-            {/* Mobile Login/Profile */}
-            <div className="mt-8 pt-6 border-t border-gray-200 ">
+            {/* Mobile Login/Profile Section */}
+            <div className="px-4 pb-6 pt-4 border-t-2 border-[#D4C4B0]/30 bg-gradient-to-b from-transparent to-white/50">
               {isLoggedIn ? (
-                <div className="space-y-3 gap-1">
-                  {/* Cart Button in Mobile - Only when logged in */}
-                  {/* <Link href="/cart" onClick={() => setIsMenuOpen(false)}>
-                    <button className="w-full flex items-center justify-center gap-2 bg-white border border-[#C08237] text-[#C08237] px-5 py-3 rounded-full text-xs font-bold uppercase hover:bg-[#C08237] hover:text-white transition-colors">
-                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-1.5 6M7 13l-1.5 6m0 0h9m-9 0h9" />
-                      </svg>
-                      MY CART
-                    </button>
-                  </Link> */}
-                  
-                  {/* Customer Inquiry Button in Mobile */}
+                <div className="space-y-2.5">
+                  {/* Customer Inquiry Button */}
                   <Link href="/productInquiry" onClick={() => setIsMenuOpen(false)}>
-                    <button className="w-full flex items-center justify-center gap-2 bg-white border border-[#C08237] text-[#C08237] px-5 py-3 rounded-full text-xs font-bold uppercase hover:bg-[#C08237] hover:text-white transition-colors">
+                    <button className="w-full flex items-center justify-center gap-2 bg-white border-2 border-[#C08237] text-[#C08237] px-4 py-3 rounded-xl text-xs font-bold uppercase hover:bg-[#C08237] hover:text-white hover:shadow-lg transition-all shadow-sm">
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
                       </svg>
@@ -925,40 +1011,43 @@ const Header = () => {
                     </button>
                   </Link>
                   
-                 
-                 
+                  {/* Wishlist Button */}
                   <Link href="/wishlist" onClick={() => setIsMenuOpen(false)}>
-                    <button className="w-full flex items-center justify-center gap-2 border border-[#C08237] text-[#C08237] px-5 py-3 rounded-full text-xs font-bold uppercase hover:bg-[#C08237] hover:text-white transition-colors">
-                      <img src='/images/heart.svg' className='w-4 h-4' alt="wishlist" />
+                    <button className="w-full flex items-center justify-center gap-2 bg-white border-2 border-[#C08237] text-[#C08237] px-4 py-3 rounded-xl text-xs font-bold uppercase hover:bg-[#C08237] hover:text-white hover:shadow-lg transition-all shadow-sm relative">
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                      </svg>
                       MY WISHLIST
                       {wishlist && wishlist.length > 0 && (
-                        <span className="bg-red-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center min-w-[20px] ml-1">
+                        <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center min-w-[20px] shadow-md">
                           {wishlist.length > 99 ? '99+' : wishlist.length}
                         </span>
                       )}
                     </button>
                   </Link>
                   
+                  {/* Inquiry Cart Button */}
                   <Link href="/inquiry-cart" onClick={() => setIsMenuOpen(false)}>
-                    <button className="w-full flex items-center justify-center gap-2 border border-[#C08237] text-[#C08237] px-5 py-3 rounded-full text-xs font-bold uppercase hover:bg-[#C08237] hover:text-white transition-colors">
+                    <button className="w-full flex items-center justify-center gap-2 bg-white border-2 border-[#C08237] text-[#C08237] px-4 py-3 rounded-xl text-xs font-bold uppercase hover:bg-[#C08237] hover:text-white hover:shadow-lg transition-all shadow-sm relative">
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-1.5 6M7 13l-1.5-6M17 21a2 2 0 100-4 2 2 0 000 4zM9 21a2 2 0 100-4 2 2 0 000 4z" />
                       </svg>
                       INQUIRY CART
                       {getCartCount() > 0 && (
-                        <span className="bg-[#C08237] text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center min-w-[20px] ml-1">
+                        <span className="absolute -top-1 -right-1 bg-[#C08237] text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center min-w-[20px] shadow-md">
                           {getCartCount() > 99 ? '99+' : getCartCount()}
                         </span>
                       )}
                     </button>
                   </Link>
                  
+                  {/* Logout Button */}
                   <button
                     onClick={() => {
                       handleLogout();
                       setIsMenuOpen(false);
                     }}
-                    className="w-full flex items-center justify-center gap-2 border border-red-500 text-red-500 px-5 py-3 rounded-full text-xs font-bold uppercase hover:bg-red-500 hover:text-white transition-colors"
+                    className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-red-500 to-red-600 text-white px-4 py-3 rounded-xl text-xs font-bold uppercase hover:from-red-600 hover:to-red-700 hover:shadow-lg transition-all shadow-sm mt-4"
                   >
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
@@ -968,9 +1057,11 @@ const Header = () => {
                 </div>
               ) : (
                 <Link href="/login" className="block" onClick={() => setIsMenuOpen(false)}>
-                  <button className="w-full flex items-center justify-center gap-2 bg-[#C08237] text-white px-5 py-3 rounded-full text-xs font-bold uppercase hover:bg-[#a66f2e] transition-colors">
-                    <img src='/images/profile.svg' className='w-4 h-4 brightness-0 invert' alt="login" />
-                    LOGIN
+                  <button className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-[#C08237] to-[#a66f2e] text-white px-5 py-3.5 rounded-xl text-xs font-bold uppercase hover:from-[#a66f2e] hover:to-[#8b5a28] hover:shadow-lg transition-all shadow-md">
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                    </svg>
+                    LOGIN TO CONTINUE
                   </button>
                 </Link>
               )}
