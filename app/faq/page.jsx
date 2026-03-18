@@ -12,6 +12,16 @@ export const metadata = {
     title: 'Frequently Asked Questions - Ratoomal\'s',
     description: 'Get answers about our handcrafted products, B2B services, customization options, and export capabilities.',
     type: 'website',
+    url: 'https://www.ratoomals.com/faq',
+    siteName: 'Ratoomals',
+    images: [
+      {
+        url: 'https://www.ratoomals.com/images/og-home.jpg',
+        width: 1200,
+        height: 630,
+        alt: 'Ratoomals FAQ - Handcrafted Wooden Handicrafts',
+      },
+    ],
   },
 };
 

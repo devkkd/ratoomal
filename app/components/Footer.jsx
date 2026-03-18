@@ -89,16 +89,16 @@ const Footer = () => {
                 <h4 className="font-bold text-sm mb-6 mona">Follow us on</h4>
                 <div className="space-y-2">
                   <a href="https://www.instagram.com/ratoomals.handicrafts/" target='_blank' className="flex items-center gap-2 text-xs text-gray-600 hover:text-amber-700">
-                    <img src="/images/icons/instagram-logo-vector-illustrati-2.svg" className="w-6" /> @ratoomal
+                    <img src="/images/icons/instagram-logo-vector-illustrati-2.svg" alt="Instagram" className="w-6" /> @ratoomal
                   </a>
                   <a href="https://www.facebook.com/p/Ratoomals-Handicrafts-100070512023977/" target='_blank'  className="flex items-center gap-2 text-xs text-gray-600 hover:text-amber-700">
-                    <img src="/images/icons/g21.svg" className="w-6" /> @ratoomal
+                    <img src="/images/icons/g21.svg" alt="Facebook" className="w-6" /> @ratoomal
                   </a>
                   <a href="https://www.youtube.com/@ratoomalshandicrafts5539"  target='_blank' className="flex items-center gap-2 text-xs text-gray-600 hover:text-amber-700">
-                    <img src="/images/icons/Group.svg" className="w-6     " /> @ratoomal
+                    <img src="/images/icons/Group.svg" alt="YouTube" className="w-6     " /> @ratoomal
                   </a>
                   <a href="https://linkedin.com/company/ratoomal-s/"  target='_blank' className="flex items-center gap-2 text-xs text-gray-600 hover:text-amber-700">
-                    <img src="/images/icons/LinkedIn_logo_initials-1.svg" className="w-6" /> @ratoomal
+                    <img src="/images/icons/LinkedIn_logo_initials-1.svg" alt="LinkedIn" className="w-6" /> @ratoomal
                   </a>
                 </div>
                 {/* Admin Login Button */}

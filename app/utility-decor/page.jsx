@@ -12,6 +12,16 @@ export const metadata = {
     title: 'Utility & Decorative Wooden Handicrafts - Ratoomal\'s',
     description: 'Premium wooden utility and decorative items for bulk orders. Custom designs available for retailers, hotels, and corporate clients.',
     type: 'website',
+    url: 'https://www.ratoomals.com/utility-decor',
+    siteName: 'Ratoomals',
+    images: [
+      {
+        url: 'https://www.ratoomals.com/images/og-utility-decor.jpg',
+        width: 1200,
+        height: 630,
+        alt: 'Handcrafted Wooden Utility & Decorative Items by Ratoomals',
+      },
+    ],
   },
 };
 

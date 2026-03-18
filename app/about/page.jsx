@@ -11,7 +11,16 @@ export const metadata = {
     title: 'About Ratoomal\'s - Premium Wooden Handicraft Exporter',
     description: 'Discover our journey of excellence in handcrafted wooden décor since 1955. Trusted global sourcing partner for authentic Indian craftsmanship.',
     type: 'website',
-    images: ['/images/about/Maskgroup.svg'],
+    url: 'https://www.ratoomals.com/about',
+    siteName: 'Ratoomals',
+    images: [
+      {
+        url: 'https://www.ratoomals.com/images/about/Maskgroup.svg',
+        width: 1200,
+        height: 630,
+        alt: 'Ratoomals - Heritage Handicraft Manufacturer since 1955',
+      },
+    ],
   },
 };
 

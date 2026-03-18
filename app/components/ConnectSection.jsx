@@ -31,6 +31,7 @@ const ConnectSection = () => {
                 <img 
                   src="/images/connect/image-118.svg" 
                   alt="jaipur handicrafts jaipur" 
+                  loading="lazy"
                   className="w-full h-full object-cover rounded-2xl"
                 />
               </a>
@@ -43,6 +44,7 @@ const ConnectSection = () => {
                 <img 
                   src="/images/connect/image-119.svg" 
                   alt="Jaipur Location Map" 
+                  loading="lazy"
                   className="w-full h-full object-cover rounded-2xl border border-gray-200"
                 />
               </a>
@@ -74,6 +76,7 @@ const ConnectSection = () => {
                 <img 
                   src="/images/connect/Mask-group.svg" 
                   alt="brass buddha incense burner" 
+                  loading="lazy"
                   className="w-full h-full object-cover rounded-2xl"
                 />
               </a>
@@ -86,6 +89,7 @@ const ConnectSection = () => {
                 <img 
                   src="/images/connect/image-123.svg" 
                   alt="Noida Location Map" 
+                  loading="lazy"
                   className="w-full h-full object-cover rounded-2xl border border-gray-200"
                 />
               </a>

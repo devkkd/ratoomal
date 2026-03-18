@@ -1,100 +1,24 @@
 
 "use client";
-import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useWishlistStore } from '@/store/wishlistStore';
 import { useInquiryCartStore } from '@/store/inquiryCartStore';
 import NotificationToast, { useNotification } from './NotificationToast';
 import Link from "next/link";
+import Image from 'next/image';
+import { useHomeProducts } from '@/hooks/useHomeProducts';
 
 export default function Utility() {
     const router = useRouter();
-    const { wishlist, toggleWishlist, isInWishlist, initialize } = useWishlistStore();
-    const { addToCart, initialize: initializeCart } = useInquiryCartStore();
+    const { toggleWishlist, isInWishlist } = useWishlistStore();
+    const { addToCart } = useInquiryCartStore();
     const { notification, showNotification, hideNotification } = useNotification();
-    const [products, setProducts] = useState([]);
-    const [loading, setLoading] = useState(true);
-
-    // Initialize stores
-    useEffect(() => {
-        if (typeof window !== 'undefined') {
-            initialize();
-            initializeCart();
-        }
-    }, [initialize, initializeCart]);
-
-    // Fetch latest 4 Utility/Decor category products
-    useEffect(() => {
-        const fetchUtilityProducts = async () => {
-            try {
-                setLoading(true);
-                
-                // Fetch all products
-                const response = await fetch('/api/products');
-                if (!response.ok) throw new Error('Failed to fetch products');
-                
-                const data = await response.json();
-                
-                if (data.success && data.data) {
-                    // Fetch categories to find Utility/Decor category ID
-                    const categoriesRes = await fetch('/api/categories');
-                    if (!categoriesRes.ok) throw new Error('Failed to fetch categories');
-                    const categoriesData = await categoriesRes.json();
-                    
-                    if (categoriesData.success && categoriesData.data) {
-                        // Find Utility/Decor category (case-insensitive)
-                        const utilityCategory = categoriesData.data.find(
-                            cat => {
-                                const nameLC = cat.name.toLowerCase().trim();
-                                return nameLC.includes('utility') || nameLC.includes('decor');
-                            }
-                        );
-                        
-                        if (utilityCategory) {
-                            // Filter products by Utility category and get latest 4
-                            const utilityProducts = data.data
-                                .filter(product => {
-                                    const categoryId = product.category?._id || product.category;
-                                    return categoryId === utilityCategory._id;
-                                })
-                                .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
-                                .slice(0, 5)
-                                .map(product => ({
-                                    id: product._id,
-                                    name: product.name || "Unnamed Product",
-                                    code: product.code || "",
-                                    qty: `Minimum Order Quantity: ${product.minimumOrderQuantity || 100} Piece`,
-                                    price: `₹ ${product.price || 0}/Piece`,
-                                    img: product.thumbnail || product.images?.[0] || '/images/placeholder.png',
-                                }));
-                            
-                            setProducts(utilityProducts);
-                        } else {
-                            console.warn('Utility category not found. Available categories:', categoriesData.data.map(c => c.name));
-                            setProducts([]);
-                        }
-                    }
-                }
-            } catch (error) {
-                console.error('Error fetching utility products:', error);
-                setProducts([]);
-            } finally {
-                setLoading(false);
-            }
-        };
-        
-        fetchUtilityProducts();
-    }, []);
+    const { products, loading } = useHomeProducts('utility');
 
     // Handle add to inquiry cart
     const handleAddToInquiry = (product, quantity, e) => {
         e.stopPropagation();
-        
-        
-        // Add to inquiry cart with size 3
         addToCart(product, ['3'], quantity);
-        
-        // Show success notification
         showNotification('Product added to inquiry cart!', 'cart');
     };
 
@@ -122,13 +46,12 @@ export default function Utility() {
                         className="cursor-pointer w-full max-w-[480px] relative group flex flex-col h-full"
                     >
                         <div className="relative w-full h-[280px] sm:h-[330px] bg-gray-100 overflow-hidden rounded-2xl flex-shrink-0">
-                            <img
+                            <Image
                                 src={item.img}
                                 alt={item.name}
-                                className="w-full h-full object-cover hover:scale-105 transition duration-300"
-                                onError={(e) => {
-                                    e.target.src = '/images/placeholder.png';
-                                }}
+                                fill
+                                sizes="(max-width: 640px) 50vw, (max-width: 1024px) 25vw, 20vw"
+                                className="object-cover hover:scale-105 transition duration-300"
                             />
                             
                             {/* Wishlist Button */}

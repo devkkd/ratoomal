@@ -12,6 +12,7 @@ const Hero = () => {
         loop
         playsInline
         controls={false}
+        preload="metadata"
       >
         <source src="/banner-video.mp4" type="video/mp4" />
         <img 

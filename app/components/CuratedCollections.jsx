@@ -1,97 +1,22 @@
 "use client";
-import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useWishlistStore } from '@/store/wishlistStore';
 import { useInquiryCartStore } from '@/store/inquiryCartStore';
 import NotificationToast, { useNotification } from './NotificationToast';
+import { useHomeProducts } from '@/hooks/useHomeProducts';
+import Image from 'next/image';
 
 export default function CuratedCollections() {
     const router = useRouter();
-    const { wishlist, toggleWishlist, isInWishlist, initialize } = useWishlistStore();
-    const { addToCart, initialize: initializeCart } = useInquiryCartStore();
+    const { toggleWishlist, isInWishlist } = useWishlistStore();
+    const { addToCart } = useInquiryCartStore();
     const { notification, showNotification, hideNotification } = useNotification();
-    const [products, setProducts] = useState([]);
-    const [loading, setLoading] = useState(true);
-
-    // Initialize stores
-    useEffect(() => {
-        if (typeof window !== 'undefined') {
-            initialize();
-            initializeCart();
-        }
-    }, [initialize, initializeCart]);
-
-    // Fetch latest 4 Animal category products
-    useEffect(() => {
-        const fetchAnimalProducts = async () => {
-            try {
-                setLoading(true);
-                
-                // Fetch all products
-                const response = await fetch('/api/products');
-                if (!response.ok) throw new Error('Failed to fetch products');
-                
-                const data = await response.json();
-                
-                if (data.success && data.data) {
-                    // Fetch categories to find Animal category ID
-                    const categoriesRes = await fetch('/api/categories');
-                    if (!categoriesRes.ok) throw new Error('Failed to fetch categories');
-                    const categoriesData = await categoriesRes.json();
-                    
-                    if (categoriesData.success && categoriesData.data) {
-                        // Find Animal category
-                        const animalCategory = categoriesData.data.find(
-                            cat => cat.name.toLowerCase().includes('animal')
-                        );
-                        
-                        if (animalCategory) {
-                            // Filter products by Animal category and get latest 4
-                            const animalProducts = data.data
-                                .filter(product => product.category?._id === animalCategory._id || product.category === animalCategory._id)
-                                .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
-                                .slice(0, 5)
-                                .map(product => ({
-                                    id: product._id,
-                                    name: product.name || "Unnamed Product",
-                                    code: product.code || "",
-                                    qty: `Minimum Order Quantity: ${product.minimumOrderQuantity || 100} Piece`,
-                                    price: `₹ ${product.price || 0}/Piece`,
-                                    img: product.thumbnail || product.images?.[0] || '/images/placeholder.png',
-                                }));
-                            
-                            setProducts(animalProducts);
-                        } else {
-                            console.warn('Animal category not found');
-                            setProducts([]);
-                        }
-                    }
-                }
-            } catch (error) {
-                console.error('Error fetching animal products:', error);
-                setProducts([]);
-            } finally {
-                setLoading(false);
-            }
-        };
-        
-        fetchAnimalProducts();
-    }, []);
-
-    // Handle wishlist toggle
-    const handleWishlistToggle = async (productId, e) => {
-        e.stopPropagation();
-        await toggleWishlist(productId);
-    };
+    const { products, loading } = useHomeProducts('animal');
 
     // Handle add to inquiry cart
     const handleAddToInquiry = (product, quantity, e) => {
         e.stopPropagation();
-        
-        // Add to inquiry cart with size 3
         addToCart(product, ['3'], quantity);
-        
-        // Show success notification
         showNotification('Product added to inquiry cart!', 'cart');
     };
 
@@ -127,18 +52,17 @@ export default function CuratedCollections() {
                         className="cursor-pointer w-full max-w-[480px] relative group flex flex-col h-full"
                     >
                         <div className="relative w-full h-[280px] sm:h-[330px] bg-gray-100 overflow-hidden rounded-2xl flex-shrink-0">
-                                                <img
+                                                <Image
                                                     src={item.img}
                                                     alt={item.name}
-                                                    className="w-full h-full object-cover hover:scale-105 transition duration-300"
-                                                    onError={(e) => {
-                                                        e.target.src = '/images/placeholder.png';
-                                                    }}
+                                                    fill
+                                                    sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 20vw"
+                                                    className="object-cover hover:scale-105 transition duration-300"
                                                 />
                             
                             {/* Wishlist Button */}
                             <button
-                                onClick={(e) => handleWishlistToggle(item.id, e)}
+                                onClick={(e) => { e.stopPropagation(); toggleWishlist(item.id); }}
                                 className="absolute top-3 right-3 z-10 p-2.5 bg-[#FFFFFF80] backdrop-blur-sm rounded-full 
                                            shadow-lg hover:bg-white active:scale-95 
                                            transition-all duration-200 flex items-center justify-center"

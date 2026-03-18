@@ -6,7 +6,7 @@ export default function ArtOfAuthenticity() {
       
       
       <p className=" text-sm md:text-base  text-gray-500 uppercase">
-      <img src="/images/upperblock.svg" className="w-md" />
+      <img src="/images/upperblock.svg" alt="Decorative block pattern" className="w-md" />
       </p>
 
    
@@ -33,7 +33,7 @@ We are a trusted manufacturer, exporter, wholesaler, and B2B partner for home d√
       </div>
 
       <p className=" text-sm md:text-base tracking-widest text-gray-500 uppercase  mt-8 my-10">
-      <img src="/images/downblock.svg" className="w-md" />
+      <img src="/images/downblock.svg" alt="Decorative block pattern" className="w-md" />
       </p>
     </section>
   );

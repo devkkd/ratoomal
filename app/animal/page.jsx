@@ -12,6 +12,16 @@ export const metadata = {
     title: 'Handcrafted Animal Figures & Sculptures - Ratoomal\'s',
     description: 'Premium wooden animal figures and sculptures for bulk orders. Custom designs available for retailers, zoos, and wildlife centers.',
     type: 'website',
+    url: 'https://www.ratoomals.com/animal',
+    siteName: 'Ratoomals',
+    images: [
+      {
+        url: 'https://www.ratoomals.com/images/og-animal.jpg',
+        width: 1200,
+        height: 630,
+        alt: 'Handcrafted Wooden Animal Figures & Sculptures by Ratoomals',
+      },
+    ],
   },
 };
 

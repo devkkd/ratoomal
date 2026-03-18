@@ -354,7 +354,7 @@ const Header = () => {
               className="flex items-center gap-2 cursor-pointer font-mona"
               onClick={() => setShowCurrencyDropdown(!showCurrencyDropdown)}
             >
-              <img src="https://flagcdn.com/w20/in.png" alt="Currency" className="w-5 h-3" />
+              <img src="https://flagcdn.com/w20/in.png" alt="Currency" className="w-5 h-3" loading="lazy" />
               <span>{selectedCurrency}</span>
               <ChevronRight size={14} className={`rotate-90 transition-transform ${showCurrencyDropdown ? 'rotate-180' : ''}`} />
             </div>

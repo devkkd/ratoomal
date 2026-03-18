@@ -12,6 +12,16 @@ export const metadata = {
     title: 'Contact Ratoomal\'s - Custom & Bulk Handicraft Solutions',
     description: 'Connect with our design team for tailored craftsmanship, bulk orders, and custom wooden handicraft solutions.',
     type: 'website',
+    url: 'https://www.ratoomals.com/contact-us',
+    siteName: 'Ratoomals',
+    images: [
+      {
+        url: 'https://www.ratoomals.com/images/og-home.jpg',
+        width: 1200,
+        height: 630,
+        alt: 'Contact Ratoomals - B2B Handicraft Manufacturer from Jaipur',
+      },
+    ],
   },
 };
 

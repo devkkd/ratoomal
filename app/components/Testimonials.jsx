@@ -73,7 +73,7 @@ const Testimonials = () => {
               <div className="flex items-center gap-1 font-bold text-[#A52A2A] text-2xl">
                 <img 
                 src="/images/1200px-IndiaMART_logo.svg-1.svg" 
-               
+                alt="IndiaMART"
                 className="h-7 w-auto" 
               />
               </div>

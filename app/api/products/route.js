@@ -22,9 +22,10 @@ export async function GET(request) {
     await connectDB();
     
     const { searchParams } = new URL(request.url);
-    const limit = parseInt(searchParams.get('limit')) || 1000; // Increased limit to show all products
+    const limit = parseInt(searchParams.get('limit')) || 1000;
     const search = searchParams.get('search') || '';
     const page = parseInt(searchParams.get('page')) || 1;
+    const categoryName = searchParams.get('categoryName') || '';
     
     // Check if user is authenticated
     const isAuthenticated = checkAuth(request);
@@ -41,6 +42,18 @@ export async function GET(request) {
           { description: { $regex: search, $options: 'i' } }
         ]
       };
+    }
+
+    // Filter by category name if provided
+    if (categoryName) {
+      const Category = (await import('@/models/Category')).default;
+      const matchedCats = await Category.find(
+        { name: { $regex: categoryName, $options: 'i' } },
+        '_id'
+      ).lean();
+      if (matchedCats.length > 0) {
+        query.category = { $in: matchedCats.map((c) => c._id) };
+      }
     }
     
     // For non-authenticated users, allow reasonable access but with some limits

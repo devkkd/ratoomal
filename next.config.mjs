@@ -1,8 +1,25 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  // WWW Canonicalization: redirect non-www to www
+  async redirects() {
+    return [
+      {
+        source: "/:path*",
+        has: [{ type: "host", value: "ratoomals.com" }],
+        destination: "https://www.ratoomals.com/:path*",
+        permanent: true, // 301 redirect
+      },
+    ];
+  },
+
   // Optimize for production builds
   experimental: {
     optimizePackageImports: ['lucide-react', '@heroicons/react']
+  },
+
+  // Ensure CSS is minified in production
+  compiler: {
+    removeConsole: process.env.NODE_ENV === 'production',
   },
   
   // Handle build-time environment variables safely
@@ -21,7 +38,20 @@ const nextConfig = {
         port: '',
         pathname: '/**',
       },
+      {
+        protocol: 'https',
+        hostname: 'flagcdn.com',
+        port: '',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'images.unsplash.com',
+        port: '',
+        pathname: '/**',
+      },
     ],
+    formats: ['image/avif', 'image/webp'],
   },
   
   // Configure webpack to handle video files

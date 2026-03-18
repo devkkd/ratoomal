@@ -12,6 +12,16 @@ export const metadata = {
     title: 'Handcrafted God Figures & Religious Statues - Ratoomal\'s',
     description: 'Premium wooden god figures and religious statues for bulk orders. Custom designs available for temples, retailers, and spiritual centers.',
     type: 'website',
+    url: 'https://www.ratoomals.com/god-figure',
+    siteName: 'Ratoomals',
+    images: [
+      {
+        url: 'https://www.ratoomals.com/images/og-god-figure.jpg',
+        width: 1200,
+        height: 630,
+        alt: 'Handcrafted Wooden God Figures & Religious Statues by Ratoomals',
+      },
+    ],
   },
 };
 

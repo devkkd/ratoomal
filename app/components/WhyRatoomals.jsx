@@ -91,6 +91,7 @@ const WhyRatoomals = () => {
                       <img
                         src={item.image}
                         alt={item.title}
+                        loading="lazy"
                         className="w-full h-full object-cover"
                       />
                     </div>
