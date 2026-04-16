@@ -281,8 +281,10 @@ const Header = () => {
       return [...navLinks, 
         { name: 'PRODUCT CATEGORY', href: '/category' },
         { name: 'CUSTOM ORDERS', href: '/custom-orders' },
-        { name: 'CONTACT US', href: '/contact-us' },
+        { name: 'BLOG', href: '/blog' },
+       
          { name: 'EXHIBITIONS', href: '/exhibitions' },
+          { name: 'CONTACT US', href: '/contact-us' },
       ];
     }
 
@@ -303,8 +305,10 @@ const Header = () => {
         }))
       },
       { name: 'CUSTOM ORDERS', href: '/custom-orders' },
-      { name: 'CONTACT US', href: '/contact-us' },
+      { name: 'BLOG', href: '/blog' },
+     
       { name: 'EXHIBITIONS', href: '/exhibitions' },
+       { name: 'CONTACT US', href: '/contact-us' },
     ];
   };
 
@@ -349,7 +353,7 @@ const Header = () => {
           </div>
 
           {/* Currency Selector */}
-          <div className="relative" ref={currencyRef}>
+          {/* <div className="relative" ref={currencyRef}>
             <div 
               className="flex items-center gap-2 cursor-pointer font-mona"
               onClick={() => setShowCurrencyDropdown(!showCurrencyDropdown)}
@@ -359,7 +363,7 @@ const Header = () => {
               <ChevronRight size={14} className={`rotate-90 transition-transform ${showCurrencyDropdown ? 'rotate-180' : ''}`} />
             </div>
             
-            {/* Currency Dropdown */}
+           
             {showCurrencyDropdown && (
               <div className="absolute top-full left-0 mt-2 w-48 bg-white rounded-lg shadow-xl border border-gray-200 z-50">
                 <div className="py-2">
@@ -378,7 +382,7 @@ const Header = () => {
                 </div>
               </div>
             )}
-          </div>
+          </div> */}
         </div>
 
         {/* Mobile Menu Icon & Search */}
@@ -558,15 +562,15 @@ const Header = () => {
       )}
 
       {/* --- Desktop Navigation --- */}
-      <nav className="hidden lg:block border-t border-[#A49C93]/20">
+      <nav className="hidden lg:block ">
         <div className="max-w-7xl mx-auto px-4">
-          <ul className="flex justify-center items-center gap-8">
+          <ul className="flex justify-center pb-2 items-center gap-8">
             {navigationLinks.map((link) => {
               const isActive = pathname === link.href;
               return (
                 <li 
                   key={link.name} 
-                  className="relative py-3 group"
+                  className="relative group"
                   onMouseEnter={() => setActiveDropdown(link.name)}
                   onMouseLeave={() => setActiveDropdown(null)}
                 >
@@ -612,7 +616,7 @@ const Header = () => {
                                   }`}
                                   title={!isLoggedIn ? "Login required to access this category" : ""}
                                 >
-                                  <div className="flex items-center gap-2">
+                                  <div className="flex items-center uppercase gap-1">
                                     <span>{category.name.charAt(0).toUpperCase() + category.name.slice(1).toLowerCase()}</span>
                                     {/* {!isLoggedIn && (
                                       <svg className="w-3 h-3 text-yellow-500" fill="currentColor" viewBox="0 0 20 20">
@@ -627,8 +631,8 @@ const Header = () => {
                                 
                                 {/* Nested Subcategory Dropdown */}
                                 {categorySubCats.length > 0 && (
-                                  <div className="absolute left-full top-0 w-60 bg-white border border-[#D7CEC2] shadow-xl rounded-sm opacity-0 invisible group-hover/category:opacity-100 group-hover/category:visible transition-all duration-200 z-50">
-                                    <div className="py-2">
+                                  <div className="absolute left-full top-0 w-60 bg-white border border-[#D7CEC2] shadow-xl rounded-sm opacity-0 invisible group-hover/category:opacity-100 group-hover/category:visible uppercase transition-all duration-200 z-50">
+                                    <div className="py-1">
                                       {categorySubCats.map((subCat) => (
                                         <button
                                           key={subCat._id}
@@ -645,7 +649,7 @@ const Header = () => {
                                           }`}
                                           title={!isLoggedIn ? "Login required to access this subcategory" : ""}
                                         >
-                                          <span>{subCat.name.charAt(0).toUpperCase() + subCat.name.slice(1).toLowerCase()}</span>
+                                          <span>{subCat.name.charAt(0).toUpperCase() + subCat.name.slice(1).toUpperCase()}</span>
                                           {/* {!isLoggedIn && (
                                             <svg className="w-3 h-3 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
                                               <path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd" />
@@ -663,7 +667,7 @@ const Header = () => {
                             <Link
                               href="/custom-orders"
                               onClick={() => setActiveDropdown(null)}
-                              className="flex items-center justify-between px-6 py-3 text-sm font-medium text-gray-700 hover:bg-[#C08237] hover:text-white transition-all"
+                              className="flex items-center uppercase justify-between px-6 py-3 text-sm font-medium text-gray-700 hover:bg-[#C08237] hover:text-white transition-all"
                             >
                               Custom Orders
                             </Link>
@@ -859,6 +863,11 @@ const Header = () => {
                               {link.name === 'EXHIBITIONS' && (
                                 <svg className="w-4 h-4 text-[#C08237]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                                </svg>
+                              )}
+                              {link.name === 'BLOG' && (
+                                <svg className="w-4 h-4 text-[#C08237]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
                                 </svg>
                               )}
                               {link.name}

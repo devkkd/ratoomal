@@ -30,6 +30,7 @@ const navigation = [
   { name: 'Bulk Upload', href: '/admin/upload-bulk-products', icon: BellIcon },
   { name: 'Custom Orders', href: '/admin/custom-orders', icon: CogIcon },
    { name: 'Exhibitions', href: '/admin/exhibitions', icon: CogIcon },
+   { name: 'Blogs', href: '/admin/blogs', icon: ChartBarIcon },
 ];
 
 

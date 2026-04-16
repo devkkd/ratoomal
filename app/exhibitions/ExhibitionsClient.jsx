@@ -139,30 +139,27 @@ const ExhibitionsPage = () => {
         onClose={hideNotification}
       />
 
-      {/* Hero Section */}
-      <div className="bg-gradient-to-r from-[#C08237] to-[#A66D2E] text-white py-16">
+      {/* Page Heading */}
+      <div className="bg-[#FFF6EB] border-b border-[#D7CEC2]/50 py-10 md:py-12">
         <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8">
-          <div className="text-center">
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold playfair mb-4">
+          <div className="text-center mb-6">
+            <p className="text-xs uppercase tracking-widest text-[#C08237] font-semibold mona mb-2">Explore & Discover</p>
+            <h1 className="playfair font-bold text-3xl md:text-4xl text-gray-900 mb-3">
               Art Exhibitions
             </h1>
-            <p className="text-xl md:text-2xl mb-8 opacity-90">
+            <p className="text-gray-500 text-sm md:text-base max-w-xl mx-auto">
               Discover extraordinary art and cultural exhibitions
             </p>
-            
-            {/* Search Bar */}
-            <div className="max-w-2xl mx-auto relative">
-              <div className="relative">
-                <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
-                <input
-                  type="text"
-                  placeholder="Search exhibitions..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full pl-12 pr-4 py-4 rounded-full text-gray-900 text-lg  ring-white/30 focus:outline-none focus:ring-2 focus:ring-white/30"
-                />
-              </div>
-            </div>
+          </div>
+          <div className="max-w-lg mx-auto relative">
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
+            <input
+              type="text"
+              placeholder="Search exhibitions..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full pl-11 pr-4 py-3 rounded-full text-gray-800 border border-[#A49C93] focus:outline-none focus:border-[#C08237] text-sm bg-white"
+            />
           </div>
         </div>
       </div>
