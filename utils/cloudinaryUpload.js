@@ -1,59 +1,75 @@
+/**
+ * Upload files directly to Cloudflare R2 via presigned URLs.
+ * This bypasses the Next.js server body size limit entirely —
+ * the file goes straight from the browser to R2.
+ */
 export async function uploadMultipleToCloudinary(files, folder = "products", onProgress = null) {
   try {
-    console.log('📤 Starting upload for', files.length, 'files');
-    
+    console.log("📤 Starting upload for", files.length, "files");
+
     const results = [];
-    const totalFiles = files.length;
-    
+
     for (let i = 0; i < files.length; i++) {
       const file = files[i];
-      
+
       if (!file || !file.type) {
-        throw new Error(`Invalid file: ${file?.name || 'unknown'}`);
+        throw new Error(`Invalid file: ${file?.name || "unknown"}`);
       }
 
       // Update progress
       if (onProgress) {
         onProgress({
           current: i + 1,
-          total: totalFiles,
-          percent: Math.round(((i + 1) / totalFiles) * 100),
-          fileName: file.name
+          total: files.length,
+          percent: Math.round(((i + 1) / files.length) * 100),
+          fileName: file.name,
         });
       }
 
-      // Use server-side API for upload
-      const formData = new FormData();
-      formData.append('file', file);
-      formData.append('folder', folder);
-
-      const response = await fetch('/api/admin/upload', {
-        method: 'POST',
-        body: formData,
+      // Step 1: Get presigned URL from server
+      const presignRes = await fetch("/api/admin/upload-presigned", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          fileName: file.name,
+          fileType: file.type,
+          folder,
+        }),
       });
 
-      const data = await response.json();
-      
-      if (data.success) {
-        results.push({
-          url: data.url,
-          type: file.type.startsWith('video') ? 'video' : 'image',
-          originalName: file.name,
-          publicId: data.publicId || '',
-          folder: folder
-        });
-        console.log(`✅ Uploaded: ${file.name}`);
-      } else {
-        console.error('❌ Upload failed:', data);
-        throw new Error(`Failed to upload ${file.name}: ${data.error || 'Unknown error'}`);
+      if (!presignRes.ok) {
+        const text = await presignRes.text();
+        throw new Error(`Failed to get upload URL (${presignRes.status}): ${text.substring(0, 200)}`);
       }
+
+      const { presignedUrl, publicUrl } = await presignRes.json();
+
+      // Step 2: Upload directly to R2 — no server size limit!
+      const uploadRes = await fetch(presignedUrl, {
+        method: "PUT",
+        headers: { "Content-Type": file.type },
+        body: file,
+      });
+
+      if (!uploadRes.ok) {
+        throw new Error(`R2 upload failed for ${file.name}: ${uploadRes.status} ${uploadRes.statusText}`);
+      }
+
+      results.push({
+        url: publicUrl,
+        type: file.type.startsWith("video") ? "video" : "image",
+        originalName: file.name,
+        publicId: publicUrl,
+        folder,
+      });
+
+      console.log(`✅ Uploaded: ${file.name}`);
     }
 
     console.log(`🎉 Upload completed: ${results.length}/${files.length} files`);
     return results;
-
   } catch (err) {
-    console.error('💥 Upload error:', err);
+    console.error("💥 Upload error:", err);
     throw err;
   }
 }
