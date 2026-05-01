@@ -1,92 +1,122 @@
 [
   {
     "id": 1,
-    "name": "Hand Painted Multi Color Wooden",
+    "name": "Wood - Plain",
     "image": "/images/elephant-1.svg",
-    "style": "Hand Painted",
-    "finish": "Multi Color",
-    "material": "Wooden",
+    "material": "Wood",
+    "finish": "Plain",
     "sizes": ["Mini", "Small", "Medium", "Large", "XL", "XXL"]
   },
   {
     "id": 2,
-    "name": "Hand Painted Single Color Wooden",
-    "image": "/images/elephant/istockphoto-95710418-612x612.jpg",
-    "style": "Hand Painted",
-    "finish": "Single Color",
-    "material": "Wooden",
-  "sizes": ["Mini", "Small", "Medium", "Large", "XL", "XXL"]
+    "name": "Wood - Carved",
+    "image": "/images/elephant/istockphoto-465002960-612x612.jpg",
+    "material": "Wood",
+    "finish": "Carved",
+    "sizes": ["Mini", "Small", "Medium", "Large", "XL", "XXL"]
   },
   {
     "id": 3,
-    "name": "Hand Carved Multi Color Wooden",
-    "image": "/images/elephant/istockphoto-465002960-612x612.jpg",
-    "style": "Hand Carved",
-    "finish": "Multi Color",
-    "material": "Wooden",
-   "sizes": ["Mini", "Small", "Medium", "Large", "XL", "XXL"]
+    "name": "Wood - Undercut",
+    "image": "/images/elephant/istockphoto-1369757859-612x612.jpg",
+    "material": "Wood",
+    "finish": "Undercut",
+    "sizes": ["Mini", "Small", "Medium", "Large", "XL", "XXL"]
   },
   {
     "id": 4,
-    "name": "Hand Painted Gold Foil Brass",
-    "image": "/images/elephant/istockphoto-465031224-612x612.jpg",
-    "style": "Hand Painted",
-    "finish": "Gold Foil",
-    "material": "Brass",
-   "sizes": ["Mini", "Small", "Medium", "Large", "XL", "XXL"]
+    "name": "Wood - Painted Decorated",
+    "image": "/images/elephant/istockphoto-95710418-612x612.jpg",
+    "material": "Wood",
+    "finish": "Painted Decorated",
+    "sizes": ["Mini", "Small", "Medium", "Large", "XL", "XXL"]
   },
   {
     "id": 5,
-    "name": "Antique Finish Meenakari Marble",
-    "image": "/images/elephant/istockphoto-500432743-612x612.jpg",
-    "style": "Antique Finish",
-    "finish": "Meenakari",
-    "material": "Marble",
-  "sizes": ["Mini", "Small", "Medium", "Large", "XL", "XXL"]
+    "name": "Aluminium - Silver Coated",
+    "image": "/images/elephant/istockphoto-465031224-612x612.jpg",
+    "material": "Aluminium",
+    "finish": "Silver Coated",
+    "sizes": ["Mini", "Small", "Medium", "Large", "XL", "XXL"]
   },
   {
     "id": 6,
-    "name": "Heritage Diamond Stone Resin",
-    "image": "/images/elephant/istockphoto-1162631262-612x612.jpg",
-    "style": "Heritage",
-    "finish": "Diamond/Stone",
-    "material": "Resin",
-   "sizes": ["Mini", "Small", "Medium", "Large", "XL", "XXL"]
+    "name": "Aluminium - Painted",
+    "image": "/images/elephant/istockphoto-500432743-612x612.jpg",
+    "material": "Aluminium",
+    "finish": "Painted",
+    "sizes": ["Mini", "Small", "Medium", "Large", "XL", "XXL"]
   },
   {
     "id": 7,
-    "name": "Minimal Wood Wooden",
-    "image": "/images/elephant/istockphoto-1369757859-612x612.jpg",
-    "style": "Minimal",
-    "finish": "Wood",
-    "material": "Wooden",
+    "name": "Aluminium - Decorated",
+    "image": "/images/elephant/istockphoto-1162631262-612x612.jpg",
+    "material": "Aluminium",
+    "finish": "Decorated",
     "sizes": ["Mini", "Small", "Medium", "Large", "XL", "XXL"]
   },
   {
     "id": 8,
-    "name": "Royal Meenakari Meenakari",
+    "name": "Paper Mache - Stone Finish",
     "image": "/images/elephant/istockphoto-1369757859-612x612.jpg",
-    "style": "Royal",
-    "finish": "Meenakari",
-    "material": "Meenakari",
+    "material": "Paper Mache",
+    "finish": "Stone Finish",
     "sizes": ["Mini", "Small", "Medium", "Large", "XL", "XXL"]
   },
   {
     "id": 9,
-    "name": "Hand Painted Multi Color Brass",
+    "name": "Paper Mache - Mosaic Work",
     "image": "/images/elephant/mosaic-design-elephant-studio.jpg",
-    "style": "Hand Painted",
-    "finish": "Multi Color",
-    "material": "Brass",
+    "material": "Paper Mache",
+    "finish": "Mosaic Work",
     "sizes": ["Mini", "Small", "Medium", "Large", "XL", "XXL"]
   },
   {
     "id": 10,
-    "name": "Hand Carved Wood Wooden",
+    "name": "Paper Mache - Decorated",
+    "image": "/images/elephant/istockphoto-465002960-612x612.jpg",
+    "material": "Paper Mache",
+    "finish": "Decorated",
+    "sizes": ["Mini", "Small", "Medium", "Large", "XL", "XXL"]
+  },
+  {
+    "id": 11,
+    "name": "Paper Mache - Painted",
+    "image": "/images/elephant/istockphoto-95710418-612x612.jpg",
+    "material": "Paper Mache",
+    "finish": "Painted",
+    "sizes": ["Mini", "Small", "Medium", "Large", "XL", "XXL"]
+  },
+  {
+    "id": 12,
+    "name": "Re-cycled Plastic - Painted",
+    "image": "/images/elephant/istockphoto-500432743-612x612.jpg",
+    "material": "Re-cycled Plastic",
+    "finish": "Painted",
+    "sizes": ["Mini", "Small", "Medium", "Large", "XL", "XXL"]
+  },
+  {
+    "id": 13,
+    "name": "Re-cycled Plastic - Decorated",
+    "image": "/images/elephant/istockphoto-1162631262-612x612.jpg",
+    "material": "Re-cycled Plastic",
+    "finish": "Decorated",
+    "sizes": ["Mini", "Small", "Medium", "Large", "XL", "XXL"]
+  },
+  {
+    "id": 14,
+    "name": "Re-cycled Plastic - Stone Finish",
+    "image": "/images/elephant/istockphoto-1369757859-612x612.jpg",
+    "material": "Re-cycled Plastic",
+    "finish": "Stone Finish",
+    "sizes": ["Mini", "Small", "Medium", "Large", "XL", "XXL"]
+  },
+  {
+    "id": 15,
+    "name": "Re-cycled Plastic - Metallic Finish",
     "image": "/images/products/image 59.png",
-    "style": "Hand Carved",
-    "finish": "Wood",
-    "material": "Wooden",
-   "sizes": ["Mini", "Small", "Medium", "Large", "XL", "XXL"]
+    "material": "Re-cycled Plastic",
+    "finish": "Metallic Finish",
+    "sizes": ["Mini", "Small", "Medium", "Large", "XL", "XXL"]
   }
 ]

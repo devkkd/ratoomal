@@ -34,20 +34,19 @@ export default function ElephantSizeGuide({ filters }) {
   // Update image and available sizes when filters change
   useEffect(() => {
     if (elephantData.length > 0 && filters) {
-      const { style, finish, material } = filters;
+      const { finish, material } = filters;
       
-      // Find matching elephant
+      // Find matching elephant by material + finish
       const matchedElephant = elephantData.find(elephant => 
-        elephant.style === style && 
-        elephant.finish === finish && 
-        elephant.material === material
+        elephant.material === material && 
+        elephant.finish === finish
       );
 
       if (matchedElephant) {
         setCurrentImage(matchedElephant.image);
         setAvailableSizes(matchedElephant.sizes);
         
-        // Update active size based on available sizes
+        // Update active size to largest available
         const allSizes = ["Mini", "Small", "Medium", "Large", "XL", "XXL"];
         const largestAvailableIndex = allSizes
           .map((size, index) => matchedElephant.sizes.includes(size) ? index : -1)
@@ -58,14 +57,11 @@ export default function ElephantSizeGuide({ filters }) {
           setActive(largestAvailableIndex);
         }
       } else {
-        // If no exact match, try partial matches
-        const fallbackElephant = elephantData.find(elephant => 
-          elephant.style === style
-        ) || elephantData.find(elephant => 
-          elephant.finish === finish
-        ) || elephantData.find(elephant => 
-          elephant.material === material
-        ) || elephantData[0];
+        // Fallback: match by material only, then first available
+        const fallbackElephant = 
+          elephantData.find(e => e.material === material) ||
+          elephantData.find(e => e.finish === finish) ||
+          elephantData[0];
         
         if (fallbackElephant) {
           setCurrentImage(fallbackElephant.image);
