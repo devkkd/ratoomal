@@ -56,18 +56,18 @@ export async function POST(request) {
         console.log(`🔍 Processing row ${rowNumber}: ${row["Product Name*"] || row["Product Name"] || "Unnamed"}`);
 
         // Check required fields - handle both with and without asterisk
-        const productName = row["Product Name*"] || row["Product Name"];
-        const productCode = row["Product Code*"] || row["Product Code"];
-        const price = row["Price*"] || row["Price"];
+        const productCode = (row["Product Code*"] || row["Product Code"] || "").toString().trim();
+        // Product Name is optional — falls back to Product Code if blank
+        const productName = (row["Product Name*"] || row["Product Name"] || productCode).toString().trim();
+        // Price is optional — defaults to 0
+        const price = row["Price*"] || row["Price"] || 0;
         const category = row["Category*"] || row["Category"];
         const thumbnail = row["Thumbnail URL*"] || row["Thumbnail URL"];
 
-        // Build specific missing fields message
+        // Only Product Code and Category are truly required
         const missingFields = [];
-        if (!productName) missingFields.push("Product Name");
         if (!productCode) missingFields.push("Product Code");
         if (!category) missingFields.push("Category");
-        // Price and Thumbnail are optional — can be added later
         if (missingFields.length > 0) {
           throw new Error(`Missing required fields: ${missingFields.join(", ")}`);
         }
