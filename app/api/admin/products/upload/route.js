@@ -62,8 +62,14 @@ export async function POST(request) {
         const category = row["Category*"] || row["Category"];
         const thumbnail = row["Thumbnail URL*"] || row["Thumbnail URL"];
 
-        if (!productName || !productCode || !price || !category || !thumbnail) {
-          throw new Error("Missing required fields: Product Name, Product Code, Price, Category, or Thumbnail URL");
+        // Build specific missing fields message
+        const missingFields = [];
+        if (!productName) missingFields.push("Product Name");
+        if (!productCode) missingFields.push("Product Code");
+        if (!category) missingFields.push("Category");
+        // Price and Thumbnail are optional — can be added later
+        if (missingFields.length > 0) {
+          throw new Error(`Missing required fields: ${missingFields.join(", ")}`);
         }
 
         // Find category
@@ -101,12 +107,12 @@ export async function POST(request) {
         const productData = {
           name: productName.toString(),
           code: productCode.toString().toUpperCase(),
-          price: parseFloat(price),
+          price: price ? parseFloat(price) : 0,
           moq: parseInt(row["MOQ"] || 1),
           category: categoryDoc._id,
           subCategory: subCategoryDoc?._id || null,
-          thumbnail: thumbnail.toString(),
-          images: parseArray(row["Image URLs (comma separated)"] || row["Image URLs"]),
+          thumbnail: (thumbnail && !thumbnail.includes("your-cloud")) ? thumbnail.toString() : "",
+          images: parseArray(row["Image URLs (comma separated)"] || row["Image URLs"]).filter(url => !url.includes("your-cloud")),
           video360: row["Video URL"]?.toString() || "",
           services: parseArray(row["Services (comma separated)"] || row["Services"]),
           features: parseArray(row["Features (comma separated)"] || row["Features"]),
