@@ -2344,7 +2344,7 @@ const CategoryPage = () => {
                     {/* Main Content */}
                     <main className="flex-1 min-w-0">
                         {/* Top Toolbar - Sticky below Explore Our Collection header */}
-                        <div className="sticky top-[80px] md:top-[140px] z-40 bg-white py-4 -mx-4 px-4 mb-6  shadow-sm">
+                        <div className="sticky top-[80px] md:top-[130px] z-40 bg-white py-4 -mx-4 px-4 mb-6  shadow-sm">
                             <div className="flex flex-col gap-4">
                                 {/* Mobile: Categories Button + Sort + Clear Filter */}
                                 <div className="flex lg:hidden items-center gap-2.5 w-full relative">
