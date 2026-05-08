@@ -181,17 +181,14 @@ const ProductDetailPage = () => {
             isLoggedIn: isLoggedIn
         });
 
-        // ✅ VIDEO FIRST in the media list
-        if (product.video360) {
-            // console.log('✅ Adding video to media items:', product.video360);
+        // ✅ VIDEO FIRST in the media list — only if URL is valid
+        if (product.video360 && product.video360.trim() !== '') {
             mediaItems.push({
                 type: 'video',
                 url: product.video360,
                 thumbnail: thumbnail,
                 title: '360° Product View'
             });
-        } else {
-            // console.log('⚠️ No video360 found in product data');
         }
         
         // Add thumbnail as first image
@@ -446,7 +443,7 @@ const ProductDetailPage = () => {
         { label: "God Name", value: transformedProduct?.godName || "N/A" },
         { label: "Color", value: transformedProduct?.color || "N/A" },
         { label: "Material", value: product?.material || "N/A" },
-        { label: "Size", value: product?.size || "N/A" },
+        { label: "Available Sizes", value: (product?.sizes && product.sizes.length > 0) ? product.sizes.join(", ") : (product?.size || "N/A") },
         { label: "Suitable For", value: transformedProduct?.suitableFor || "N/A" },
         { label: "Usage/Application", value: transformedProduct?.usage || "N/A" },
         { label: "Posture", value: transformedProduct?.posture || "N/A" },
@@ -526,6 +523,7 @@ const ProductDetailPage = () => {
                         >
                             {currentMedia?.type === 'video' ? (
                                 <div className="relative w-full h-full group">
+                                    {currentMedia.url ? (
                                     <video
                                         ref={videoRef}
                                         src={currentMedia.url}
@@ -533,22 +531,17 @@ const ProductDetailPage = () => {
                                         onEnded={handleVideoEnded}
                                         onTimeUpdate={handleTimeUpdate}
                                         onLoadedData={() => {
-                                            console.log('✅ Video loaded successfully');
                                             handleVideoLoaded();
                                         }}
-                                        onLoadStart={() => {
-                                            console.log('⏳ Video loading started...');
-                                        }}
                                         onError={(e) => {
-                                            console.error('❌ Video error:', e);
-                                            console.error('Video URL:', currentMedia.url);
-                                        }}
-                                        onCanPlay={() => {
-                                            console.log('✅ Video can play');
+                                            const video = e.target;
+                                            const err = video.error;
+                                            const errMsg = err ? `code ${err.code}: ${err.message}` : 'unknown';
+                                            console.warn(`Video failed to load [${errMsg}] — URL: ${currentMedia.url}`);
                                         }}
                                         playsInline
                                         preload="auto"
-                                        poster={currentMedia.thumbnail}
+                                        poster={currentMedia.thumbnail || undefined}
                                         muted={isMuted}
                                         autoPlay
                                         loop
@@ -558,6 +551,12 @@ const ProductDetailPage = () => {
                                         <source src={currentMedia.url} type="video/mp4" />
                                         Your browser does not support the video tag.
                                     </video>
+                                    ) : (
+                                        <div className="w-full h-full bg-gray-900 flex flex-col items-center justify-center gap-3">
+                                            <Play size={48} className="text-gray-500" />
+                                            <p className="text-gray-500 text-sm">Video not available</p>
+                                        </div>
+                                    )}
                                     
                                     {/* Video Controls Overlay */}
                                     <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 to-transparent p-3 md:p-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
@@ -642,7 +641,7 @@ const ProductDetailPage = () => {
                                     </div>
                                     
                                     {/* Play Button Overlay when paused */}
-                                    {!isPlaying && (
+                                    {currentMedia.url && !isPlaying && (
                                         <div className="absolute inset-0 flex items-center justify-center bg-black/30">
                                             <button
                                                 onClick={togglePlayPause}
@@ -718,11 +717,17 @@ const ProductDetailPage = () => {
                                     >
                                         {media.type === 'video' ? (
                                             <>
-                                                <img 
-                                                    src={media.thumbnail || thumbnail}
-                                                    alt="Video thumbnail"
-                                                    className="w-full h-full object-cover"
-                                                />
+                                                {(media.thumbnail || thumbnail) ? (
+                                                    <img 
+                                                        src={media.thumbnail || thumbnail}
+                                                        alt="Video thumbnail"
+                                                        className="w-full h-full object-cover"
+                                                    />
+                                                ) : (
+                                                    <div className="w-full h-full bg-gray-800 flex items-center justify-center">
+                                                        <Play size={20} className="text-white opacity-60" />
+                                                    </div>
+                                                )}
                                                 <div className="absolute inset-0 bg-black/30 flex items-center justify-center">
                                                     <Play size={14} className="text-white md:w-4 md:h-4" />
                                                 </div>

@@ -16,14 +16,29 @@ const checkAuth = (request) => {
   }
 };
 
-// Normalize sizes — if DB has a single string like `3", 4", 5"` split it into array
+// Normalize sizes — handles:
+// 1. Single string stored as array: ["3\", 4\", 5\""]
+// 2. Sizes crammed without comma: ["4\" 5\""] → ["4\"", "5\""]
 const normalizeSizes = (sizes) => {
   if (!sizes || sizes.length === 0) return [];
-  // If array has only 1 element and it contains commas, it's a string stored as array
-  if (sizes.length === 1 && sizes[0].includes(',')) {
-    return sizes[0].split(',').map(s => s.trim()).filter(Boolean);
+  
+  const result = [];
+  for (const item of sizes) {
+    const str = item.toString().trim().replace(/[""]/g, '"');
+    // If item contains commas, it's a full string stored as one element
+    if (str.includes(',')) {
+      str.split(',').forEach(s => s.trim() && result.push(s.trim()));
+      continue;
+    }
+    // If item has multiple size tokens without comma (e.g. `4" 5"`)
+    const tokens = str.match(/\d+(?:\.\d+)?(?:"|''| inch|inch)?/gi);
+    if (tokens && tokens.length > 1) {
+      tokens.forEach(t => t.trim() && result.push(t.trim()));
+    } else {
+      result.push(str);
+    }
   }
-  return sizes;
+  return result.filter(Boolean);
 };
 
 // GET SINGLE PRODUCT (Public endpoint with restrictions for non-authenticated users)
