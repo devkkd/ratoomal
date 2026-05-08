@@ -425,7 +425,9 @@ const ProductDetailPage = () => {
             availability: product.availability || "In Stock",
             shortDescription: product.shortDescription || "",
             longDescription: product.longDescription || product.description || `Enhance your space with our beautiful ${product.name}.`,
-            features: product.features || ["Premium Quality", "Handmade", "Eco-friendly"],
+            features: product.features && product.features.length > 0 
+          ? product.features 
+          : ["Premium Quality", "Handcrafted", "Eco-friendly"],
             services: product.services || [],
             category: product.category?.name || "Statues",
             subCategory: product.subCategory?.name || ""

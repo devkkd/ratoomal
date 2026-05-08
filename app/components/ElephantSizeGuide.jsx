@@ -105,16 +105,16 @@ export default function ElephantSizeGuide({ filters }) {
     // For mobile screens (up to 640px)
     if (containerWidth < 640) {
       const totalElephants = filteredSizes.length;
-      const totalGap = (totalElephants - 1) * 8;
-      const availableWidth = containerWidth - totalGap - 32;
+      const totalGap = (totalElephants - 1) * 4; // reduced gap
+      const availableWidth = containerWidth - totalGap - 8; // minimal padding
       
       const totalBaseWidth = filteredSizes.reduce((sum, size) => sum + size.baseWidth, 0);
       const scaleFactor = availableWidth / totalBaseWidth;
       
       return filteredSizes.map(size => ({
         ...size,
-        width: Math.max(size.baseWidth * scaleFactor * 0.9, 24),
-        height: size.baseHeight * scaleFactor * 0.9
+        width: Math.max(size.baseWidth * scaleFactor, 20),
+        height: size.baseHeight * scaleFactor
       }));
     }
     
@@ -157,7 +157,7 @@ export default function ElephantSizeGuide({ filters }) {
     
     const totalElephantsWidth = responsiveSizes.reduce((sum, size) => sum + size.width, 0);
     const gapCount = responsiveSizes.length - 1;
-    const gapSize = containerWidth < 640 ? 12 : containerWidth < 1024 ? 16 : 38;
+    const gapSize = containerWidth < 640 ? 4 : containerWidth < 1024 ? 12 : 24;
     
     return totalElephantsWidth + (gapCount * gapSize);
   };
@@ -166,7 +166,7 @@ export default function ElephantSizeGuide({ filters }) {
   const getPointerLeftPosition = () => {
     if (responsiveSizes.length === 0 || !responsiveSizes[active]) return 0;
     
-    const gapSize = containerWidth < 640 ? 8 : containerWidth < 1024 ? 16 : 24;
+    const gapSize = containerWidth < 640 ? 4 : containerWidth < 1024 ? 12 : 24;
     
     // Calculate cumulative width of elephants before active one
     const widthBeforeActive = responsiveSizes
@@ -204,15 +204,15 @@ const handleSizeHover = (index) => {
   }
 
   return (
-    <div className="w-full bg-[#FCF8F1] py-6 sm:py-8 md:py-12">
+    <div className="w-full bg-[#FCF8F1] py-4 sm:py-8 md:py-12">
       <div 
         id="elephant-container" 
-        className="w-full max-w-7xl sm:mx-auto px-3 sm:px-4 md:px-6 lg:px-8"
+        className="w-full max-w-7xl sm:mx-auto px-1 sm:px-4 md:px-6 lg:px-8"
       >
         
         {/* Elephant Visual Display */}
        <div className="flex justify-center items-end mb-4 sm:mb-6 md:mb-8">
-  <div className="flex items-end" style={{ gap: containerWidth < 640 ? '8px' : containerWidth < 1024 ? '16px' : '24px' }}>
+  <div className="flex items-end" style={{ gap: containerWidth < 640 ? '4px' : containerWidth < 1024 ? '12px' : '24px' }}>
     {responsiveSizes.map((item, idx) => {
       const isAvailable = availableSizes.includes(item.label);
       const isActive = active === idx;
@@ -278,8 +278,8 @@ const handleSizeHover = (index) => {
         </div>
 
         {/* Size Labels */}
-        <div className="flex justify-center w-full px-2">
-          <div className="flex" style={{ gap: containerWidth < 640 ? '8px' : containerWidth < 1024 ? '16px' : '24px' }}>
+        <div className="flex justify-center w-full px-1">
+          <div className="flex" style={{ gap: containerWidth < 640 ? '4px' : containerWidth < 1024 ? '12px' : '24px' }}>
             {responsiveSizes.map((item, idx) => {
               const isAvailable = availableSizes.includes(item.label);
               const isActive = active === idx;
