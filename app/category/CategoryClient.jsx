@@ -823,7 +823,7 @@
 //                                                                 />
 //                                                             </div>
 
-//                                                             <div className="max-h-48 overflow-y-auto space-y-2 pr-2">
+//                                                             <div className="max-h-48 overflow-y-auto scrollbar-hide space-y-2 pr-2">
 //                                                                 <label className="flex items-center gap-2 cursor-pointer mb-2 pb-2 border-b border-gray-100">
 //                                                                     <input
 //                                                                         type="checkbox"
@@ -1363,7 +1363,7 @@
 //                             </button>
 //                         </div>
 
-//                         <div className="flex-1 overflow-y-auto p-6 space-y-6">
+//                         <div className="flex-1 overflow-y-auto scrollbar-hide p-6 space-y-6">
 //                             {Object.entries(filters).map(([title, options]) => (
 //                                 <div key={title}>
 //                                     <button
@@ -2256,7 +2256,7 @@ const CategoryPage = () => {
                                 <div className="bg-gradient-to-r from-[#C08237] to-[#9C774A] px-4 py-3.5">
                                     <h3 className="text-white font-bold text-sm uppercase tracking-wide">Categories</h3>
                                 </div>
-                                <div className="py-3 px-2 max-h-[400px] overflow-y-auto">
+                                <div className="py-3 px-2 max-h-[400px] overflow-y-auto scrollbar-hide">
                                     <div className="space-y-3">
                                         {backendCategories.map(category => {
                                             const categorySubCats = getFilteredSubCategories(category._id);
@@ -2287,7 +2287,7 @@ const CategoryPage = () => {
                                                                 />
                                                             </div>
 
-                                                            <div className="max-h-48 overflow-y-auto space-y-2 pr-2">
+                                                            <div className="max-h-48 overflow-y-auto scrollbar-hide space-y-2 pr-2">
                                                                 <label className="flex items-center gap-2 cursor-pointer mb-2 pb-2 border-b border-gray-100">
                                                                     <input
                                                                         type="checkbox"
@@ -2934,7 +2934,7 @@ const CategoryPage = () => {
                             </button>
                         </div>
 
-                        <div className="flex-1 overflow-y-auto p-6 space-y-6">
+                        <div className="flex-1 overflow-y-auto scrollbar-hide p-6 space-y-6">
                             {/* Categories Section - Only show on mobile */}
                             <div className="lg:hidden pb-6 border-b border-gray-200">
                                 <h3 className="text-lg font-bold text-gray-800 mb-4">Categories</h3>
@@ -2968,7 +2968,7 @@ const CategoryPage = () => {
                                                             />
                                                         </div>
 
-                                                        <div className="max-h-48 overflow-y-auto space-y-2 pr-2">
+                                                        <div className="max-h-48 overflow-y-auto scrollbar-hide space-y-2 pr-2">
                                                             <label className="flex items-center gap-2 cursor-pointer mb-2 pb-2 border-b border-gray-100">
                                                                 <input
                                                                     type="checkbox"

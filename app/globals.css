@@ -76,3 +76,12 @@ button, a { min-height: 44px; min-width: 44px; }
 .scrollbar-thin::-webkit-scrollbar-track { background: #e5e7eb; border-radius: 3px; }
 .scrollbar-thin::-webkit-scrollbar-thumb { background: #C08237; border-radius: 3px; }
 .scrollbar-thin::-webkit-scrollbar-thumb:hover { background: #a66f2e; }
+
+/* Hide scrollbar but keep scroll functionality */
+.scrollbar-hide {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;     /* Firefox */
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;             /* Chrome, Safari, Opera */
+}
