@@ -16,6 +16,16 @@ const checkAuth = (request) => {
   }
 };
 
+// Normalize sizes — if DB has a single string like `3", 4", 5"` split it into array
+const normalizeSizes = (sizes) => {
+  if (!sizes || sizes.length === 0) return [];
+  // If array has only 1 element and it contains commas, it's a string stored as array
+  if (sizes.length === 1 && sizes[0].includes(',')) {
+    return sizes[0].split(',').map(s => s.trim()).filter(Boolean);
+  }
+  return sizes;
+};
+
 // GET SINGLE PRODUCT (Public endpoint with restrictions for non-authenticated users)
 export async function GET(request, { params }) {
   try {
@@ -48,6 +58,9 @@ export async function GET(request, { params }) {
     // For non-authenticated users, limit the information returned
     let productData = product.toObject();
     
+    // Always normalize sizes regardless of auth status
+    productData.sizes = normalizeSizes(productData.sizes || []);
+    
     if (!isAuthenticated) {
       // For non-authenticated users, show basic info but INCLUDE video360
       productData = {
@@ -65,7 +78,7 @@ export async function GET(request, { params }) {
         finish: product.finish,
         productType: product.productType,
         availability: product.availability,
-        sizes: product.sizes || [], // ✅ INCLUDE SIZES for non-authenticated users
+        sizes: normalizeSizes(product.sizes), // ✅ INCLUDE SIZES for non-authenticated users
         shortDescription: product.shortDescription || "Login to view detailed product information",
         // Hide detailed information
         longDescription: undefined,

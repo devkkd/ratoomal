@@ -93,13 +93,25 @@ export async function POST(request) {
           });
         }
 
-        // Parse arrays (comma separated)
+        // Parse arrays (comma separated) — handles inch marks and extra spaces
         const parseArray = (value) => {
+          if (!value) return [];
+          const str = value.toString().trim();
+          // If the whole value looks like a single string with commas, split it
+          return str
+            .split(",")
+            .map(item => item.trim())
+            .filter(item => item.length > 0);
+        };
+
+        // Parse sizes specifically — normalize inch marks
+        const parseSizes = (value) => {
           if (!value) return [];
           return value
             .toString()
+            .trim()
             .split(",")
-            .map(item => item.trim())
+            .map(item => item.trim().replace(/[""]/g, '"')) // normalize fancy quotes to straight quotes
             .filter(item => item.length > 0);
         };
 
@@ -116,7 +128,7 @@ export async function POST(request) {
           video360: row["Video URL"]?.toString() || "",
           services: parseArray(row["Services (comma separated)"] || row["Services"]),
           features: parseArray(row["Features (comma separated)"] || row["Features"]),
-          sizes: parseArray(row["Sizes (comma separated)"] || row["Sizes"]),
+          sizes: parseSizes(row["Sizes (comma separated)"] || row["Sizes"]),
           material: row["Material"]?.toString() || "Plastic",
           availability: row["Availability"]?.toString() || "In Stock",
           description: row["Description"]?.toString() || "",
