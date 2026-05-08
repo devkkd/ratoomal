@@ -2,192 +2,140 @@
 import React from 'react';
 import { Star } from 'lucide-react';
 
-// Alternating text → image → text → image order
-const testimonials = [
+// Exactly 13 clients — each has image + testimonial paired together
+const clients = [
   {
-    id: 1,
-    type: 'text',
-    quote: "Ratoomals' elephant collection elevated our retail décor lineup and connected with customers worldwide. Exceptional craftsmanship every time.",
-    name: "James Mitchell",
-    role: "International Retail Buyer, UK",
-  },
-  {
-    id: 2,
-    type: 'image',
     image: '/client/1.JPG',
     name: "Priya Sharma",
     role: "Wholesale Distributor, Mumbai",
+    quote: "Ratoomals' elephant collection elevated our retail décor lineup. Exceptional craftsmanship every single time.",
   },
   {
-    id: 3,
-    type: 'text',
-    quote: "The quality and packaging exceeded our expectations. Our customers love the handcrafted wooden figurines — reordering every season.",
-    name: "Sophie Laurent",
-    role: "Boutique Owner, Paris",
-  },
-  {
-    id: 4,
-    type: 'image',
     image: '/client/2.JPG',
     name: "Ahmed Al-Rashid",
     role: "Gift Shop Owner, Dubai",
+    quote: "The quality and packaging exceeded our expectations. Our customers love the handcrafted wooden figurines.",
   },
   {
-    id: 5,
-    type: 'text',
-    quote: "Bulk orders delivered on time with zero defects. Ratoomals is our go-to partner for festive season gifting collections.",
-    name: "Marco Rossi",
-    role: "Corporate Gifting Head, Italy",
-  },
-  {
-    id: 6,
-    type: 'image',
     image: '/client/3.jpeg',
     name: "Rajesh Gupta",
     role: "Export Manager, Delhi",
+    quote: "Bulk orders delivered on time with zero defects. Ratoomals is our go-to partner for festive gifting.",
   },
   {
-    id: 7,
-    type: 'text',
-    quote: "From custom designs to timely delivery — Ratoomals handles everything professionally. A trusted partner for 5+ years.",
-    name: "Yuki Tanaka",
-    role: "Lifestyle Brand, Tokyo",
-  },
-  {
-    id: 8,
-    type: 'image',
     image: '/client/4.jpeg',
     name: "Linda Chen",
     role: "Home Décor Retailer, Singapore",
+    quote: "From custom designs to timely delivery — Ratoomals handles everything professionally. 5+ years of trust.",
   },
   {
-    id: 9,
-    type: 'text',
-    quote: "Incredible attention to detail. Every piece tells a story — our gallery customers always ask where we source these beautiful figurines.",
-    name: "Hannah Müller",
-    role: "Craft Gallery, Berlin",
-  },
-  {
-    id: 10,
-    type: 'image',
     image: '/client/5.jpeg',
     name: "Fatima Al-Zahra",
     role: "Interior Designer, Abu Dhabi",
+    quote: "Incredible attention to detail. Every piece tells a story — our clients always ask where we source these.",
   },
   {
-    id: 11,
-    type: 'text',
-    quote: "We've been importing from Ratoomals for 3 years. Consistent quality, great communication, and always on schedule.",
-    name: "Carlos Mendez",
-    role: "Souvenir Shop, Mexico City",
-  },
-  {
-    id: 12,
-    type: 'image',
     image: '/client/6.jpeg',
     name: "David Thompson",
     role: "Museum Gift Shop, USA",
+    quote: "We've been importing from Ratoomals for 3 years. Consistent quality and always on schedule.",
   },
   {
-    id: 13,
-    type: 'text',
-    quote: "The wooden God figurines are our bestsellers. Customers love the authentic Rajasthani craftsmanship and the spiritual energy they carry.",
+    image: '/client/7.jpeg',
     name: "Anita Patel",
     role: "Handicraft Exporter, Ahmedabad",
+    quote: "The wooden God figurines are our bestsellers. Customers love the authentic Rajasthani craftsmanship.",
   },
   {
-    id: 14,
-    type: 'image',
-    image: '/client/7.jpeg',
-    name: "Nadia Kowalski",
-    role: "Décor Importer, Warsaw",
-  },
-  {
-    id: 15,
-    type: 'image',
     image: '/client/8.jpeg',
     name: "Samuel Okafor",
     role: "Retail Chain, Lagos",
+    quote: "Outstanding product range and reliable shipping. Ratoomals has been a game-changer for our business.",
   },
   {
-    id: 16,
-    type: 'image',
     image: '/client/9.jpeg',
     name: "Emma Wilson",
     role: "Spiritual Goods Store, Sydney",
+    quote: "The spiritual figurines bring such positive energy. Our customers keep coming back for more.",
   },
   {
-    id: 17,
-    type: 'image',
     image: '/client/10.jpeg',
     name: "Ravi Krishnan",
     role: "Temple Supplies, Chennai",
+    quote: "Perfect craftsmanship for temple décor. The attention to religious detail is truly commendable.",
   },
   {
-    id: 18,
-    type: 'image',
     image: '/client/11.jpeg',
     name: "Kenji Watanabe",
     role: "Asian Arts Dealer, Osaka",
+    quote: "Ratoomals understands the art of traditional Indian crafts. Their pieces are museum-worthy.",
   },
   {
-    id: 19,
-    type: 'image',
     image: '/client/12.jpeg',
     name: "Maria Santos",
     role: "Home Décor Brand, Lisbon",
+    quote: "Beautiful products, great communication, and fast delivery. Highly recommend for bulk orders.",
   },
   {
-    id: 20,
-    type: 'image',
     image: '/client/13.jpeg',
     name: "Tariq Hassan",
     role: "Luxury Gifts, Riyadh",
+    quote: "Premium quality that matches our luxury brand standards. Our clients are always impressed.",
   },
 ];
 
-const TextCard = ({ item }) => (
-  <div className="bg-[#FFF3E5] h-full p-7 flex flex-col justify-between rounded-[28px]">
-    <div>
-      <div className="text-[#C08237] text-5xl font-serif leading-none mb-3 select-none">"</div>
-      <p className="text-[#333] text-sm mona font-medium leading-relaxed line-clamp-5">
-        {item.quote}
-      </p>
-    </div>
-    <div className="flex items-center gap-3 mt-4">
-      <div className="w-9 h-9 rounded-full bg-[#C08237]/20 flex items-center justify-center text-[#C08237] font-bold text-base shrink-0">
-        {item.name.charAt(0)}
-      </div>
-      <div>
-        <h5 className="font-bold text-[#1A1A1A] text-sm leading-tight">{item.name}</h5>
-        <p className="text-[#999] text-xs mt-0.5">{item.role}</p>
-      </div>
+// Build alternating pairs: image → text → image → text ...
+const buildItems = () => {
+  const items = [];
+  clients.forEach((client, i) => {
+    items.push({ type: 'image', ...client, id: `img-${i}` });
+    items.push({ type: 'text',  ...client, id: `txt-${i}` });
+  });
+  return items;
+};
+
+const allItems = buildItems(); // 26 items (13 pairs)
+const marqueeItems = [...allItems, ...allItems]; // duplicate for seamless loop
+
+const ImageCard = ({ image, name, role }) => (
+  <div className="relative h-full w-full rounded-[28px] overflow-hidden group">
+    <img
+      src={image}
+      alt={name}
+      className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+    />
+    <div className="absolute bottom-0 left-0 right-0 p-5 bg-gradient-to-t from-black/75 via-black/20 to-transparent">
+      <h5 className="font-bold text-white text-sm leading-tight">{name}</h5>
+      <p className="text-gray-300 text-xs mt-0.5">{role}</p>
     </div>
   </div>
 );
 
-const ImageCard = ({ item }) => (
-  <div className="relative h-full w-full rounded-[28px] overflow-hidden group">
-    <img
-      src={item.image}
-      alt={item.name}
-      className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-    />
-    <div className="absolute bottom-0 left-0 right-0 p-5 bg-gradient-to-t from-black/75 via-black/20 to-transparent">
-      <h5 className="font-bold text-white text-sm leading-tight">{item.name}</h5>
-      <p className="text-gray-300 text-xs mt-0.5">{item.role}</p>
+const TextCard = ({ image, name, role, quote }) => (
+  <div className="bg-[#FFF3E5] h-full p-7 flex flex-col justify-between rounded-[28px]">
+    <div>
+      <div className="text-[#C08237] text-5xl font-serif leading-none mb-3 select-none">"</div>
+      <p className="text-[#333] text-sm mona font-medium leading-relaxed line-clamp-5">
+        {quote}
+      </p>
+    </div>
+    <div className="flex items-center gap-3 mt-4">
+      {/* Small avatar from client image */}
+      <div className="w-10 h-10 rounded-full overflow-hidden shrink-0 border-2 border-[#C08237]/30">
+        <img src={image} alt={name} className="w-full h-full object-cover" />
+      </div>
+      <div>
+        <h5 className="font-bold text-[#1A1A1A] text-sm leading-tight">{name}</h5>
+        <p className="text-[#999] text-xs mt-0.5">{role}</p>
+      </div>
     </div>
   </div>
 );
 
 const Testimonials = () => {
-  // Duplicate for seamless infinite loop
-  const items = [...testimonials, ...testimonials];
-
   return (
     <section className="py-12 sm:py-20 bg-[#FCF8F1] overflow-hidden">
       <div className="max-w-7xl mx-auto px-6 md:px-16">
-
         {/* Header */}
         <div className="mb-12">
           <div className="sm:flex justify-between items-end">
@@ -222,21 +170,21 @@ const Testimonials = () => {
         </div>
       </div>
 
-      {/* Marquee Track — full bleed, no side padding */}
+      {/* Marquee — full bleed */}
       <div
         className="relative w-full"
-        style={{ maskImage: 'linear-gradient(to right, transparent, black 8%, black 92%, transparent)' }}
+        style={{ maskImage: 'linear-gradient(to right, transparent, black 6%, black 94%, transparent)' }}
       >
         <div className="flex gap-5 marquee-track" style={{ width: 'max-content' }}>
-          {items.map((item, idx) => (
+          {marqueeItems.map((item) => (
             <div
-              key={idx}
+              key={item.id + Math.random()}
               className="h-[340px] shrink-0"
               style={{ width: item.type === 'text' ? '300px' : '260px' }}
             >
-              {item.type === 'text'
-                ? <TextCard item={item} />
-                : <ImageCard item={item} />
+              {item.type === 'image'
+                ? <ImageCard image={item.image} name={item.name} role={item.role} />
+                : <TextCard image={item.image} name={item.name} role={item.role} quote={item.quote} />
               }
             </div>
           ))}
@@ -245,7 +193,7 @@ const Testimonials = () => {
 
       <style jsx>{`
         .marquee-track {
-          animation: marquee 60s linear infinite;
+          animation: marquee 70s linear infinite;
         }
         .marquee-track:hover {
           animation-play-state: paused;

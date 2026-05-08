@@ -1,17 +1,17 @@
 import ProductDetailClient from "./ProductDetailClient";
+import connectDB from "@/lib/db";
+import Product from "@/models/Product";
 
 export async function generateMetadata({ params }) {
   try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL || "https://www.ratoomals.com"}/api/products/${params.id}`, {
-      next: { revalidate: 3600 },
-    });
-    const data = await res.json();
-    const product = data?.data;
+    await connectDB();
+    const { id } = await params;
+    const product = await Product.findById(id).lean();
 
     if (!product) {
       return {
-        title: "Product Not Found - Ratoomal's",
-        description: "The requested product could not be found.",
+        title: "Product - Ratoomal's",
+        description: "Handcrafted wooden handicraft from Jaipur, India.",
       };
     }
 
@@ -20,29 +20,21 @@ export async function generateMetadata({ params }) {
       product.shortDescription ||
       product.description ||
       `Buy ${product.name} — handcrafted wooden handicraft from Jaipur, India. B2B bulk orders available.`;
-
     const image = product.thumbnail || "https://www.ratoomals.com/images/og-home.jpg";
 
     return {
       title,
       description,
       alternates: {
-        canonical: `https://www.ratoomals.com/product/${params.id}`,
+        canonical: `https://www.ratoomals.com/product/${id}`,
       },
       openGraph: {
         title,
         description,
         type: "website",
-        url: `https://www.ratoomals.com/product/${params.id}`,
+        url: `https://www.ratoomals.com/product/${id}`,
         siteName: "Ratoomals",
-        images: [
-          {
-            url: image,
-            width: 1200,
-            height: 630,
-            alt: product.name,
-          },
-        ],
+        images: [{ url: image, width: 1200, height: 630, alt: product.name }],
       },
     };
   } catch {

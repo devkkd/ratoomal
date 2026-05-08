@@ -3,16 +3,16 @@ import { useState, useRef } from "react";
 import ElephantSizeGuide from "./ElephantSizeGuide";
 
 const MATERIAL_FINISH_MAP = {
-  "Wood":             { color: "#C8A96E", finishes: ["Plain", "Carved", "Undercut", "Painted Decorated"] },
-  "Aluminium":        { color: "#A8B8C8", finishes: ["Silver Coated", "Painted", "Decorated"] },
-  "Paper Mache":      { color: "#D4B896", finishes: ["Stone Finish", "Mosaic Work", "Decorated", "Painted"] },
-  "Re-cycled Plastic":{ color: "#8FBC8F", finishes: ["Painted", "Decorated", "Stone Finish", "Metallic Finish"] },
+  "Wooden":             { color: "#C8A96E", finishes: ["Plain", "Carved", "Undercut", "Painted", "Decorated"] },
+  "Aluminium":        { color: "#A8B8C8", finishes: ["Painted", "Decorated"] },
+  "Paper Mache":      { color: "#D4B896", finishes: ["Stone Finish","Decorated", "Painted"] },
+  "Plastic":{ color: "#8FBC8F", finishes: ["Painted", "Decorated"] },
 };
 
 const MATERIALS = Object.keys(MATERIAL_FINISH_MAP);
 
 export default function ElephantSizeFilter() {
-  const [selectedMaterial, setSelectedMaterial] = useState("Wood");
+  const [selectedMaterial, setSelectedMaterial] = useState("Wooden");
   const [selectedFinish, setSelectedFinish]     = useState("Plain");
 
   const handleMaterialSelect = (material) => {

@@ -13,4 +13,4 @@ Disallow: /inquiry-cart/
 Disallow: /wishlist/
 
 # Sitemap location
-Sitemap: https://www.ratoomals.com/sitemap.xml
+Sitemap: https://www.ratoomals.com/sitemap.xml    

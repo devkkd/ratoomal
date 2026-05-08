@@ -811,8 +811,8 @@ const ProductDetailPage = () => {
                             </div>
 
                             {/* Product Inquiry Card */}
-                            <div className="bg-[#F9F5F0] rounded-xl p-4 md:p-6">
-                                <h3 className="text-lg font-semibold text-gray-800 mb-4">Product Inquiry</h3>
+                            <div className="bg-[#F9F5F0] rounded-xl p-4">
+                                {/* <h3 className="text-lg font-semibold text-gray-800 mb-4">Product Inquiry</h3> */}
                                 
                                 {/* Product Code */}
                                 {transformedProduct.code && (

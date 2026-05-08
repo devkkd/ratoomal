@@ -1,122 +1,172 @@
 [
   {
     "id": 1,
-    "name": "Wood - Plain",
-    "image": "/images/elephant-1.svg",
     "material": "Wood",
     "finish": "Plain",
-    "sizes": ["Mini", "Small", "Medium", "Large", "XL", "XXL"]
+    "sizes": ["Small", "Medium", "Large", "XL"],
+    "images": {
+      "Small":  "/Website Game/Wooden/Plain/S.JPG",
+      "Medium": "/Website Game/Wooden/Plain/M.JPG",
+      "Large":  "/Website Game/Wooden/Plain/L.JPG",
+      "XL":     "/Website Game/Wooden/Plain/XL.JPG"
+    }
   },
   {
     "id": 2,
-    "name": "Wood - Carved",
-    "image": "/images/elephant/istockphoto-465002960-612x612.jpg",
     "material": "Wood",
     "finish": "Carved",
-    "sizes": ["Mini", "Small", "Medium", "Large", "XL", "XXL"]
+    "sizes": ["Small", "Medium", "Large", "XL"],
+    "images": {
+      "Small":  "/Website Game/Wooden/Carved/S.JPG",
+      "Medium": "/Website Game/Wooden/Carved/M.JPG",
+      "Large":  "/Website Game/Wooden/Carved/L.JPG",
+      "XL":     "/Website Game/Wooden/Carved/XL.JPG"
+    }
   },
   {
     "id": 3,
-    "name": "Wood - Undercut",
-    "image": "/images/elephant/istockphoto-1369757859-612x612.jpg",
     "material": "Wood",
     "finish": "Undercut",
-    "sizes": ["Mini", "Small", "Medium", "Large", "XL", "XXL"]
+    "sizes": ["Small", "Medium", "Large", "XL"],
+    "images": {
+      "Small":  "/Website Game/Wooden/Undercut/S.JPG",
+      "Medium": "/Website Game/Wooden/Undercut/M.JPG",
+      "Large":  "/Website Game/Wooden/Undercut/L.JPG",
+      "XL":     "/Website Game/Wooden/Undercut/XL.JPG"
+    }
   },
   {
     "id": 4,
-    "name": "Wood - Painted Decorated",
-    "image": "/images/elephant/istockphoto-95710418-612x612.jpg",
     "material": "Wood",
     "finish": "Painted Decorated",
-    "sizes": ["Mini", "Small", "Medium", "Large", "XL", "XXL"]
+    "sizes": ["Small", "Medium", "Large", "XL"],
+    "images": {
+      "Small":  "/Website Game/Wooden/Painted/S.JPG",
+      "Medium": "/Website Game/Wooden/Painted/M.JPG",
+      "Large":  "/Website Game/Wooden/Painted/L.JPG",
+      "XL":     "/Website Game/Wooden/Painted/XL.JPG"
+    }
   },
   {
     "id": 5,
-    "name": "Aluminium - Silver Coated",
-    "image": "/images/elephant/istockphoto-465031224-612x612.jpg",
     "material": "Aluminium",
     "finish": "Silver Coated",
-    "sizes": ["Mini", "Small", "Medium", "Large", "XL", "XXL"]
+    "sizes": ["Small", "Medium", "Large", "XL"],
+    "images": {
+      "Small":  "/Website Game/Aluminium/Painted/S.JPG",
+      "Medium": "/Website Game/Aluminium/Painted/M.JPG",
+      "Large":  "/Website Game/Aluminium/Painted/L.JPG",
+      "XL":     "/Website Game/Aluminium/Painted/XL.JPG"
+    }
   },
   {
     "id": 6,
-    "name": "Aluminium - Painted",
-    "image": "/images/elephant/istockphoto-500432743-612x612.jpg",
     "material": "Aluminium",
     "finish": "Painted",
-    "sizes": ["Mini", "Small", "Medium", "Large", "XL", "XXL"]
+    "sizes": ["Small", "Medium", "Large", "XL"],
+    "images": {
+      "Small":  "/Website Game/Aluminium/Painted/S.JPG",
+      "Medium": "/Website Game/Aluminium/Painted/M.JPG",
+      "Large":  "/Website Game/Aluminium/Painted/L.JPG",
+      "XL":     "/Website Game/Aluminium/Painted/XL.JPG"
+    }
   },
   {
     "id": 7,
-    "name": "Aluminium - Decorated",
-    "image": "/images/elephant/istockphoto-1162631262-612x612.jpg",
     "material": "Aluminium",
     "finish": "Decorated",
-    "sizes": ["Mini", "Small", "Medium", "Large", "XL", "XXL"]
+    "sizes": ["Small", "Medium", "Large", "XL"],
+    "images": {
+      "Small":  "/Website Game/Aluminium/Decorated/S.JPG",
+      "Medium": "/Website Game/Aluminium/Decorated/M.JPG",
+      "Large":  "/Website Game/Aluminium/Decorated/L.JPG",
+      "XL":     "/Website Game/Aluminium/Decorated/XL.JPG"
+    }
   },
   {
     "id": 8,
-    "name": "Paper Mache - Stone Finish",
-    "image": "/images/elephant/istockphoto-1369757859-612x612.jpg",
     "material": "Paper Mache",
     "finish": "Stone Finish",
-    "sizes": ["Mini", "Small", "Medium", "Large", "XL", "XXL"]
+    "sizes": ["Large"],
+    "images": {
+      "Large": "/Website Game/Paper Mache/Stone Finish/DSC_0949.JPG"
+    }
   },
   {
     "id": 9,
-    "name": "Paper Mache - Mosaic Work",
-    "image": "/images/elephant/mosaic-design-elephant-studio.jpg",
     "material": "Paper Mache",
     "finish": "Mosaic Work",
-    "sizes": ["Mini", "Small", "Medium", "Large", "XL", "XXL"]
+    "sizes": ["Small", "Large"],
+    "images": {
+      "Small": "/Website Game/Paper Mache/Decorated/S.JPG",
+      "Large": "/Website Game/Paper Mache/Decorated/L.JPG"
+    }
   },
   {
     "id": 10,
-    "name": "Paper Mache - Decorated",
-    "image": "/images/elephant/istockphoto-465002960-612x612.jpg",
     "material": "Paper Mache",
     "finish": "Decorated",
-    "sizes": ["Mini", "Small", "Medium", "Large", "XL", "XXL"]
+    "sizes": ["Small", "Large"],
+    "images": {
+      "Small": "/Website Game/Paper Mache/Decorated/S.JPG",
+      "Large": "/Website Game/Paper Mache/Decorated/L.JPG"
+    }
   },
   {
     "id": 11,
-    "name": "Paper Mache - Painted",
-    "image": "/images/elephant/istockphoto-95710418-612x612.jpg",
     "material": "Paper Mache",
     "finish": "Painted",
-    "sizes": ["Mini", "Small", "Medium", "Large", "XL", "XXL"]
+    "sizes": ["Medium", "Large", "XL"],
+    "images": {
+      "Medium": "/Website Game/Paper Mache/Painted/M.JPG",
+      "Large":  "/Website Game/Paper Mache/Painted/L.JPG",
+      "XL":     "/Website Game/Paper Mache/Painted/XL.JPG"
+    }
   },
   {
     "id": 12,
-    "name": "Re-cycled Plastic - Painted",
-    "image": "/images/elephant/istockphoto-500432743-612x612.jpg",
     "material": "Re-cycled Plastic",
     "finish": "Painted",
-    "sizes": ["Mini", "Small", "Medium", "Large", "XL", "XXL"]
+    "sizes": ["Small", "Medium", "Large", "XL"],
+    "images": {
+      "Small":  "/Website Game/Plastic/painted/S.JPG",
+      "Medium": "/Website Game/Plastic/painted/M.JPG",
+      "Large":  "/Website Game/Plastic/painted/L.JPG",
+      "XL":     "/Website Game/Plastic/painted/XL.JPG"
+    }
   },
   {
     "id": 13,
-    "name": "Re-cycled Plastic - Decorated",
-    "image": "/images/elephant/istockphoto-1162631262-612x612.jpg",
     "material": "Re-cycled Plastic",
     "finish": "Decorated",
-    "sizes": ["Mini", "Small", "Medium", "Large", "XL", "XXL"]
+    "sizes": ["Small", "Large"],
+    "images": {
+      "Small": "/Website Game/Plastic/Decorated/S.JPG",
+      "Large": "/Website Game/Plastic/Decorated/L.JPG"
+    }
   },
   {
     "id": 14,
-    "name": "Re-cycled Plastic - Stone Finish",
-    "image": "/images/elephant/istockphoto-1369757859-612x612.jpg",
     "material": "Re-cycled Plastic",
     "finish": "Stone Finish",
-    "sizes": ["Mini", "Small", "Medium", "Large", "XL", "XXL"]
+    "sizes": ["Small", "Medium", "Large", "XL"],
+    "images": {
+      "Small":  "/Website Game/Plastic/painted/S.JPG",
+      "Medium": "/Website Game/Plastic/painted/M.JPG",
+      "Large":  "/Website Game/Plastic/painted/L.JPG",
+      "XL":     "/Website Game/Plastic/painted/XL.JPG"
+    }
   },
   {
     "id": 15,
-    "name": "Re-cycled Plastic - Metallic Finish",
-    "image": "/images/products/image 59.png",
     "material": "Re-cycled Plastic",
     "finish": "Metallic Finish",
-    "sizes": ["Mini", "Small", "Medium", "Large", "XL", "XXL"]
+    "sizes": ["Small", "Medium", "Large", "XL"],
+    "images": {
+      "Small":  "/Website Game/Plastic/painted/S.JPG",
+      "Medium": "/Website Game/Plastic/painted/M.JPG",
+      "Large":  "/Website Game/Plastic/painted/L.JPG",
+      "XL":     "/Website Game/Plastic/painted/XL.JPG"
+    }
   }
 ]
