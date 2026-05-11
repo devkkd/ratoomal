@@ -75,15 +75,21 @@ export default function ElephantSizeGuide({ filters }) {
     if (containerWidth === 0 || filteredSizes.length === 0) return [];
     const gap = containerWidth < 640 ? 4 : containerWidth < 1024 ? 10 : 16;
     const totalGap = (filteredSizes.length - 1) * gap;
-    // Minimal padding so images use maximum available width
     const padding = containerWidth < 640 ? 4 : containerWidth < 1024 ? 32 : 64;
     const available = containerWidth - totalGap - padding;
     const totalBase = filteredSizes.reduce((s, x) => s + x.baseWidth, 0);
     const scale = available / totalBase;
+
+    // Cap max height so single/few images don't blow up
+    const maxHeight = containerWidth < 640 ? 160 : containerWidth < 1024 ? 260 : 360;
+    const largestHeight = filteredSizes[filteredSizes.length - 1].baseHeight * scale;
+    const heightScale = largestHeight > maxHeight ? maxHeight / largestHeight : 1;
+    const finalScale = scale * heightScale;
+
     return filteredSizes.map(s => ({
       ...s,
-      width: Math.max(s.baseWidth * scale, 16),
-      height: s.baseHeight * scale,
+      width: Math.max(s.baseWidth * finalScale, 16),
+      height: s.baseHeight * finalScale,
     }));
   };
 
