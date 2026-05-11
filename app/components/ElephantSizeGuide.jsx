@@ -61,33 +61,34 @@ export default function ElephantSizeGuide({ filters }) {
   }, []);
 
   const sizes = [
-    { label: "Mini",   inch: '(2")',  baseWidth: 80,  baseHeight: 60  },
-    { label: "Small",  inch: '(4")',  baseWidth: 120, baseHeight: 100 },
-    { label: "Medium", inch: '(8")',  baseWidth: 150, baseHeight: 130 },
-    { label: "Large",  inch: '(12")', baseWidth: 190, baseHeight: 170 },
-    { label: "XL",     inch: '(18")', baseWidth: 250, baseHeight: 235 },
-    { label: "XXL",    inch: '(24"+Custom)', baseWidth: 320, baseHeight: 300 },
+    { label: "Mini",   inch: '(2")',         baseWidth: 60,  baseHeight: 55  },
+    { label: "Small",  inch: '(4")',         baseWidth: 110, baseHeight: 100 },
+    { label: "Medium", inch: '(8")',         baseWidth: 180, baseHeight: 165 },
+    { label: "Large",  inch: '(12")',        baseWidth: 270, baseHeight: 250 },
+    { label: "XL",     inch: '(18")',        baseWidth: 370, baseHeight: 345 },
+    { label: "XXL",    inch: '(24"+Custom)', baseWidth: 480, baseHeight: 450 },
   ];
 
   const filteredSizes = sizes.filter(s => availableSizes.includes(s.label));
 
   const getResponsiveDimensions = () => {
     if (containerWidth === 0 || filteredSizes.length === 0) return [];
-    const gap = containerWidth < 640 ? 4 : containerWidth < 1024 ? 12 : 24;
+    const gap = containerWidth < 640 ? 4 : containerWidth < 1024 ? 10 : 16;
     const totalGap = (filteredSizes.length - 1) * gap;
-    const padding = containerWidth < 640 ? 8 : containerWidth < 1024 ? 64 : 128;
-    const available = Math.min(containerWidth - totalGap - padding, 1200);
+    // Minimal padding so images use maximum available width
+    const padding = containerWidth < 640 ? 4 : containerWidth < 1024 ? 32 : 64;
+    const available = containerWidth - totalGap - padding;
     const totalBase = filteredSizes.reduce((s, x) => s + x.baseWidth, 0);
-    const scale = Math.min(1, available / totalBase);
+    const scale = available / totalBase;
     return filteredSizes.map(s => ({
       ...s,
-      width: Math.max(s.baseWidth * scale, 20),
+      width: Math.max(s.baseWidth * scale, 16),
       height: s.baseHeight * scale,
     }));
   };
 
   const responsiveSizes = getResponsiveDimensions();
-  const gap = containerWidth < 640 ? 4 : containerWidth < 1024 ? 12 : 24;
+  const gap = containerWidth < 640 ? 4 : containerWidth < 1024 ? 10 : 16;
 
   const getPointerLeft = () => {
     if (!responsiveSizes.length || !responsiveSizes[active]) return 0;

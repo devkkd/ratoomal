@@ -104,10 +104,10 @@ const ImageCard = ({ image, name, role }) => (
       alt={name}
       className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
     />
-    <div className="absolute bottom-0 left-0 right-0 p-5 bg-gradient-to-t from-black/75 via-black/20 to-transparent">
+    {/* <div className="absolute bottom-0 left-0 right-0 p-5 bg-gradient-to-t from-black/75 via-black/20 to-transparent">
       <h5 className="font-bold text-white text-sm leading-tight">{name}</h5>
       <p className="text-gray-300 text-xs mt-0.5">{role}</p>
-    </div>
+    </div> */}
   </div>
 );
 
@@ -121,13 +121,13 @@ const TextCard = ({ image, name, role, quote }) => (
     </div>
     <div className="flex items-center gap-3 mt-4">
       {/* Small avatar from client image */}
-      <div className="w-10 h-10 rounded-full overflow-hidden shrink-0 border-2 border-[#C08237]/30">
+      {/* <div className="w-10 h-10 rounded-full overflow-hidden shrink-0 border-2 border-[#C08237]/30">
         <img src={image} alt={name} className="w-full h-full object-cover" />
       </div>
       <div>
         <h5 className="font-bold text-[#1A1A1A] text-sm leading-tight">{name}</h5>
         <p className="text-[#999] text-xs mt-0.5">{role}</p>
-      </div>
+      </div> */}
     </div>
   </div>
 );
