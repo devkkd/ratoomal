@@ -105,20 +105,21 @@ export async function POST(request) {
         };
 
         // Parse sizes specifically — handles missing commas like `4" 5"` → `4"`, `5"`
+        // Dimension sizes like `6x5x3` are kept as-is
         const parseSizes = (value) => {
           if (!value) return [];
           let str = value.toString().trim();
-          // Normalize fancy/curly quotes to straight double-quote
           str = str.replace(/[""]/g, '"');
-          // Split by comma first
           const byComma = str.split(",").map(s => s.trim()).filter(Boolean);
-          // For each chunk, if it contains multiple size tokens (e.g. `4" 5"`), split further
           const result = [];
           for (const chunk of byComma) {
-            // Match patterns like: 2", 2.5", 3", 4 inch, 10 inch etc.
+            // Keep dimension sizes (6x5x3) as-is
+            if (/\d+x\d+/i.test(chunk)) {
+              result.push(chunk);
+              continue;
+            }
             const tokens = chunk.match(/\d+(?:\.\d+)?(?:"|''|inch| inch)?/gi);
             if (tokens && tokens.length > 1) {
-              // Multiple sizes crammed together — split them
               tokens.forEach(t => result.push(t.trim()));
             } else {
               result.push(chunk);

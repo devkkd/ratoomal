@@ -19,6 +19,7 @@ const checkAuth = (request) => {
 // Normalize sizes — handles:
 // 1. Single string stored as array: ["3\", 4\", 5\""]
 // 2. Sizes crammed without comma: ["4\" 5\""] → ["4\"", "5\""]
+// 3. Dimension sizes like "6x5x3" are kept as-is (not split)
 const normalizeSizes = (sizes) => {
   if (!sizes || sizes.length === 0) return [];
   
@@ -28,6 +29,11 @@ const normalizeSizes = (sizes) => {
     // If item contains commas, it's a full string stored as one element
     if (str.includes(',')) {
       str.split(',').forEach(s => s.trim() && result.push(s.trim()));
+      continue;
+    }
+    // If item contains 'x' (dimension like 6x5x3), keep as-is
+    if (/\d+x\d+/i.test(str)) {
+      result.push(str);
       continue;
     }
     // If item has multiple size tokens without comma (e.g. `4" 5"`)
