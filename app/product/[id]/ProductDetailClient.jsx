@@ -88,8 +88,8 @@ const ProductDetailPage = () => {
                 // });
 
                 if (!data.success || !data.data) {
-                    // console.log('❌ Product not found, using fallback');
-                    useFallbackProduct();
+                    setProduct(null);
+                    setLoading(false);
                     return;
                 }
 
@@ -104,56 +104,11 @@ const ProductDetailPage = () => {
                 
             } catch (err) {
                 console.error('❌ Fetch error:', err);
-                useFallbackProduct();
+                setProduct(null);
+                setLoading(false);
             } finally {
                 setLoading(false);
             }
-        };
-
-        // Fallback function
-        const useFallbackProduct = () => {
-            const fallbackProduct = {
-                _id: id || "1",
-                name: "Premium Marble Ganesha Statue",
-                code: "PMGS001", // Add fallback product code
-                price: 2999,
-                moq: 50,
-                thumbnail: fallbackImages[0],
-                images: fallbackImages,
-                video360: "", // No video in fallback for simplicity
-                category: { 
-                    _id: "cat1", 
-                    name: "Statues" 
-                },
-                subCategory: { 
-                    _id: "sub1", 
-                    name: "Ganesha" 
-                },
-                finish: "Hand Painted",
-                productType: "Ready Stock",
-                services: ["Custom Design", "Private Label"],
-                features: [
-                    "Hand carved from premium marble",
-                    "Eco-friendly materials",
-                    "Expert craftsmanship",
-                    "Perfect for home and office decor",
-                    "Makes an excellent gift"
-                ],
-                godName: "Ganesha",
-                color: "White & Gold",
-                suitableFor: "Home & Office",
-                usage: "Interior Decor, Gift, Worship",
-                posture: "Sitting",
-                baseShape: "Round",
-                appearance: "Glossy",
-                careInstruction: "Wipe with dry cloth, Keep away from water",
-                assemblyRequired: "Already Assembled",
-                availability: "In Stock",
-                shortDescription: "Beautiful marble Ganesha statue for spiritual and decorative purposes",
-                longDescription: "This exquisite marble statue of Lord Ganesha is meticulously hand-carved by skilled artisans. Made from premium quality marble, it features intricate detailing and a beautiful finish. Perfect for home decor, office spaces, or as a spiritual centerpiece. The statue brings positive energy and prosperity to any space.",
-                description: "Premium quality marble statue of Lord Ganesha for home and office decor"
-            };
-            setProduct(fallbackProduct);
         };
 
         fetchProduct();
@@ -470,15 +425,28 @@ const ProductDetailPage = () => {
 
     if (!product || !transformedProduct) {
         return (
-            <div className="w-full bg-[#fffcf7] min-h-screen flex items-center justify-center">
-                <div className="text-center">
-                    <p className="text-gray-600">Product not found</p>
-                    <button 
-                        onClick={() => router.push("/category")}
-                        className="mt-4 px-6 py-2 bg-[#C08237] text-white rounded-lg hover:bg-[#a56e2e] transition-colors"
-                    >
-                        Back to Categories
-                    </button>
+            <div className="min-h-screen bg-[#FCF8F1] flex items-center justify-center px-6">
+                <div className="text-center max-w-md">
+                    <h1 className="text-[100px] font-bold text-[#C08237]/20 leading-none playfair select-none">404</h1>
+                    <div className="text-5xl mb-4">🐘</div>
+                    <h2 className="text-2xl font-bold text-[#1a1a1a] playfair mb-3">Product Not Found</h2>
+                    <p className="text-[#666] mona text-base mb-8">
+                        This product does not exist or has been removed.
+                    </p>
+                    <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                        <button
+                            onClick={() => router.push('/')}
+                            className="px-6 py-3 bg-[#C08237] text-white rounded-lg font-medium hover:bg-[#a56e2e] transition-colors"
+                        >
+                            Go to Home
+                        </button>
+                        <button
+                            onClick={() => router.push('/category')}
+                            className="px-6 py-3 border border-[#C08237] text-[#C08237] rounded-lg font-medium hover:bg-[#C08237] hover:text-white transition-colors"
+                        >
+                            Browse Products
+                        </button>
+                    </div>
                 </div>
             </div>
         );
