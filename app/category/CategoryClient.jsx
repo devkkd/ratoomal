@@ -1543,9 +1543,9 @@ const CategoryPage = () => {
             product.category === categoryId
         );
         
-        // Non-logged in users can see up to 3 products per category
+        // Non-logged in users can see up to 4 products per category
         if (!isLoggedIn) {
-            return categoryProducts.slice(0, 3);
+            return categoryProducts.slice(0, 4);
         }
         
         // Logged in users ke liye all products
