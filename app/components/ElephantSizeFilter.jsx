@@ -3,16 +3,16 @@ import { useState, useRef } from "react";
 import ElephantSizeGuide from "./ElephantSizeGuide";
 
 const MATERIAL_FINISH_MAP = {
-  "Wooden":             { color: "#C8A96E", finishes: ["Plain", "Carved", "Undercut", "Painted", "Decorated"] },
-  "Aluminium":        { color: "#A8B8C8", finishes: ["Painted", "Decorated"] },
-  "Paper Mache":      { color: "#D4B896", finishes: ["Stone Finish","Decorated", "Painted"] },
-  "Plastic":{ color: "#8FBC8F", finishes: ["Painted", "Decorated"] },
+  "Wood":          { color: "#C8A96E", finishes: ["Plain", "Carved", "Undercut", "Painted", "Decorated"] },
+  "Aluminium":     { color: "#A8B8C8", finishes: ["Painted", "Decorated"] },
+  "Paper Mache":   { color: "#D4B896", finishes: ["Stone Finish", "Decorated", "Painted"] },
+  "Plastic":       { color: "#8FBC8F", finishes: ["Painted", "Decorated"] },
 };
 
 const MATERIALS = Object.keys(MATERIAL_FINISH_MAP);
 
 export default function ElephantSizeFilter() {
-  const [selectedMaterial, setSelectedMaterial] = useState("Wooden");
+  const [selectedMaterial, setSelectedMaterial] = useState("Wood");
   const [selectedFinish, setSelectedFinish]     = useState("Plain");
 
   const handleMaterialSelect = (material) => {
@@ -113,7 +113,7 @@ export default function ElephantSizeFilter() {
       </div>
 
       {/* Size Guide */}
-      <div className="mt-4 md:mt-8">
+      <div className="mt-4">
         <ElephantSizeGuide filters={filters} />
       </div>
     </div>

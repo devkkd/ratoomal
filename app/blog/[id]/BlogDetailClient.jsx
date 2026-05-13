@@ -159,17 +159,7 @@ export default function BlogDetailClient() {
 
             {/* Content */}
             <div
-              className="prose prose-lg max-w-none text-gray-700 leading-relaxed
-                prose-headings:playfair prose-headings:text-gray-900
-                prose-h2:text-2xl prose-h2:font-bold prose-h2:mt-8 prose-h2:mb-4
-                prose-h3:text-xl prose-h3:font-semibold prose-h3:mt-6 prose-h3:mb-3
-                prose-p:mb-5 prose-p:leading-relaxed
-                prose-ul:list-disc prose-ul:pl-6 prose-ul:mb-5
-                prose-ol:list-decimal prose-ol:pl-6 prose-ol:mb-5
-                prose-li:mb-2
-                prose-strong:text-gray-900 prose-strong:font-semibold
-                prose-a:text-[#C08237] prose-a:underline
-                prose-blockquote:border-l-4 prose-blockquote:border-[#C08237] prose-blockquote:pl-5 prose-blockquote:italic prose-blockquote:text-gray-600"
+              className="blog-content"
               dangerouslySetInnerHTML={{ __html: blog.content }}
             />
 
@@ -233,7 +223,7 @@ export default function BlogDetailClient() {
                 <h3 className="text-lg font-bold text-gray-900 playfair mb-4">Related Articles</h3>
                 <div className="space-y-4">
                   {related.map((r) => (
-                    <Link key={r._id} href={`/blog/${r._id}`} className="group flex gap-3">
+                    <Link key={r._id} href={`/blog/${r.slug || r._id}`} className="group flex gap-3">
                       <div className="relative w-16 h-16 rounded-lg overflow-hidden flex-shrink-0">
                         <Image
                           src={r.coverImage || "/images/placeholder.png"}

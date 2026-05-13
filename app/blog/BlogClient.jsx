@@ -87,7 +87,7 @@ export default function BlogClient() {
       <NotificationToast notification={notification} onClose={hideNotification} />
 
       {/* Page Heading */}
-      <div className="bg-[#FFF6EB] border-b border-[#D7CEC2]/50 py-10 md:py-12">
+      <div className="bg-[#FFF6EB] border-b border-[#D7CEC2]/50 py-10">
         <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8">
           <div className="text-center mb-6">
             <p className="text-xs uppercase tracking-widest text-[#C08237] font-semibold mona mb-2">Our Journal</p>
@@ -98,7 +98,7 @@ export default function BlogClient() {
               Discover the artistry, heritage, and passion behind every piece we create.
             </p>
           </div>
-          <form onSubmit={handleSearch} className="max-w-lg mx-auto relative">
+          {/* <form onSubmit={handleSearch} className="max-w-lg mx-auto relative">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
             <input
               type="text"
@@ -113,7 +113,7 @@ export default function BlogClient() {
             >
               Search
             </button>
-          </form>
+          </form> */}
         </div>
       </div>
 
@@ -145,7 +145,7 @@ export default function BlogClient() {
             <p className="text-xs uppercase tracking-widest text-[#C08237] font-semibold mb-4 mona">
               Featured Post
             </p>
-            <Link href={`/blog/${featuredBlog._id}`} className="group block">
+            <Link href={`/blog/${featuredBlog.slug || featuredBlog._id}`} className="group block">
               <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-xl transition-all duration-300 grid grid-cols-1 lg:grid-cols-2">
                 <div className="relative h-64 lg:h-auto min-h-[300px] overflow-hidden">
                   <Image
@@ -236,7 +236,7 @@ export default function BlogClient() {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {blogs.map((blog) => (
-              <Link key={blog._id} href={`/blog/${blog._id}`} className="group">
+              <Link key={blog._id} href={`/blog/${blog.slug || blog._id}`} className="group">
                 <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-lg transition-all duration-300 group-hover:scale-[1.02] h-full flex flex-col">
                   <div className="relative h-52 overflow-hidden">
                     <Image
@@ -262,7 +262,7 @@ export default function BlogClient() {
                     </h3>
                     <p className="text-gray-600 text-sm mb-4 line-clamp-2 flex-1">{blog.excerpt}</p>
                     <div className="flex items-center justify-between text-xs text-gray-500 pt-4 border-t border-gray-100">
-                      <div className="flex items-center gap-3">
+                      {/* <div className="flex items-center gap-3">
                         <span className="flex items-center gap-1">
                           <Clock className="w-3.5 h-3.5" />
                           {blog.readTime} min
@@ -271,7 +271,7 @@ export default function BlogClient() {
                           <Eye className="w-3.5 h-3.5" />
                           {blog.views}
                         </span>
-                      </div>
+                      </div> */}
                       <span>{formatDate(blog.publishedAt || blog.createdAt)}</span>
                     </div>
                   </div>

@@ -19,6 +19,11 @@ export default function ElephantSizeGuide({ filters }) {
         if (data.length > 0) {
           setCurrentImages(data[0].images || {});
           setAvailableSizes(data[0].sizes);
+          // Auto-select largest available size on initial load
+          const sizeLabels = ["Mini", "Small", "Medium", "Large", "XL", "XXL"];
+          const filteredLabels = sizeLabels.filter(s => data[0].sizes.includes(s));
+          // active = last index in filteredSizes = largest
+          setActive(filteredLabels.length - 1);
         }
       } catch (error) {
         console.error("Error loading elephant data:", error);
@@ -39,13 +44,20 @@ export default function ElephantSizeGuide({ filters }) {
       if (fallback) {
         setCurrentImages(fallback.images || {});
         setAvailableSizes(fallback.sizes);
+        // Set active to last index of filteredSizes (largest available)
+        // filteredSizes is computed from sizes array filtered by availableSizes
+        // We need to set active = filteredSizes.length - 1 after sizes are filtered
+        // Use a ref-safe approach: store the target label, resolve index after render
         const allSizes = ["Mini", "Small", "Medium", "Large", "XL", "XXL"];
-        // Prefer Large, fallback to largest available
-        const largeIdx = allSizes.indexOf("Large");
-        const defaultIdx = fallback.sizes.includes("Large")
-          ? largeIdx
-          : allSizes.map((s, i) => fallback.sizes.includes(s) ? i : -1).filter(i => i !== -1).pop();
-        if (defaultIdx !== undefined) setActive(defaultIdx);
+        // Find largest available label
+        const largestLabel = [...fallback.sizes].sort(
+          (a, b) => allSizes.indexOf(b) - allSizes.indexOf(a)
+        )[0];
+        // Find its index in filteredSizes (which filters the sizes array)
+        const sizeLabels = ["Mini", "Small", "Medium", "Large", "XL", "XXL"];
+        const filteredLabels = sizeLabels.filter(s => fallback.sizes.includes(s));
+        const idx = filteredLabels.indexOf(largestLabel);
+        if (idx !== -1) setActive(idx);
       }
     }
   }, [filters, elephantData]);
@@ -120,11 +132,11 @@ export default function ElephantSizeGuide({ filters }) {
   }
 
   return (
-    <div className="w-full bg-[#FCF8F1] py-4 sm:py-8 md:py-12">
+    <div className="w-full bg-[#FCF8F1] py-4 ">
       <div id="elephant-container" className="w-full max-w-7xl sm:mx-auto px-1 sm:px-4 md:px-6 lg:px-8">
 
         {/* Elephants */}
-        <div className="flex justify-center items-end mb-4 sm:mb-6 md:mb-8">
+        <div className="flex justify-center items-end">
           <div className="flex items-end" style={{ gap: `${gap}px` }}>
             {responsiveSizes.map((item, idx) => {
               const isAvailable = availableSizes.includes(item.label);
@@ -148,7 +160,7 @@ export default function ElephantSizeGuide({ filters }) {
                       src={currentImages[item.label] || "/images/elephant-1.svg"}
                       alt={item.label}
                       fill
-                      className="object-contain object-bottom"
+                      className="object-contain object-bottom  "
                       sizes="(max-width: 640px) 40px, (max-width: 1024px) 80px, 320px"
                       priority={isActive}
                     />
@@ -193,9 +205,6 @@ export default function ElephantSizeGuide({ filters }) {
                   >
                     <span className={`block text-center leading-tight text-[10px] sm:text-sm md:text-[15px] ${isActive ? "font-bold" : "font-medium"}`}>
                       {item.label}{!isAvailable && " (NA)"}
-                    </span>
-                    <span className={`block text-center leading-tight text-[8px] sm:text-[10px] md:text-[12px] mt-0.5 ${isAvailable ? "opacity-80" : "opacity-50"}`}>
-                      {item.inch}
                     </span>
                   </button>
                 </div>

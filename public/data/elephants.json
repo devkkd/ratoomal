@@ -1,14 +1,14 @@
-[
+﻿[
   {
     "id": 1,
     "material": "Wood",
     "finish": "Plain",
     "sizes": ["Small", "Medium", "Large", "XL"],
     "images": {
-      "Small":  "/Website Game/Wooden/Plain/S.JPG",
-      "Medium": "/Website Game/Wooden/Plain/M.JPG",
-      "Large":  "/Website Game/Wooden/Plain/L.JPG",
-      "XL":     "/Website Game/Wooden/Plain/XL.JPG"
+      "Small":  "/Website Game/Wooden/Plain/S.png",
+      "Medium": "/Website Game/Wooden/Plain/M.png",
+      "Large":  "/Website Game/Wooden/Plain/L.png",
+      "XL":     "/Website Game/Wooden/Plain/XL.png"
     }
   },
   {
@@ -17,10 +17,10 @@
     "finish": "Carved",
     "sizes": ["Small", "Medium", "Large", "XL"],
     "images": {
-      "Small":  "/Website Game/Wooden/Carved/S.JPG",
-      "Medium": "/Website Game/Wooden/Carved/M.JPG",
-      "Large":  "/Website Game/Wooden/Carved/L.JPG",
-      "XL":     "/Website Game/Wooden/Carved/XL.JPG"
+      "Small":  "/Website Game/Wooden/Carved/S.png",
+      "Medium": "/Website Game/Wooden/Carved/M.png",
+      "Large":  "/Website Game/Wooden/Carved/L.png",
+      "XL":     "/Website Game/Wooden/Carved/XL.png"
     }
   },
   {
@@ -29,46 +29,46 @@
     "finish": "Undercut",
     "sizes": ["Small", "Medium", "Large", "XL"],
     "images": {
-      "Small":  "/Website Game/Wooden/Undercut/S.JPG",
-      "Medium": "/Website Game/Wooden/Undercut/M.JPG",
-      "Large":  "/Website Game/Wooden/Undercut/L.JPG",
-      "XL":     "/Website Game/Wooden/Undercut/XL.JPG"
+      "Small":  "/Website Game/Wooden/Undercut/S.png",
+      "Medium": "/Website Game/Wooden/Undercut/M.png",
+      "Large":  "/Website Game/Wooden/Undercut/L.png",
+      "XL":     "/Website Game/Wooden/Undercut/XL.png"
     }
   },
   {
     "id": 4,
     "material": "Wood",
-    "finish": "Painted Decorated",
+    "finish": "Painted",
     "sizes": ["Small", "Medium", "Large", "XL"],
     "images": {
-      "Small":  "/Website Game/Wooden/Painted/S.JPG",
-      "Medium": "/Website Game/Wooden/Painted/M.JPG",
-      "Large":  "/Website Game/Wooden/Painted/L.JPG",
-      "XL":     "/Website Game/Wooden/Painted/XL.JPG"
+      "Small":  "/Website Game/Wooden/Painted/S.png",
+      "Medium": "/Website Game/Wooden/Painted/M.png",
+      "Large":  "/Website Game/Wooden/Painted/L.png",
+      "XL":     "/Website Game/Wooden/Painted/XL.png"
+    }
+  },
+  {
+    "id": 16,
+    "material": "Wood",
+    "finish": "Decorated",
+    "sizes": ["Small", "Medium", "Large", "XL"],
+    "images": {
+      "Small":  "/Website Game/Wooden/Decorated/S.png",
+      "Medium": "/Website Game/Wooden/Decorated/M.png",
+      "Large":  "/Website Game/Wooden/Decorated/L.png",
+      "XL":     "/Website Game/Wooden/Decorated/XL.png"
     }
   },
   {
     "id": 5,
     "material": "Aluminium",
-    "finish": "Silver Coated",
-    "sizes": ["Small", "Medium", "Large", "XL"],
-    "images": {
-      "Small":  "/Website Game/Aluminium/Painted/S.JPG",
-      "Medium": "/Website Game/Aluminium/Painted/M.JPG",
-      "Large":  "/Website Game/Aluminium/Painted/L.JPG",
-      "XL":     "/Website Game/Aluminium/Painted/XL.JPG"
-    }
-  },
-  {
-    "id": 6,
-    "material": "Aluminium",
     "finish": "Painted",
     "sizes": ["Small", "Medium", "Large", "XL"],
     "images": {
-      "Small":  "/Website Game/Aluminium/Painted/S.JPG",
-      "Medium": "/Website Game/Aluminium/Painted/M.JPG",
-      "Large":  "/Website Game/Aluminium/Painted/L.JPG",
-      "XL":     "/Website Game/Aluminium/Painted/XL.JPG"
+      "Small":  "/Website Game/Aluminium/Painted/S.png",
+      "Medium": "/Website Game/Aluminium/Painted/M.png",
+      "Large":  "/Website Game/Aluminium/Painted/L.png",
+      "XL":     "/Website Game/Aluminium/Painted/XL.png"
     }
   },
   {
@@ -77,10 +77,10 @@
     "finish": "Decorated",
     "sizes": ["Small", "Medium", "Large", "XL"],
     "images": {
-      "Small":  "/Website Game/Aluminium/Decorated/S.JPG",
-      "Medium": "/Website Game/Aluminium/Decorated/M.JPG",
-      "Large":  "/Website Game/Aluminium/Decorated/L.JPG",
-      "XL":     "/Website Game/Aluminium/Decorated/XL.JPG"
+      "Small":  "/Website Game/Aluminium/Decorated/S.png",
+      "Medium": "/Website Game/Aluminium/Decorated/M.png",
+      "Large":  "/Website Game/Aluminium/Decorated/L.png",
+      "XL":     "/Website Game/Aluminium/Decorated/XL.png"
     }
   },
   {
@@ -89,17 +89,7 @@
     "finish": "Stone Finish",
     "sizes": ["Large"],
     "images": {
-      "Large": "/Website Game/Paper Mache/Stone Finish/DSC_0949.JPG"
-    }
-  },
-  {
-    "id": 9,
-    "material": "Paper Mache",
-    "finish": "Mosaic Work",
-    "sizes": ["Small", "Large"],
-    "images": {
-      "Small": "/Website Game/Paper Mache/Decorated/S.JPG",
-      "Large": "/Website Game/Paper Mache/Decorated/L.JPG"
+      "Large": "/Website Game/Paper Mache/Stone Finish/DSC_0949.png"
     }
   },
   {
@@ -108,8 +98,8 @@
     "finish": "Decorated",
     "sizes": ["Small", "Large"],
     "images": {
-      "Small": "/Website Game/Paper Mache/Decorated/S.JPG",
-      "Large": "/Website Game/Paper Mache/Decorated/L.JPG"
+      "Small": "/Website Game/Paper Mache/Decorated/S.png",
+      "Large": "/Website Game/Paper Mache/Decorated/L.png"
     }
   },
   {
@@ -118,55 +108,31 @@
     "finish": "Painted",
     "sizes": ["Medium", "Large", "XL"],
     "images": {
-      "Medium": "/Website Game/Paper Mache/Painted/M.JPG",
-      "Large":  "/Website Game/Paper Mache/Painted/L.JPG",
-      "XL":     "/Website Game/Paper Mache/Painted/XL.JPG"
+      "Medium": "/Website Game/Paper Mache/Painted/M.png",
+      "Large":  "/Website Game/Paper Mache/Painted/L.png",
+      "XL":     "/Website Game/Paper Mache/Painted/XL.png"
     }
   },
   {
     "id": 12,
-    "material": "Re-cycled Plastic",
+    "material": "Plastic",
     "finish": "Painted",
     "sizes": ["Small", "Medium", "Large", "XL"],
     "images": {
-      "Small":  "/Website Game/Plastic/painted/S.JPG",
-      "Medium": "/Website Game/Plastic/painted/M.JPG",
-      "Large":  "/Website Game/Plastic/painted/L.JPG",
-      "XL":     "/Website Game/Plastic/painted/XL.JPG"
+      "Small":  "/Website Game/Plastic/painted/S.png",
+      "Medium": "/Website Game/Plastic/painted/M.png",
+      "Large":  "/Website Game/Plastic/painted/L.png",
+      "XL":     "/Website Game/Plastic/painted/XL.png"
     }
   },
   {
     "id": 13,
-    "material": "Re-cycled Plastic",
+    "material": "Plastic",
     "finish": "Decorated",
     "sizes": ["Small", "Large"],
     "images": {
-      "Small": "/Website Game/Plastic/Decorated/S.JPG",
-      "Large": "/Website Game/Plastic/Decorated/L.JPG"
-    }
-  },
-  {
-    "id": 14,
-    "material": "Re-cycled Plastic",
-    "finish": "Stone Finish",
-    "sizes": ["Small", "Medium", "Large", "XL"],
-    "images": {
-      "Small":  "/Website Game/Plastic/painted/S.JPG",
-      "Medium": "/Website Game/Plastic/painted/M.JPG",
-      "Large":  "/Website Game/Plastic/painted/L.JPG",
-      "XL":     "/Website Game/Plastic/painted/XL.JPG"
-    }
-  },
-  {
-    "id": 15,
-    "material": "Re-cycled Plastic",
-    "finish": "Metallic Finish",
-    "sizes": ["Small", "Medium", "Large", "XL"],
-    "images": {
-      "Small":  "/Website Game/Plastic/painted/S.JPG",
-      "Medium": "/Website Game/Plastic/painted/M.JPG",
-      "Large":  "/Website Game/Plastic/painted/L.JPG",
-      "XL":     "/Website Game/Plastic/painted/XL.JPG"
+      "Small": "/Website Game/Plastic/Decorated/S.png",
+      "Large": "/Website Game/Plastic/Decorated/L.png"
     }
   }
 ]
