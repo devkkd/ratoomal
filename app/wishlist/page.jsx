@@ -105,7 +105,7 @@ export default function WishlistPage() {
               <div 
                 key={product.id} 
                 className="group cursor-pointer"
-                onClick={() => router.push(`/product/${product.id}`)}
+                onClick={() => router.push(`/product/${product.slug || product.id}`)}
               >
                 {/* Image Container */}
                 <div className="relative aspect-[4/5] overflow-hidden rounded-xl bg-white mb-4">

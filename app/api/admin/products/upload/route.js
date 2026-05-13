@@ -129,9 +129,18 @@ export async function POST(request) {
         };
 
         // Create product object
+        const slugBase = productName.toString()
+          .toLowerCase()
+          .replace(/[^a-z0-9\s-]/g, "")
+          .replace(/\s+/g, "-")
+          .replace(/-+/g, "-")
+          .trim();
+        const slug = `${slugBase}-${productCode.toString().toLowerCase()}`;
+
         const productData = {
           name: productName.toString(),
           code: productCode.toString().toUpperCase(),
+          slug,
           price: price ? parseFloat(price) : 0,
           moq: parseInt(row["MOQ"] || 1),
           category: categoryDoc._id,

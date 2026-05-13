@@ -64,10 +64,19 @@ export async function GET(request, { params }) {
     // Check if user is authenticated
     const isAuthenticated = checkAuth(request);
     
-    // Get product with populated category and subcategory info
-    const product = await Product.findById(id)
-      .populate('category', 'name _id')
-      .populate('subCategory', 'name _id');
+    // Support both MongoDB _id and slug lookup
+    let product;
+    if (id.match(/^[0-9a-fA-F]{24}$/)) {
+      // MongoDB ObjectId
+      product = await Product.findById(id)
+        .populate('category', 'name _id')
+        .populate('subCategory', 'name _id');
+    } else {
+      // Slug lookup
+      product = await Product.findOne({ slug: id })
+        .populate('category', 'name _id')
+        .populate('subCategory', 'name _id');
+    }
     
     if (!product) {
       return NextResponse.json(

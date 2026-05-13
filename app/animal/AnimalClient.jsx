@@ -199,6 +199,7 @@ const AnimalPage = () => {
                         // Transform products to match frontend structure
                         const transformedProducts = animalProductsData.map(product => ({
                             id: product._id,
+                            slug: product.slug || null,
                             name: product.name || "Unnamed Product",
                             code: product.code || "",
                             price: product.price?.toString() || "0",
@@ -267,7 +268,7 @@ const AnimalPage = () => {
             router.push('/login');
             return;
         }
-        router.push(`/product/${product.id}`);
+        router.push(`/product/${product.slug || product.id}`);
     };
 
     // Fixed filter change handler

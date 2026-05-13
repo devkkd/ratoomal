@@ -92,8 +92,8 @@ const ProductCard = ({
   // Handle product view
   const handleViewProduct = () => {
     if (!product) return;
-    const productId = product.id || product._id;
-    router.push(`/product/${productId}`);
+    const productSlug = product.slug || product.id || product._id;
+    router.push(`/product/${productSlug}`);
   };
 
   if (!product) {

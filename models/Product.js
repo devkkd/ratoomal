@@ -16,6 +16,14 @@ const ProductSchema = new mongoose.Schema(
       uppercase: true,
     },
 
+    slug: {
+      type: String,
+      unique: true,
+      sparse: true, // allows null for existing products
+      trim: true,
+      lowercase: true,
+    },
+
     price: {
       type: Number,
       required: false,
@@ -100,6 +108,16 @@ const ProductSchema = new mongoose.Schema(
 
 /* ✅ SAFE MIDDLEWARE (NO next(), NO ERROR) */
 ProductSchema.pre("save", function () {
+  // Auto-generate slug from name + code if not set
+  if (!this.slug && this.name) {
+    this.slug = this.name
+      .toLowerCase()
+      .replace(/[^a-z0-9\s-]/g, "")
+      .replace(/\s+/g, "-")
+      .replace(/-+/g, "-")
+      .trim() + "-" + this.code.toLowerCase();
+  }
+
   if (this.video360 && this.video360.startsWith("data:")) {
     this.video360 = "";
   }

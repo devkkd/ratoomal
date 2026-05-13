@@ -1640,6 +1640,7 @@ const CategoryPage = () => {
                     if (productsData.success && productsData.data) {
                         const transformedProducts = productsData.data.map(product => ({
                             id: product._id,
+                            slug: product.slug || null,
                             name: product.name || "Unnamed Product",
                             code: product.code || "",
                             price: product.price?.toString() || "0",
@@ -1990,7 +1991,7 @@ const CategoryPage = () => {
     };
 
     const handleProductClick = (product) => {
-        router.push(`/product/${product.id}`);
+        router.push(`/product/${product.slug || product.id}`);
     };
 
     // Apply filters
