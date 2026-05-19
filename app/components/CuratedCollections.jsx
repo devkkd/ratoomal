@@ -44,8 +44,8 @@ export default function CuratedCollections() {
                     <p className="text-gray-600">No animal products found</p>
                 </div>
             ) : (
-            <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 sm:px-6">
-                {products.map((item) => (
+            <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:px-6">
+                {products.slice(0, 4).map((item) => (
                     <div 
                         key={item.id} 
                         onClick={() => router.push(`/product/${item.id}`)}

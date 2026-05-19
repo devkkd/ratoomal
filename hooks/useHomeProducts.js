@@ -20,9 +20,9 @@ async function fetchHomeData() {
 
   // Fetch all 3 categories in parallel using category name search
   fetchPromise = Promise.all([
-    fetch("/api/products?limit=5&categoryName=animal").then((r) => r.json()),
-    fetch("/api/products?limit=5&categoryName=god").then((r) => r.json()),
-    fetch("/api/products?limit=5&categoryName=utility").then((r) => r.json()),
+    fetch("/api/products?limit=4&categoryName=animal").then((r) => r.json()),
+    fetch("/api/products?limit=4&categoryName=god").then((r) => r.json()),
+    fetch("/api/products?limit=4&categoryName=utility").then((r) => r.json()),
   ])
     .then(([animalData, godData, utilityData]) => {
       // If API doesn't support categoryName param, fall back to fetching all
@@ -60,7 +60,7 @@ async function fetchAllAndFilter() {
         .filter((p) =>
           (p.category?.name || "").toLowerCase().includes(keyword)
         )
-        .slice(0, 5)
+        .slice(0, 4)
         .map(mapProduct);
 
     cache = {
@@ -71,7 +71,7 @@ async function fetchAllAndFilter() {
           const name = (p.category?.name || "").toLowerCase();
           return name.includes("utility") || name.includes("decor");
         })
-        .slice(0, 5)
+        .slice(0, 4)
         .map(mapProduct),
     };
     return cache;

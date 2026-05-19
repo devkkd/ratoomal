@@ -61,7 +61,12 @@ const VerifyBusiness = () => {
         body: formData,
       });
 
-      const data = await res.json();
+      let data;
+      try {
+        data = await res.json();
+      } catch {
+        throw new Error(`Server error (${res.status}): Response was not JSON`);
+      }
       
       if (res.ok) {
         setShowSuccess(true);
@@ -82,8 +87,8 @@ const VerifyBusiness = () => {
         alert(data.message || "Something went wrong");
       }
     } catch (err) {
-      console.error(err);
-      alert("Something went wrong. Please try again.");
+      console.error('Signup error:', err);
+      alert(err.message || "Something went wrong. Please try again.");
     } finally {
       setIsSubmitting(false);
     }

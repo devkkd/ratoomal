@@ -1450,7 +1450,6 @@ const filters = {
     "Material": ["Plastic", "Wooden", "Resin", "Thandi Lac", "Marble", "Metal", "Ceramic", "Glass", "Stone"],
     "Size": ["3 inch", "6 inch", "9 inch", "12 inch", "15 inch", "18 inch", "24 inch", "36 inch"],
     "Product Type": ["Ready Stock", "Made to Order"],
-    "Business Services": ["Custom Design", "Private Label", "Corporate Gifts", "Other"]
 };
 
 // Sort options
@@ -1479,14 +1478,12 @@ const CategoryPage = () => {
         "material": [],
         "size": [],
         "producttype": [],
-        "businessservices": []
     });
     const [selectedCategories, setSelectedCategories] = useState([]);
     const [expandedSections, setExpandedSections] = useState({
         "Finish / Style": true,
         "Minimum Order Quantity": true,
         "Product Type": true,
-        "Business Services": true
     });
     const [navigationState, setNavigationState] = useState({
         shouldNavigate: false,
@@ -2562,7 +2559,7 @@ const CategoryPage = () => {
                                             </div>
                                             
                                             {/* Products Grid - 2 columns mobile, 4 columns desktop */}
-                                            <div className="grid grid-cols-2 lg:grid-cols-4 gap-5 lg:gap-7">
+                                            <div className="grid grid-cols-2 lg:grid-cols-3 gap-5 lg:gap-7">
                                                 {categoryProducts.map(product => (
                                                     <div 
                                                         key={product.id} 

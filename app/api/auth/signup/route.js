@@ -8,7 +8,6 @@ export async function POST(req) {
 
   try {
     const formData = await req.formData();
-    
     // Extract form fields
     const userData = {
       companyName: formData.get("companyName"),
@@ -266,7 +265,7 @@ export async function POST(req) {
 
     return NextResponse.json(
       { 
-        message: "Internal server error",
+        message: error.message || "Internal server error",
         error: process.env.NODE_ENV === 'development' ? error.message : undefined
       },
       { status: 500 }
