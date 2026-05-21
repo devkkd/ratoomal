@@ -1,6 +1,6 @@
 import connectDB from "@/lib/db";
 import User from "@/models/User";
-import { sendEmail } from "@/lib/mailer";
+import { sendEmail, sendClientEmail } from "@/lib/mailer";
 import {
   userApprovedTemplate,
   userRejectedTemplate,
@@ -31,21 +31,18 @@ export async function PATCH(req) {
   try {
     if (status === "approved") {
       const email = userApprovedTemplate(user);
-
       console.log("📧 SENDING APPROVAL EMAIL TO:", user.email);
-
-      await sendEmail({
+      await sendClientEmail({
         to: user.email,
         subject: email.subject,
         html: email.html,
       });
-
       console.log("✅ APPROVAL EMAIL SENT");
     }
 
     if (status === "rejected") {
       const email = userRejectedTemplate();
-      await sendEmail({
+      await sendClientEmail({
         to: user.email,
         subject: email.subject,
         html: email.html,

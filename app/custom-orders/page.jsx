@@ -1,11 +1,14 @@
 "use client";
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Upload, ChevronDown } from 'lucide-react';
 import FAQSection from '../components/FAQSection';
+import PhoneInput from '../components/PhoneInput';
 
 const CustomOrderForm = () => {
   const [loading, setLoading] = useState(false);
   const [files, setFiles] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const [categoriesLoading, setCategoriesLoading] = useState(true);
   const [formData, setFormData] = useState({
     companyName: "",
     contactPersonName: "",
@@ -19,6 +22,24 @@ const CustomOrderForm = () => {
   });
 
   const [errors, setErrors] = useState({});
+
+  // Fetch categories from DB
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const res = await fetch('/api/categories');
+        const data = await res.json();
+        if (data.success) {
+          setCategories(data.data);
+        }
+      } catch (err) {
+        console.error('Failed to fetch categories:', err);
+      } finally {
+        setCategoriesLoading(false);
+      }
+    };
+    fetchCategories();
+  }, []);
 
   // Validate form
   const validateForm = () => {
@@ -258,11 +279,46 @@ const CustomOrderForm = () => {
                   >
                     <option value="">Select your country</option>
                     <option value="India">India</option>
-                    <option value="UAE">UAE</option>
-                    <option value="USA">USA</option>
-                    <option value="UK">UK</option>
+                    <option value="USA">United States</option>
+                    <option value="UK">United Kingdom</option>
+                    <option value="UAE">United Arab Emirates</option>
                     <option value="Canada">Canada</option>
                     <option value="Australia">Australia</option>
+                    <option value="Germany">Germany</option>
+                    <option value="France">France</option>
+                    <option value="Italy">Italy</option>
+                    <option value="Spain">Spain</option>
+                    <option value="Netherlands">Netherlands</option>
+                    <option value="Belgium">Belgium</option>
+                    <option value="Switzerland">Switzerland</option>
+                    <option value="Austria">Austria</option>
+                    <option value="Sweden">Sweden</option>
+                    <option value="Norway">Norway</option>
+                    <option value="Denmark">Denmark</option>
+                    <option value="Finland">Finland</option>
+                    <option value="Japan">Japan</option>
+                    <option value="South Korea">South Korea</option>
+                    <option value="Singapore">Singapore</option>
+                    <option value="Hong Kong">Hong Kong</option>
+                    <option value="China">China</option>
+                    <option value="Malaysia">Malaysia</option>
+                    <option value="Saudi Arabia">Saudi Arabia</option>
+                    <option value="Qatar">Qatar</option>
+                    <option value="Kuwait">Kuwait</option>
+                    <option value="Bahrain">Bahrain</option>
+                    <option value="Oman">Oman</option>
+                    <option value="South Africa">South Africa</option>
+                    <option value="Nigeria">Nigeria</option>
+                    <option value="Kenya">Kenya</option>
+                    <option value="Brazil">Brazil</option>
+                    <option value="Mexico">Mexico</option>
+                    <option value="Argentina">Argentina</option>
+                    <option value="New Zealand">New Zealand</option>
+                    <option value="Pakistan">Pakistan</option>
+                    <option value="Bangladesh">Bangladesh</option>
+                    <option value="Sri Lanka">Sri Lanka</option>
+                    <option value="Nepal">Nepal</option>
+                    <option value="Other">Other</option>
                   </select>
                   <ChevronDown className="absolute right-3 top-3.5 h-4 w-4 text-gray-400 pointer-events-none" />
                 </div>
@@ -272,15 +328,16 @@ const CustomOrderForm = () => {
               </div>
               <div className="space-y-2">
                 <label className="text-xs font-medium text-gray-700">Phone / WhatsApp *</label>
-                <input 
-                  type="tel" 
+                <PhoneInput
                   name="phone"
                   value={formData.phone}
-                  onChange={handleChange}
-                  placeholder="Enter your Phone / WhatsApp" 
-                  className={`w-full p-3 bg-white border rounded-md text-sm focus:outline-none focus:ring-1 focus:ring-[#C18E4D] ${
-                    errors.phone ? 'border-red-500' : 'border-gray-200'
-                  }`}
+                  onChange={(val) => {
+                    setFormData(prev => ({ ...prev, phone: val }));
+                    if (errors.phone) setErrors(prev => ({ ...prev, phone: "" }));
+                  }}
+                  placeholder="Enter your phone number"
+                  error={!!errors.phone}
+                  required
                 />
                 {errors.phone && (
                   <p className="text-xs text-red-500">{errors.phone}</p>
@@ -329,13 +386,14 @@ const CustomOrderForm = () => {
                     className={`w-full p-3 bg-white border rounded-md text-sm appearance-none focus:outline-none focus:ring-1 focus:ring-[#C18E4D] ${
                       errors.productCategory ? 'border-red-500' : 'border-gray-200'
                     }`}
+                    disabled={categoriesLoading}
                   >
-                    <option value="">Select Product Category</option>
-                    <option value="Perfumes">Perfumes</option>
-                    <option value="Candles">Candles</option>
-                    <option value="Diffusers">Diffusers</option>
-                    <option value="Soaps">Soaps</option>
-                    <option value="Skincare">Skincare</option>
+                    <option value="">
+                      {categoriesLoading ? 'Loading categories...' : 'Select Product Category'}
+                    </option>
+                    {categories.map((cat) => (
+                      <option key={cat._id} value={cat.name}>{cat.name}</option>
+                    ))}
                     <option value="Other">Other</option>
                   </select>
                   <ChevronDown className="absolute right-3 top-3.5 h-4 w-4 text-gray-400 pointer-events-none" />
@@ -356,11 +414,14 @@ const CustomOrderForm = () => {
                     }`}
                   >
                     <option value="">Select Customization Type</option>
-                    <option value="Packaging">Packaging Only</option>
-                    <option value="Fragrance">Fragrance Only</option>
-                    <option value="Both">Packaging & Fragrance</option>
-                    <option value="Full">Full Customization</option>
-                    <option value="None">No Customization</option>
+                    <option value="Finish & Color">Finish &amp; Color Customization</option>
+                    <option value="Material Modification">Material Modification</option>
+                    <option value="Size Modification">Size Modification</option>
+                    <option value="Branding & Logo">Branding &amp; Logo Addition</option>
+                    <option value="Custom Packaging">Custom Packaging</option>
+                    <option value="Full Customization">Full Customization</option>
+                    <option value="No Customization">No Customization Needed</option>
+                    <option value="Other">Other Requirements</option>
                   </select>
                   <ChevronDown className="absolute right-3 top-3.5 h-4 w-4 text-gray-400 pointer-events-none" />
                 </div>

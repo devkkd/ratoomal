@@ -1,5 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  // Mark nodemailer as server-only (prevents bundling issues)
+  serverExternalPackages: ['nodemailer'],
+
   // WWW Canonicalization: redirect non-www to www
   async redirects() {
     return [
@@ -17,16 +20,14 @@ const nextConfig = {
     optimizePackageImports: ['lucide-react', '@heroicons/react']
   },
 
-  // Ensure CSS is minified in production
-  compiler: {
-    removeConsole: process.env.NODE_ENV === 'production',
-  },
+  // Never strip console logs — we need them for email debugging
+  compiler: {},
   
   // Handle build-time environment variables safely
   env: {
     CUSTOM_BASE_URL: process.env.NODE_ENV === 'production' 
       ? (process.env.NEXT_PUBLIC_API_BASE_URL || '')
-      : 'http://localhost:3001'  // Updated to match the actual dev server port
+      : 'http://localhost:3001'
   },
   
   // Configure external image domains

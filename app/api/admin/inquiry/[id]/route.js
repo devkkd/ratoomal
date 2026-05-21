@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import connectDB from "@/lib/db";
 import Inquiry from "@/models/Inquiry";
-import { sendEmail } from "@/lib/mailer";
+import { sendEmail, sendClientEmail } from "@/lib/mailer";
 import {
   inquiryApprovedTemplate,
   inquiryRejectedTemplate,
@@ -65,7 +65,7 @@ export async function PATCH(request, context) {
         console.log(`📧 SENDING INQUIRY ${body.status.toUpperCase()} MAIL TO:`, updated.email);
         console.log("Subject:", email.subject);
 
-        await sendEmail({
+        await sendClientEmail({
           to: updated.email,
           subject: email.subject,
           html: email.html,

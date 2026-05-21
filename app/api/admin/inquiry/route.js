@@ -730,6 +730,7 @@ import Inquiry from "@/models/Inquiry";
 import User from "@/models/User";
 import Product from "@/models/Product";
 import { sendEmail } from "@/lib/mailer";
+import { adminNewInquiryTemplate } from "@/lib/emailTemplates";
 
 // CREATE INQUIRY
 export async function POST(request) {
@@ -737,6 +738,84 @@ export async function POST(request) {
 
   try {
     const body = await request.json();
+
+    // ── Product-specific inquiry (from productInquiry page) ──────────────────
+    // These come with: product, companyName, contactName, email, phone, country, etc.
+    if (body.product && !body.cartProducts) {
+      const { product, companyName, contactName, email, phone, country,
+              inquiryType, quantity, customization, message } = body;
+
+      if (!companyName || !contactName || !email || !phone || !inquiryType || !quantity) {
+        return NextResponse.json({ success: false, error: 'All fields are required' }, { status: 400 });
+      }
+
+      // Fetch product name for the email
+      let productDoc = null;
+      try { productDoc = await Product.findById(product).select('name code').lean(); } catch (_) {}
+
+      const inquiryPayload = {
+        inquiryType: 'product_inquiry',
+        product,
+        companyName,
+        contactName,
+        email,
+        phone,
+        country,
+        inquiryType: inquiryType || 'product_inquiry',
+        quantity,
+        customization,
+        message,
+      };
+
+      // Send admin notification email
+      try {
+        const emailTemplate = adminNewInquiryTemplate({
+          ...inquiryPayload,
+          product: productDoc || { name: product },
+        });
+        await sendEmail({
+          to: process.env.ADMIN_EMAIL,
+          subject: emailTemplate.subject,
+          html: emailTemplate.html,
+        });
+        console.log("✅ Product inquiry admin email sent");
+      } catch (emailErr) {
+        console.error("❌ Product inquiry admin email failed:", emailErr.message);
+      }
+
+      // Send confirmation to customer
+      try {
+        await sendEmail({
+          to: email,
+          subject: `Your Product Inquiry is Being Processed — Ratoomal`,
+          html: `
+            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f9f9f9;">
+              <div style="background-color: white; padding: 30px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+                <h1 style="color: #C18E4D; text-align: center; margin-bottom: 6px;">Thank You for Your Inquiry!</h1>
+                <p style="color: #666; text-align: center; font-size: 14px;">We've received your product inquiry and will respond within 24–48 hours.</p>
+                <div style="background-color: #FFF6EB; padding: 20px; border-radius: 8px; margin: 20px 0;">
+                  <h3 style="color: #2D2D2D; margin: 0 0 12px;">Inquiry Summary</h3>
+                  <p style="font-size: 14px; margin: 4px 0;"><strong>Product:</strong> ${productDoc?.name || product}</p>
+                  <p style="font-size: 14px; margin: 4px 0;"><strong>Company:</strong> ${companyName}</p>
+                  <p style="font-size: 14px; margin: 4px 0;"><strong>Inquiry Type:</strong> ${inquiryType}</p>
+                  <p style="font-size: 14px; margin: 4px 0;"><strong>Quantity:</strong> ${quantity}</p>
+                </div>
+                <p style="color: #C18E4D; font-weight: bold; text-align: center; font-size: 14px;">
+                  Need help? Email us at ${process.env.ADMIN_EMAIL || 'info@ratoomal.com'}
+                </p>
+              </div>
+            </div>
+          `,
+        });
+        console.log("✅ Product inquiry customer confirmation email sent to:", email);
+      } catch (emailErr) {
+        console.error("❌ Product inquiry customer email failed:", emailErr.message);
+      }
+
+      return NextResponse.json({ success: true, message: 'Inquiry submitted successfully' });
+    }
+
+    // ── Cart inquiry (from inquiry-cart page) ────────────────────────────────
     const { cartProducts, inquiryFor, customizationNeeded, message, userEmail } = body;
     
     console.log('Received inquiry request for user:', userEmail);
@@ -832,18 +911,50 @@ export async function POST(request) {
 
     // Send email to admin
     try {
-      // Simple email template
-      const emailSubject = `New Cart Inquiry from ${user.companyName}`;
+      const emailSubject = `🛒 New Cart Inquiry — ${user.companyName} (${totalProducts} products, ${totalQuantity} pcs)`;
       const emailHtml = `
-        <h2>New Cart Inquiry Received</h2>
-        <p><strong>Company:</strong> ${user.companyName}</p>
-        <p><strong>Contact:</strong> ${user.contactName}</p>
-        <p><strong>Email:</strong> ${user.businessEmail}</p>
-        <p><strong>Total Products:</strong> ${totalProducts}</p>
-        <p><strong>Total Quantity:</strong> ${totalQuantity}</p>
-        <p><strong>Inquiry For:</strong> ${inquiryFor}</p>
-        <p><strong>Customization:</strong> ${customizationNeeded}</p>
-        <p><strong>Message:</strong> ${message}</p>
+        <div style="font-family: Arial, sans-serif; max-width: 620px; margin: 0 auto; padding: 20px; background-color: #f9f9f9;">
+          <div style="background-color: white; padding: 30px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+            <div style="text-align: center; margin-bottom: 24px;">
+              <h1 style="color: #C18E4D; margin: 0 0 6px;">New Cart Inquiry</h1>
+              <p style="color: #666; font-size: 14px; margin: 0;">A registered customer has submitted a cart inquiry</p>
+            </div>
+
+            <div style="background-color: #FFF6EB; padding: 20px; border-radius: 8px; margin-bottom: 16px;">
+              <h3 style="color: #2D2D2D; margin: 0 0 14px;">Customer Details</h3>
+              <table style="width:100%; border-collapse: collapse; font-size: 14px;">
+                <tr><td style="padding: 5px 0; color:#666; width:40%;">Company Name</td><td style="padding: 5px 0; font-weight:bold;">${user.companyName}</td></tr>
+                <tr><td style="padding: 5px 0; color:#666;">Contact Person</td><td style="padding: 5px 0;">${user.contactName}</td></tr>
+                <tr><td style="padding: 5px 0; color:#666;">Business Email</td><td style="padding: 5px 0;">${user.businessEmail}</td></tr>
+                <tr><td style="padding: 5px 0; color:#666;">Phone / WhatsApp</td><td style="padding: 5px 0;">${user.phone || 'N/A'}</td></tr>
+                <tr><td style="padding: 5px 0; color:#666;">Country</td><td style="padding: 5px 0;">${user.country || 'N/A'}</td></tr>
+                <tr><td style="padding: 5px 0; color:#666;">Business Type</td><td style="padding: 5px 0;">${user.businessType || 'N/A'}</td></tr>
+              </table>
+            </div>
+
+            <div style="background-color: #F5F5F5; padding: 20px; border-radius: 8px; margin-bottom: 16px;">
+              <h3 style="color: #2D2D2D; margin: 0 0 14px;">Inquiry Details</h3>
+              <table style="width:100%; border-collapse: collapse; font-size: 14px;">
+                <tr><td style="padding: 5px 0; color:#666; width:40%;">Total Products</td><td style="padding: 5px 0; font-weight:bold;">${totalProducts}</td></tr>
+                <tr><td style="padding: 5px 0; color:#666;">Total Quantity</td><td style="padding: 5px 0; font-weight:bold;">${totalQuantity} pieces</td></tr>
+                <tr><td style="padding: 5px 0; color:#666;">Inquiry For</td><td style="padding: 5px 0;">${inquiryFor.replace(/_/g, ' ')}</td></tr>
+                <tr><td style="padding: 5px 0; color:#666;">Customization</td><td style="padding: 5px 0;">${customizationNeeded.replace(/_/g, ' ')}</td></tr>
+              </table>
+            </div>
+
+            ${message ? `
+            <div style="background-color: #E8F4FD; padding: 20px; border-radius: 8px; margin-bottom: 16px;">
+              <h3 style="color: #2D2D2D; margin: 0 0 10px;">Message</h3>
+              <p style="color: #333; font-size: 14px; line-height: 1.6; margin: 0;">${message}</p>
+            </div>
+            ` : ''}
+
+            <div style="text-align: center; margin-top: 24px;">
+              <p style="color: #C18E4D; font-weight: bold; font-size: 14px;">Please login to the admin panel to review and respond.</p>
+              <p style="color: #999; font-size: 12px; margin-top: 10px;">Submitted on ${new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' })}</p>
+            </div>
+          </div>
+        </div>
       `;
 
       console.log("📧 SENDING CART INQUIRY NOTIFICATION TO ADMIN");

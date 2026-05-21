@@ -1,6 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import { Camera } from "lucide-react";
+import PhoneInput from "@/app/components/PhoneInput";
 
 const VerifyBusiness = () => {
   const [form, setForm] = useState({
@@ -214,13 +215,11 @@ const VerifyBusiness = () => {
 
               <div className="space-y-1.5">
                 <label className="text-[13px] mona font-medium text-gray-500">Phone / WhatsApp *</label>
-                <input
-                  type="text"
+                <PhoneInput
                   name="phone"
                   value={form.phone}
-                  onChange={handleChange}
-                  placeholder="Enter your Phone / WhatsApp"
-                  className="w-full px-4 py-3 mona rounded-lg border border-gray-200 bg-white focus:outline-none focus:ring-1 focus:ring-gray-400 placeholder:text-gray-300 text-sm"
+                  onChange={(val) => setForm((prev) => ({ ...prev, phone: val }))}
+                  placeholder="Enter your phone number"
                   required
                 />
               </div>

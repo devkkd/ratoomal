@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import connectDB from "@/lib/db";
 import Contact from "@/models/Contact";
-import { sendEmail } from "@/lib/mailer";
+import { sendEmail, sendClientEmail } from "@/lib/mailer";
 
 // CREATE CONTACT INQUIRY
 export async function POST(request) {
@@ -186,7 +186,7 @@ export async function POST(request) {
         </div>
       `;
 
-      await sendEmail({
+      await sendClientEmail({
         to: businessEmail,
         subject: customerEmailSubject,
         html: customerEmailHtml,

@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { ChevronDown, Upload, CheckCircle, AlertCircle } from 'lucide-react';
+import PhoneInput from '@/app/components/PhoneInput';
 
 const ContactClient = () => {
   const [formData, setFormData] = useState({
@@ -272,13 +273,11 @@ const ContactClient = () => {
                 </div>
                 <div className="space-y-1.5 md:col-span-1">
                   <label className="text-[11px] font-semibold text-gray-500 uppercase">Phone / WhatsApp *</label>
-                  <input 
-                    type="text" 
+                  <PhoneInput
                     name="phone"
                     value={formData.phone}
-                    onChange={handleInputChange}
-                    placeholder="Enter your Phone / WhatsApp" 
-                    className="w-full p-3 bg-white border border-gray-200 rounded text-sm focus:outline-none focus:ring-1 focus:ring-[#C18E4D]" 
+                    onChange={(val) => setFormData(prev => ({ ...prev, phone: val }))}
+                    placeholder="Enter your phone number"
                     required
                   />
                 </div>

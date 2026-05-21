@@ -3,6 +3,7 @@ import React, { useState, Suspense } from "react";
 import { ChevronDown, Upload, X } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
+import PhoneInput from "@/app/components/PhoneInput";
 
 const ProductInquiryContent = () => {
   const searchParams = useSearchParams();
@@ -49,8 +50,7 @@ const ProductInquiryContent = () => {
       newErrors.phone = "Phone number is required";
     } else if (!/^[\d\s\-\+\(\)]{10,}$/.test(formData.phone.replace(/\s/g, ''))) {
       newErrors.phone = "Please enter a valid phone number";
-    }
-    
+    }    
     if (!formData.inquiryType) {
       newErrors.inquiryType = "Inquiry type is required";
     }
@@ -302,17 +302,16 @@ const ProductInquiryContent = () => {
                 <label className="text-[12px] mona font-medium">
                   Phone / WhatsApp <span className="text-red-500">*</span>
                 </label>
-                <input
-                  type="text"
+                <PhoneInput
                   name="phone"
                   value={formData.phone}
-                  onChange={handleChange}
-                  placeholder="Enter your Phone / WhatsApp"
-                  className={`w-full p-2 bg-white border rounded-lg text-[12px] focus:outline-none focus:ring-1 ${
-                    errors.phone 
-                      ? "border-red-500 focus:ring-red-500" 
-                      : "border-gray-200 focus:ring-[#bf8e44]"
-                  }`}
+                  onChange={(val) => {
+                    setFormData(prev => ({ ...prev, phone: val }));
+                    if (errors.phone) setErrors(prev => ({ ...prev, phone: "" }));
+                  }}
+                  placeholder="Enter your phone number"
+                  error={!!errors.phone}
+                  required
                 />
                 {errors.phone && (
                   <p className="text-red-500 text-[10px]">{errors.phone}</p>
