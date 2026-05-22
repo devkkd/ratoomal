@@ -125,19 +125,29 @@ export default function ProductAdminPage() {
   const uploadImage = async (file) => {
     if (!file) return null;
     
-    const fd = new FormData();
-    fd.append("file", file);
-    
     try {
-      const res = await axios.post("/api/admin/upload", fd, {
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        }
+      // Step 1 — get presigned URL
+      const presignRes = await axios.post("/api/admin/upload-presigned", {
+        fileName: file.name,
+        fileType: file.type,
+        folder: "products",
       });
-      return res.data.url;
+
+      if (!presignRes.data.success) {
+        throw new Error(presignRes.data.error || "Failed to get upload URL");
+      }
+
+      const { presignedUrl, publicUrl } = presignRes.data;
+
+      // Step 2 — upload directly to R2 from browser
+      await axios.put(presignedUrl, file, {
+        headers: { "Content-Type": file.type },
+      });
+
+      return publicUrl;
     } catch (error) {
       console.error("Image upload error:", error);
-      showMessage(`Failed to upload image: ${error.response?.data?.message || error.message}`, "error");
+      showMessage(`Failed to upload image: ${error.response?.data?.error || error.message}`, "error");
       return null;
     }
   };
@@ -145,39 +155,49 @@ export default function ProductAdminPage() {
   const uploadVideo = async (file) => {
     if (!file) return null;
     
-    // Validate video file
     if (!file.type.startsWith('video/')) {
       showMessage("Please select a video file (MP4, MOV, AVI, WEBM)", "error");
       return null;
     }
 
-    // Check size (200MB limit)
+    // 200MB client-side guard
     if (file.size > 200 * 1024 * 1024) {
       showMessage("Video size must be less than 200MB", "error");
       return null;
     }
 
-    const fd = new FormData();
-    fd.append("file", file);
-    
     try {
       setIsVideoUploading(true);
-      const res = await axios.post("/api/admin/upload-video", fd, {
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        }
+
+      // Step 1 — get a presigned URL from our API (tiny JSON request, no file data)
+      const presignRes = await axios.post("/api/admin/upload-presigned", {
+        fileName: file.name,
+        fileType: file.type,
+        folder: "products/videos",
       });
-      
-      if (res.data.success) {
-        showMessage("Video uploaded successfully!", "success");
-        return res.data.url;
-      } else {
-        throw new Error(res.data.message || "Video upload failed");
+
+      if (!presignRes.data.success) {
+        throw new Error(presignRes.data.error || "Failed to get upload URL");
       }
+
+      const { presignedUrl, publicUrl } = presignRes.data;
+
+      // Step 2 — upload directly from browser to R2 (bypasses server/Render limits)
+      await axios.put(presignedUrl, file, {
+        headers: { "Content-Type": file.type },
+        onUploadProgress: (progressEvent) => {
+          const pct = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+          console.log(`📹 Video upload progress: ${pct}%`);
+        },
+      });
+
+      showMessage("Video uploaded successfully!", "success");
+      return publicUrl;
+
     } catch (error) {
       console.error("Video upload error:", error);
-      const errorMsg = error.response?.data?.message || error.message || "Video upload failed";
-      showMessage(`Video upload failed: ${errorMsg}`, "error");
+      const msg = error.response?.data?.error || error.message || "Video upload failed";
+      showMessage(`Video upload failed: ${msg}`, "error");
       return null;
     } finally {
       setIsVideoUploading(false);

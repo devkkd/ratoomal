@@ -29,21 +29,16 @@ export async function POST(request) {
 
     const timestamp = Date.now();
     const safeName = fileName.replace(/[^a-zA-Z0-9._-]/g, "_");
-    const key = `${folder}/${timestamp}-${safeName}`;
+    const uniqueName = `${timestamp}-${safeName}`;
 
-    const presignedUrl = await generatePresignedUrl(
-      `${timestamp}-${safeName}`,
-      fileType,
-      folder
-    );
+    const presignedUrl = await generatePresignedUrl(uniqueName, fileType, folder);
 
-    const publicUrl = `${process.env.CLOUDFLARE_R2_PUBLIC_URL}/${key}`;
+    const publicUrl = `${process.env.CLOUDFLARE_R2_PUBLIC_URL}/${folder}/${uniqueName}`;
 
     return NextResponse.json({
       success: true,
       presignedUrl,
       publicUrl,
-      key,
     });
   } catch (error) {
     console.error("Presigned URL error:", error);
