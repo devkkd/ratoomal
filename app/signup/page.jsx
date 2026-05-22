@@ -1,7 +1,16 @@
 "use client";
 import React, { useState } from "react";
-import { Camera } from "lucide-react";
+import { Camera, AlertCircle, CheckCircle, X } from "lucide-react";
 import PhoneInput from "@/app/components/PhoneInput";
+
+// Allowed file types for client-side validation
+const ALLOWED_TYPES = [
+  "image/jpeg", "image/jpg", "image/png", "image/webp",
+  "image/heic", "image/heif", "image/gif", "image/bmp", "application/pdf",
+];
+const ALLOWED_EXTENSIONS = [".jpg", ".jpeg", ".png", ".webp", ".heic", ".heif", ".gif", ".bmp", ".pdf"];
+const MAX_SIZE_MB = 20;
+const MAX_SIZE_BYTES = MAX_SIZE_MB * 1024 * 1024;
 
 const VerifyBusiness = () => {
   const [form, setForm] = useState({
@@ -20,42 +29,83 @@ const VerifyBusiness = () => {
   const [showSuccess, setShowSuccess] = useState(false);
   const [imagePreview, setImagePreview] = useState(null);
 
+  // Inline error/success states
+  const [imageError, setImageError] = useState("");   // image-specific error
+  const [formError, setFormError] = useState("");     // general form/server error
+  const [uploadStatus, setUploadStatus] = useState(""); // "uploading" | "done" | ""
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setForm({ ...form, [name]: value });
+    if (formError) setFormError("");
   };
 
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
-    if (file) {
-      setVerificationImage(file);
-      
-      // Create preview
+    if (!file) return;
+
+    setImageError("");
+
+    // Size check
+    if (file.size > MAX_SIZE_BYTES) {
+      setImageError(
+        `File is too large (${(file.size / 1024 / 1024).toFixed(1)} MB). Maximum allowed size is ${MAX_SIZE_MB} MB.`
+      );
+      e.target.value = "";
+      return;
+    }
+
+    // Type check — by MIME or extension
+    const ext = "." + file.name.split(".").pop().toLowerCase();
+    const validType = ALLOWED_TYPES.includes(file.type) || ALLOWED_EXTENSIONS.includes(ext);
+    if (!validType) {
+      setImageError(
+        `"${file.name}" is not a supported format. Please upload a JPG, PNG, WEBP, HEIC, or PDF file.`
+      );
+      e.target.value = "";
+      return;
+    }
+
+    setVerificationImage(file);
+
+    // Generate preview (skip for PDF)
+    if (file.type === "application/pdf" || ext === ".pdf") {
+      setImagePreview("pdf");
+    } else {
       const reader = new FileReader();
-      reader.onloadend = () => {
-        setImagePreview(reader.result);
-      };
+      reader.onloadend = () => setImagePreview(reader.result);
+      reader.onerror = () => setImageError("Could not read the file. Please try a different file.");
       reader.readAsDataURL(file);
     }
   };
 
+  const removeImage = () => {
+    setVerificationImage(null);
+    setImagePreview(null);
+    setImageError("");
+    // Reset the file input
+    const input = document.getElementById("file-upload");
+    if (input) input.value = "";
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setFormError("");
+    setImageError("");
+
+    // Client-side image validation before submit
+    if (!verificationImage) {
+      setImageError("Please upload your business verification proof image or PDF.");
+      return;
+    }
+
     setIsSubmitting(true);
+    setUploadStatus("uploading");
 
     try {
-      // Prepare form data
       const formData = new FormData();
-      
-      // Add all form fields
-      Object.keys(form).forEach(key => {
-        formData.append(key, form[key]);
-      });
-      
-      // Add image if exists
-      if (verificationImage) {
-        formData.append("verificationImage", verificationImage);
-      }
+      Object.keys(form).forEach(key => formData.append(key, form[key]));
+      formData.append("verificationImage", verificationImage);
 
       const res = await fetch("/api/auth/signup", {
         method: "POST",
@@ -66,30 +116,37 @@ const VerifyBusiness = () => {
       try {
         data = await res.json();
       } catch {
-        throw new Error(`Server error (${res.status}): Response was not JSON`);
+        throw new Error(`Server error (${res.status}). Please try again.`);
       }
-      
+
       if (res.ok) {
+        setUploadStatus("done");
         setShowSuccess(true);
-        // Reset form
         setForm({
-          companyName: "",
-          contactName: "",
-          businessEmail: "",
-          country: "",
-          phone: "",
-          businessType: "",
-          purpose: "",
-          verificationProof: "",
+          companyName: "", contactName: "", businessEmail: "",
+          country: "", phone: "", businessType: "", purpose: "", verificationProof: "",
         });
         setVerificationImage(null);
         setImagePreview(null);
       } else {
-        alert(data.message || "Something went wrong");
+        setUploadStatus("");
+        // Show image-specific errors near the upload field
+        const msg = data.message || "Something went wrong. Please try again.";
+        if (
+          msg.toLowerCase().includes("file") ||
+          msg.toLowerCase().includes("image") ||
+          msg.toLowerCase().includes("upload") ||
+          msg.toLowerCase().includes("format") ||
+          msg.toLowerCase().includes("size")
+        ) {
+          setImageError(msg);
+        } else {
+          setFormError(msg);
+        }
       }
     } catch (err) {
-      console.error('Signup error:', err);
-      alert(err.message || "Something went wrong. Please try again.");
+      setUploadStatus("");
+      setFormError(err.message || "Something went wrong. Please try again.");
     } finally {
       setIsSubmitting(false);
     }
@@ -332,58 +389,115 @@ const VerifyBusiness = () => {
             <div className="flex flex-col md:flex-row gap-6">
               {/* Upload Button */}
               <div className="flex-1">
-                <label htmlFor="file-upload" className="cursor-pointer block">
-                  <div className="w-full border border-gray-200 bg-white rounded-lg flex items-center px-4 py-3 hover:border-gray-300 transition-colors h-full">
-                    <Camera className="w-5 h-5 text-gray-400 mr-3 flex-shrink-0" />
-                    <div className="flex-1">
-                      <span className="text-sm text-gray-300 mona">
-                        {verificationImage ? verificationImage.name : "Click to upload image"}
+                <label htmlFor="file-upload" className={`cursor-pointer block ${imageError ? 'pointer-events-none opacity-60' : ''}`}>
+                  <div className={`w-full border rounded-lg flex items-center px-4 py-3 hover:border-gray-300 transition-colors bg-white ${
+                    imageError ? 'border-red-300 bg-red-50' : verificationImage ? 'border-green-300 bg-green-50' : 'border-gray-200'
+                  }`}>
+                    <Camera className={`w-5 h-5 mr-3 flex-shrink-0 ${imageError ? 'text-red-400' : verificationImage ? 'text-green-500' : 'text-gray-400'}`} />
+                    <div className="flex-1 min-w-0">
+                      <span className={`text-sm mona truncate block ${verificationImage ? 'text-gray-700 font-medium' : 'text-gray-300'}`}>
+                        {verificationImage ? verificationImage.name : "Click to upload image or PDF"}
                       </span>
-                      <p className="text-xs text-gray-400 mt-1">
-                        Supported formats: JPG, PNG, PDF (Max 5MB)
+                      <p className="text-xs text-gray-400 mt-0.5">
+                        JPG, PNG, WEBP, HEIC, PDF — Max {MAX_SIZE_MB}MB
                       </p>
                     </div>
-                    <input
-                      id="file-upload"
-                      type="file"
-                      className="hidden"
-                      accept="image/*,.pdf"
-                      onChange={handleImageUpload}
-                      required
-                    />
+                    {verificationImage && (
+                      <span className="text-xs text-green-600 mona ml-2 shrink-0">
+                        {(verificationImage.size / 1024 / 1024).toFixed(1)} MB
+                      </span>
+                    )}
                   </div>
+                  <input
+                    id="file-upload"
+                    type="file"
+                    className="hidden"
+                    accept="image/*,.pdf"
+                    onChange={handleImageUpload}
+                  />
                 </label>
-                {verificationImage && (
-                  <p className="text-xs text-green-600 mona mt-2">
-                    ✓ File selected: {verificationImage.name} ({(verificationImage.size / 1024 / 1024).toFixed(2)} MB)
-                  </p>
+
+                {/* Image error message */}
+                {imageError && (
+                  <div className="mt-2 flex items-start gap-2 p-3 bg-red-50 border border-red-200 rounded-lg">
+                    <AlertCircle className="w-4 h-4 text-red-500 mt-0.5 shrink-0" />
+                    <div className="flex-1">
+                      <p className="text-xs text-red-700 mona font-medium">Upload Error</p>
+                      <p className="text-xs text-red-600 mona mt-0.5">{imageError}</p>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => { setImageError(""); }}
+                      className="text-red-400 hover:text-red-600"
+                    >
+                      <X className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                )}
+
+                {/* Success indicator */}
+                {verificationImage && !imageError && (
+                  <div className="mt-2 flex items-center gap-2">
+                    <CheckCircle className="w-4 h-4 text-green-500 shrink-0" />
+                    <p className="text-xs text-green-600 mona">
+                      File ready: {verificationImage.name}
+                    </p>
+                    <button
+                      type="button"
+                      onClick={removeImage}
+                      className="ml-auto text-xs text-gray-400 hover:text-red-500 mona underline"
+                    >
+                      Remove
+                    </button>
+                  </div>
                 )}
               </div>
 
               {/* Image Preview */}
-              {imagePreview && (
-                <div className="w-full md:w-48">
+              {imagePreview && !imageError && (
+                <div className="w-full md:w-48 shrink-0">
                   <p className="text-[13px] mona font-medium text-gray-500 mb-2">Preview:</p>
-                  <div className="border border-gray-200 rounded-lg overflow-hidden">
-                    {verificationImage.type === "application/pdf" ? (
-                      <div className="bg-gray-50 p-4 text-center">
+                  <div className="border border-gray-200 rounded-lg overflow-hidden relative group">
+                    {imagePreview === "pdf" ? (
+                      <div className="bg-gray-50 p-4 text-center h-32 flex flex-col items-center justify-center">
                         <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-2">
-                          <span className="text-red-600 font-bold">PDF</span>
+                          <span className="text-red-600 font-bold text-xs">PDF</span>
                         </div>
-                        <p className="text-xs text-gray-600 truncate">{verificationImage.name}</p>
+                        <p className="text-xs text-gray-600 truncate w-full px-2">{verificationImage?.name}</p>
                       </div>
                     ) : (
-                      <img 
-                        src={imagePreview} 
-                        alt="Preview" 
+                      <img
+                        src={imagePreview}
+                        alt="Preview"
                         className="w-full h-32 object-cover"
                       />
                     )}
+                    <button
+                      type="button"
+                      onClick={removeImage}
+                      className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-0.5 opacity-0 group-hover:opacity-100 transition-opacity"
+                    >
+                      <X className="w-3 h-3" />
+                    </button>
                   </div>
                 </div>
               )}
             </div>
           </div>
+
+          {/* General form error banner */}
+          {formError && (
+            <div className="flex items-start gap-3 p-4 bg-red-50 border border-red-200 rounded-lg">
+              <AlertCircle className="w-5 h-5 text-red-500 mt-0.5 shrink-0" />
+              <div className="flex-1">
+                <p className="text-sm text-red-700 mona font-medium">Submission Failed</p>
+                <p className="text-sm text-red-600 mona mt-0.5">{formError}</p>
+              </div>
+              <button type="button" onClick={() => setFormError("")} className="text-red-400 hover:text-red-600">
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+          )}
 
           <div className="flex justify-center pt-8">
             <button

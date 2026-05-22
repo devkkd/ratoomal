@@ -3,6 +3,14 @@ import User from "@/models/User";
 import { NextResponse } from "next/server";
 import { uploadToR2 } from "@/lib/cloudflare-r2";
 
+// Increase Next.js body size limit for this route (20MB)
+export const config = {
+  api: {
+    bodyParser: false,
+    sizeLimit: '20mb',
+  },
+};
+
 export async function POST(req) {
   await connectDB();
 
@@ -66,20 +74,37 @@ export async function POST(req) {
     let r2Response = null;
     
     if (verificationImage && verificationImage.size > 0) {
-      // Check file size (5MB limit)
-      const maxSize = 5 * 1024 * 1024; // 5MB in bytes
+      // Check file size (20MB limit)
+      const maxSize = 20 * 1024 * 1024; // 20MB
       if (verificationImage.size > maxSize) {
         return NextResponse.json(
-          { message: "File size too large. Maximum size is 5MB." },
+          { message: "File size too large. Maximum size is 20MB." },
           { status: 400 }
         );
       }
 
-      // Check file type
-      const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg', 'application/pdf'];
-      if (!allowedTypes.includes(verificationImage.type)) {
+      // Check file type — accept all common image formats + PDF
+      const allowedTypes = [
+        'image/jpeg',
+        'image/jpg',
+        'image/png',
+        'image/webp',
+        'image/heic',
+        'image/heif',
+        'image/gif',
+        'image/bmp',
+        'image/tiff',
+        'application/pdf',
+      ];
+      
+      // Also allow by extension if MIME type is generic (some phones send application/octet-stream)
+      const fileName = verificationImage.name?.toLowerCase() || '';
+      const allowedExtensions = ['.jpg', '.jpeg', '.png', '.webp', '.heic', '.heif', '.gif', '.bmp', '.tiff', '.pdf'];
+      const hasAllowedExtension = allowedExtensions.some(ext => fileName.endsWith(ext));
+      
+      if (!allowedTypes.includes(verificationImage.type) && !hasAllowedExtension) {
         return NextResponse.json(
-          { message: "Invalid file type. Only JPG, PNG, and PDF are allowed." },
+          { message: "Invalid file type. Please upload an image (JPG, PNG, WEBP, HEIC) or PDF." },
           { status: 400 }
         );
       }
@@ -154,7 +179,7 @@ export async function POST(req) {
       console.log("🔄 Attempting to send user confirmation email...");
       console.log("📧 User email:", user.businessEmail);
       
-      const { sendEmail } = await import("@/lib/mailer");
+      const { sendClientEmail } = await import("@/lib/mailer");
       
       const userEmailSubject = "Your Business Access Request is Being Processed - Ratoomal";
       const userEmailHtml = `
@@ -214,7 +239,7 @@ export async function POST(req) {
         </div>
       `;
       
-      await sendEmail({
+      await sendClientEmail({
         to: user.businessEmail,
         subject: userEmailSubject,
         html: userEmailHtml,

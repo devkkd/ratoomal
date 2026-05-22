@@ -151,9 +151,9 @@ export default function ProductAdminPage() {
       return null;
     }
 
-    // Check size (15MB limit)
-    if (file.size > 15 * 1024 * 1024) {
-      showMessage("Video size must be less than 15MB", "error");
+    // Check size (200MB limit)
+    if (file.size > 200 * 1024 * 1024) {
+      showMessage("Video size must be less than 200MB", "error");
       return null;
     }
 
@@ -401,8 +401,8 @@ const handleSubmit = async (e) => {
     }
     
     // Check size
-    if (file.size > 15 * 1024 * 1024) {
-      showMessage("Video size must be less than 15MB", "error");
+    if (file.size > 200 * 1024 * 1024) {
+      showMessage("Video size must be less than 200MB", "error");
       return;
     }
     
@@ -622,7 +622,7 @@ const handleSubmit = async (e) => {
                     <div className="relative flex-1 border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-[#C08237] transition-colors cursor-pointer group">
                       <FileVideo className="h-12 w-12 text-gray-400 mx-auto mb-3 group-hover:text-[#C08237]" />
                       <p className="text-sm text-gray-600 mb-2">Click to upload 360° video</p>
-                      <p className="text-xs text-gray-500">MP4, MOV, AVI, WEBM up to 15MB</p>
+                      <p className="text-xs text-gray-500">MP4, MOV, AVI, WEBM up to 200MB</p>
                       <input
                         type="file"
                         accept="video/*"

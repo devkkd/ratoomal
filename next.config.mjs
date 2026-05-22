@@ -17,7 +17,10 @@ const nextConfig = {
 
   // Optimize for production builds
   experimental: {
-    optimizePackageImports: ['lucide-react', '@heroicons/react']
+    optimizePackageImports: ['lucide-react', '@heroicons/react'],
+    serverActions: {
+      bodySizeLimit: '200mb',
+    },
   },
 
   // Never strip console logs — we need them for email debugging
@@ -54,7 +57,6 @@ const nextConfig = {
     ],
     formats: ['image/avif', 'image/webp'],
   },
-  
   // Configure webpack to handle video files
   webpack: (config) => {
     config.module.rules.push({
