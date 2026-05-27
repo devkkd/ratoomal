@@ -1581,12 +1581,12 @@ const CategoryPage = () => {
             }
         }
         
-        // If user is not logged in and trying to access page > 1, redirect to login
-        if (!isLoggedIn && pageParam && parseInt(pageParam) > 1) {
+        // Only reset to page 1 for non-logged-in users after auth has finished loading
+        if (!authLoading && !isLoggedIn && pageParam && parseInt(pageParam) > 1) {
             setCurrentPage(1);
             updatePageInURL(1);
         }
-    }, [urlCategory, urlCategoryId, urlSubCategoryId, pageParam, isLoggedIn]);
+    }, [urlCategory, urlCategoryId, urlSubCategoryId, pageParam, isLoggedIn, authLoading]);
 
     // Handle navigation
     useEffect(() => {
@@ -1696,7 +1696,7 @@ const CategoryPage = () => {
             
             let startIndex, endIndex;
             
-            if (!isLoggedIn) {
+            if (!authLoading && !isLoggedIn) {
                 // Non-logged in users can only see first page
                 if (currentPage > 1) {
                     setCurrentPage(1);
@@ -1714,14 +1714,51 @@ const CategoryPage = () => {
             const currentProductsSlice = sortedProducts.slice(startIndex, endIndex);
             setCurrentProducts(currentProductsSlice);
         }
-    }, [sortedProducts, currentPage, productsPerPage, isLoggedIn]);
+    }, [sortedProducts, currentPage, productsPerPage, isLoggedIn, authLoading]);
 
-    // Update page in URL
+    // Scroll back to last viewed product when returning from product detail page
+    // Runs only after loading is done and products are rendered in the DOM
+    useEffect(() => {
+        if (loading) return;
+        if (currentProducts.length === 0) return;
+        if (typeof window === 'undefined') return;
+
+        const lastProductId = sessionStorage.getItem('lastViewedProductId');
+        if (!lastProductId) return;
+
+        // Check if the product is on the current page
+        const isOnPage = currentProducts.some(p => p.id === lastProductId);
+        if (!isOnPage) return;
+
+        // Poll for the element — DOM may not be painted yet right after state update
+        let attempts = 0;
+        const maxAttempts = 20; // try for up to 2 seconds
+        const interval = setInterval(() => {
+            attempts++;
+            const el = document.getElementById(`product-${lastProductId}`);
+            if (el) {
+                clearInterval(interval);
+                // Scroll so the product is visible with some space above it
+                const offset = 120; // account for sticky header
+                const top = el.getBoundingClientRect().top + window.scrollY - offset;
+                window.scrollTo({ top: Math.max(0, top), behavior: 'smooth' });
+                sessionStorage.removeItem('lastViewedProductId');
+            } else if (attempts >= maxAttempts) {
+                clearInterval(interval);
+                sessionStorage.removeItem('lastViewedProductId');
+            }
+        }, 100);
+
+        return () => clearInterval(interval);
+    }, [loading, currentProducts]);
+
+    // Update page in URL — use router.replace so Next.js tracks it in history
+    // This ensures browser back button restores the correct page number
     const updatePageInURL = (pageNumber) => {
         const params = new URLSearchParams(searchParams.toString());
         params.set('page', pageNumber.toString());
         const newUrl = `${window.location.pathname}?${params.toString()}`;
-        window.history.replaceState({}, '', newUrl);
+        router.replace(newUrl, { scroll: false });
     };
 
     // Handle page change with validation
@@ -1988,6 +2025,10 @@ const CategoryPage = () => {
     };
 
     const handleProductClick = (product) => {
+        // Save product id so we can scroll back to it when user navigates back
+        if (typeof window !== 'undefined') {
+            sessionStorage.setItem('lastViewedProductId', product.id);
+        }
         router.push(`/product/${product.slug || product.id}`);
     };
 
@@ -2561,10 +2602,15 @@ const CategoryPage = () => {
                                             {/* Products Grid - 2 columns mobile, 4 columns desktop */}
                                             <div className="grid grid-cols-2 lg:grid-cols-3 gap-5 lg:gap-7">
                                                 {categoryProducts.map(product => (
-                                                    <div 
-                                                        key={product.id} 
-                                                        className="cursor-pointer w-full max-w-[480px] relative group flex flex-col h-full"
-                                                        onClick={() => handleProductClick(product)}
+                                                    <a
+                                                        key={product.id}
+                                                        id={`product-${product.id}`}
+                                                        href={`/product/${product.slug || product.id}`}
+                                                        className="cursor-pointer w-full max-w-[480px] relative group flex flex-col h-full no-underline"
+                                                        onClick={(e) => {
+                                                            e.preventDefault();
+                                                            handleProductClick(product);
+                                                        }}
                                                     >
                                                         <div className="relative w-full h-[280px] sm:h-[330px] bg-gray-100 overflow-hidden rounded-2xl">
                                                             <div className="w-full h-full flex items-center justify-center bg-gray-100">
@@ -2694,7 +2740,7 @@ const CategoryPage = () => {
                                                                 </button>
                                                             </div>
                                                         </div>
-                                                    </div>
+                                                    </a>
                                                 ))}
                                             </div>
                                             
@@ -2739,10 +2785,15 @@ const CategoryPage = () => {
                             <>
                                 <div className="grid grid-cols-2 lg:grid-cols-4 gap-5 lg:gap-7">
                                     {currentProducts.map(product => (
-                                        <div 
-                                            key={product.id} 
-                                            className="cursor-pointer w-full max-w-[480px] relative group flex flex-col h-full"
-                                            onClick={() => handleProductClick(product)}
+                                        <a
+                                            key={product.id}
+                                            id={`product-${product.id}`}
+                                            href={`/product/${product.slug || product.id}`}
+                                            className="cursor-pointer w-full max-w-[480px] relative group flex flex-col h-full no-underline"
+                                            onClick={(e) => {
+                                                e.preventDefault();
+                                                handleProductClick(product);
+                                            }}
                                         >
                                             <div className="relative w-full h-[280px] sm:h-[330px] bg-gray-100 overflow-hidden rounded-2xl">
                                                 <div className="w-full h-full flex items-center justify-center bg-gray-100">
@@ -2872,7 +2923,7 @@ const CategoryPage = () => {
                                                     </button>
                                                 </div>
                                             </div>
-                                        </div>
+                                        </a>
                                     ))}
                                 </div>
 
