@@ -44,10 +44,10 @@ export async function POST(request) {
     await connectDB();
     const body = await request.json();
 
-    // 🔴 REQUIRED FIELD CHECK (schema based)
-    if (!body.name || !body.code || !body.price || !body.thumbnail || !body.category) {
+    // 🔴 REQUIRED FIELD CHECK — price and moq are optional
+    if (!body.name || !body.code || !body.thumbnail || !body.category) {
       return NextResponse.json(
-        { success: false, message: "Required fields missing (name, code, price, thumbnail, category)" },
+        { success: false, message: "Required fields missing (name, code, thumbnail, category)" },
         { status: 400 }
       );
     }
@@ -56,8 +56,8 @@ export async function POST(request) {
     const cleanBody = {
       name: body.name,
       code: body.code?.toUpperCase(),
-      price: Number(body.price),
-      moq: Number(body.moq) || 1,
+      price: body.price !== undefined && body.price !== "" ? Number(body.price) : 0,
+      moq: body.moq !== undefined && body.moq !== "" ? Number(body.moq) : 1,
       category: body.category,
       thumbnail: body.thumbnail,
 

@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { Menu, X, ChevronRight } from 'lucide-react';
 import Cookies from 'js-cookie';
-import { useReliableTranslation } from '@/hooks/useReliableTranslation';
+import { useTranslation } from '@/hooks/useTranslation';
 import { useWishlistStore } from '@/store/wishlistStore';
 import { useInquiryCartStore } from '@/store/inquiryCartStore';
 import { useAuth } from '@/hooks/useAuth';
@@ -36,7 +36,7 @@ const Header = () => {
   const searchParams = useSearchParams();
   
   // Get translation hook
-  const { currentLanguage, languages, changeLanguage, getCurrentLanguageInfo, isLoading: translationLoading, translationMethod } = useReliableTranslation();
+  const { currentLanguage, languages, changeLanguage, getCurrentLanguageInfo, isLoading: translationLoading } = useTranslation();
   
   // Get wishlist from Zustand store
   const { wishlist, initialize } = useWishlistStore();
@@ -322,31 +322,50 @@ const Header = () => {
         {/* Left Side (Desktop) */}
         <div className="hidden lg:flex items-center gap-6 text-sm text-gray-700 flex-1">
           {/* Language Selector */}
-          <div className="relative" ref={langRef}>
+          <div 
+            className="relative" 
+            ref={langRef}
+            onMouseEnter={() => setShowLangDropdown(true)}
+            onMouseLeave={() => setShowLangDropdown(false)}
+          >
             <div 
-              className="flex items-center gap-2 cursor-pointer font-mona"
+              className="flex items-center gap-2 cursor-pointer font-mona hover:text-[#C08237] transition-colors py-2 text-[11px] font-bold tracking-widest"
               onClick={() => setShowLangDropdown(!showLangDropdown)}
             >
-              <span>{getCurrentLanguageInfo().name}</span>
-              <ChevronRight size={14} className={`rotate-90 transition-transform ${showLangDropdown ? 'rotate-180' : ''}`} />
+              <img 
+                src={getCurrentLanguageInfo().flag} 
+                alt="" 
+                className="w-4.5 h-3 object-cover rounded-sm shadow-sm"
+                onError={(e) => { e.target.style.display = 'none'; }} 
+              />
+              <span>{getCurrentLanguageInfo().name.toUpperCase()}</span>
+              <ChevronRight size={14} className={`rotate-90 transition-transform duration-200 ${showLangDropdown ? 'rotate-180' : ''}`} />
             </div>
             
             {/* Language Dropdown */}
             {showLangDropdown && (
-              <div className="absolute top-full left-0 mt-2 w-48 bg-white rounded-lg shadow-xl border border-gray-200 z-50">
-                <div className="py-2">
-                  {languageOptions.map((lang) => (
-                    <button
-                      key={lang.code}
-                      onClick={() => handleLanguageChange(lang)}
-                      className="flex items-center gap-3 w-full px-4 py-2 text-left hover:bg-gray-50 text-sm"
-                    >
-                      <img src={lang.flag} alt={lang.name} className="w-5 h-3.5" />
-                      <span className={`mona ${getCurrentLanguageInfo().name === lang.name ? 'text-[#C08237] font-medium' : 'text-gray-700'}`}>
-                        {lang.name}
-                      </span>
-                    </button>
-                  ))}
+              <div className="absolute top-full left-0 mt-1 w-48 bg-[#FFFCF5] border border-[#D7CEC2] py-1 z-50 rounded-sm shadow-xl animate-fade-in max-h-80 overflow-y-auto">
+                <div className="py-1">
+                  {languageOptions.map((lang) => {
+                    const isActive = currentLanguage === lang.code;
+                    return (
+                      <button
+                        key={lang.code}
+                        onClick={() => handleLanguageChange(lang)}
+                        className={`flex items-center gap-3 w-full px-4 py-2.5 text-left hover:bg-[#C08237] hover:text-white transition-all text-xs font-semibold ${
+                          isActive ? 'text-[#C08237] bg-[#C08237]/5 font-bold' : 'text-gray-700'
+                        }`}
+                      >
+                        <img 
+                          src={lang.flag} 
+                          alt={lang.name} 
+                          className="w-4 h-3 object-cover rounded-sm shadow-sm"
+                          onError={(e) => { e.target.style.display = 'none'; }} 
+                        />
+                        <span className="font-mona uppercase tracking-wider">{lang.name}</span>
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
             )}

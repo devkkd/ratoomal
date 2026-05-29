@@ -258,7 +258,7 @@ const handleSubmit = async (e) => {
         ? form.features.split(",").map(f => f.trim()).filter(Boolean)
         : [],
       sizes: form.sizes
-        ? form.sizes.split(",").map(s => s.trim()).filter(Boolean)
+        ? form.sizes.split(/[,/]/).map(s => s.trim()).filter(Boolean)
         : [],
       availability: isStock ? "In Stock" : "Out of Stock",
     };
@@ -971,7 +971,7 @@ const handleSubmit = async (e) => {
                   </p>
                   {form.sizes && (
                     <div className="mt-3 flex flex-wrap gap-2">
-                      {form.sizes.split(",").map((size, idx) => {
+                      {form.sizes.split(/[,/]/).map((size, idx) => {
                         const trimmedSize = size.trim();
                         return trimmedSize ? (
                           <span key={idx} className="px-3 py-1 bg-[#C08237] bg-opacity-10 text-[white] rounded-full text-sm font-medium">

@@ -8,7 +8,7 @@ export const useTranslation = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   // Available languages with Google Translate codes
-  const languages = [
+  const [languages, setLanguages] = useState([
     { code: 'en', name: 'English', flag: 'https://flagcdn.com/w20/us.png', googleCode: 'en' },
     { code: 'hi', name: 'हिन्दी', flag: 'https://flagcdn.com/w20/in.png', googleCode: 'hi' },
     { code: 'es', name: 'Español', flag: 'https://flagcdn.com/w20/es.png', googleCode: 'es' },
@@ -20,11 +20,39 @@ export const useTranslation = () => {
     { code: 'ko', name: '한국어', flag: 'https://flagcdn.com/w20/kr.png', googleCode: 'ko' },
     { code: 'pt', name: 'Português', flag: 'https://flagcdn.com/w20/pt.png', googleCode: 'pt' },
     { code: 'ru', name: 'Русский', flag: 'https://flagcdn.com/w20/ru.png', googleCode: 'ru' },
-    { code: 'it', name: 'Italiano', flag: 'https://flagcdn.com/w20/it.png', googleCode: 'it' }
-  ];
+    { code: 'it', name: 'Italiano', flag: 'https://flagcdn.com/w20/it.png', googleCode: 'it' },
+    { code: 'nl', name: 'Nederlands', flag: 'https://flagcdn.com/w20/nl.png', googleCode: 'nl' },
+    { code: 'tr', name: 'Türkçe', flag: 'https://flagcdn.com/w20/tr.png', googleCode: 'tr' },
+    { code: 'vi', name: 'Tiếng Việt', flag: 'https://flagcdn.com/w20/vn.png', googleCode: 'vi' },
+    { code: 'th', name: 'ไทย', flag: 'https://flagcdn.com/w20/th.png', googleCode: 'th' },
+    { code: 'id', name: 'Bahasa Indonesia', flag: 'https://flagcdn.com/w20/id.png', googleCode: 'id' }
+  ]);
 
   // Initialize Google Translate
   useEffect(() => {
+    // Poll for Google Translate loaded languages
+    const checkLanguagesInterval = setInterval(() => {
+      const availableLangs = googleTranslateService.getAvailableLanguages();
+      if (availableLangs && availableLangs.length > 0) {
+        const completeLangs = [
+          { code: 'en', name: 'English', flag: 'https://flagcdn.com/w20/us.png', googleCode: 'en' },
+          ...availableLangs.map(l => ({
+            code: l.code,
+            name: l.name,
+            flag: l.flag,
+            googleCode: l.code
+          }))
+        ];
+        // Remove duplicates based on language code
+        const uniqueLangs = Array.from(new Map(completeLangs.map(item => [item.code, item])).values());
+        setLanguages(uniqueLangs);
+        clearInterval(checkLanguagesInterval);
+      }
+    }, 1000);
+
+    // Stop interval after 20 seconds
+    setTimeout(() => clearInterval(checkLanguagesInterval), 20000);
+
     const initializeTranslation = async () => {
       try {
         setIsLoading(true);

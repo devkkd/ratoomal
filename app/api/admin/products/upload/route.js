@@ -110,7 +110,7 @@ export async function POST(request) {
           if (!value) return [];
           let str = value.toString().trim();
           str = str.replace(/[""]/g, '"');
-          const byComma = str.split(",").map(s => s.trim()).filter(Boolean);
+          const byComma = str.split(/[,/]/).map(s => s.trim()).filter(Boolean);
           const result = [];
           for (const chunk of byComma) {
             // Keep dimension sizes (6x5x3) as-is
