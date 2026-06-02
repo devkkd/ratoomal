@@ -19,7 +19,7 @@ const Footer = () => {
 
         <div className="max-w-7xl mx-auto px-6">
           {/* Main Footer Content */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-8 mb-12">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 mb-12">
 
             {/* Brand Column */}
             <div className="lg:col-span-1">
@@ -39,24 +39,24 @@ const Footer = () => {
             </div>
     
               {/* Categories */}
-              <div>
+              {/* <div>
                 <h4 className="font-bold text-sm mb-6 mona">Our Category</h4>
                 <ul className="space-y-2 text-xs text-gray-600">
                   <li><a href="/animal" className="hover:text-amber-700 mona">Animal</a></li>
                   <li><a href="/god-figure" className="hover:text-amber-700 mona" >God Figure</a></li>
                   <li><a href="/utility-decor" className="hover:text-amber-700 mona">utility / Decor</a></li>
                 </ul>
-              </div>
+              </div> */}
 
               {/* About Us */}
               <div>
                 <h4 className="font-bold text-sm mb-6 mona">About Us</h4>
                 <ul className="space-y-2 text-xs text-gray-600">
-                  <li><a href="#" className="hover:text-amber-700">About Us</a></li>
-                  <li><a href="#" className="hover:text-amber-700 mona">Our Vision & Philosophy</a></li>
-                  <li><a href="#" className="hover:text-amber-700 mona">Our Values</a></li>
-                  <li><a href="#" className="hover:text-amber-700 mona">Our History</a></li>
-                  <li><a href="#" className="hover:text-amber-700 mona  ">CEO Message</a></li>
+                  <li><a href="/about" className="hover:text-amber-700">About Us</a></li>
+                  <li><a href="/about#vision" className="hover:text-amber-700 mona">Our Vision & Philosophy</a></li>
+                  <li><a href="/about#values" className="hover:text-amber-700 mona">Our Values</a></li>
+                  <li><a href="/about#history" className="hover:text-amber-700 mona">Our History</a></li>
+                  <li><a href="/about#ceo-message" className="hover:text-amber-700 mona  ">CEO Message</a></li>
                 </ul>
               </div>
 
@@ -64,11 +64,15 @@ const Footer = () => {
               <div>
                 <h4 className="font-bold text-sm mb-6 mona">Quick Links</h4>
                 <ul className="space-y-2 text-xs text-gray-600">
+                   <li><a href="/" className="hover:text-amber-700 mona">Home</a></li>
+                   <li><a href="/custom-orders" className="hover:text-amber-700 mona">Custom Orders</a></li>
+                    <li><a href="/blog" className="hover:text-amber-700 mona">Blogs</a></li>
+                     <li><a href="/exhibitions" className="hover:text-amber-700 mona">Exhibitions</a></li>
                   <li><a href="/faq" className="hover:text-amber-700 mona">FAQ's</a></li>
                   <li><a href="/testimonials" className="hover:text-amber-700 mona">Testimonials</a></li>
                   <li><a href="/contact-us" className="hover:text-amber-700 mona">Contact Us</a></li>
-                  <li><a href="#" className="hover:text-amber-700 mona">Privacy Policy</a></li>
-                  <li><a href="#" className="hover:text-amber-700 mona">Terms of Services</a></li>
+                  {/* <li><a href="#" className="hover:text-amber-700 mona">Privacy Policy</a></li>
+                  <li><a href="#" className="hover:text-amber-700 mona">Terms of Services</a></li> */}
                 </ul>
               </div>
 
