@@ -461,6 +461,7 @@ const handleSubmit = async (e) => {
 
   const filteredProducts = products.filter(product => {
     const matchesSearch = product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                         (product.code || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
                          product.category?.name.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesCategory = selectedCategory === "all" || product.category?._id === selectedCategory;
     const matchesMinPrice = !priceRange.min || product.price >= Number(priceRange.min);
@@ -526,7 +527,7 @@ const handleSubmit = async (e) => {
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
                 <input
                   type="text"
-                  placeholder="Search products..."
+                  placeholder="Search by name or code..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="pl-10 pr-4 py-2 w-full md:w-64 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#C08237] focus:border-transparent bg-white"
@@ -960,14 +961,14 @@ const handleSubmit = async (e) => {
                     <Tag className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
                     <input
                       type="text"
-                      placeholder="6 inch, 8 inch, 10 inch, 12 inch"
+                      placeholder="6, 8, 10, 12"
                       value={form.sizes}
                       onChange={(e) => setForm({...form, sizes: e.target.value})}
                       className="pl-10 w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#C08237] focus:border-transparent"
                     />
                   </div>
                   <p className="mt-2 text-sm text-gray-500">
-                    Enter multiple sizes separated by commas (e.g., "6 inch, 8 inch, 10 inch")
+                    Enter multiple sizes separated by commas (e.g., "6, 8, 10 ")
                   </p>
                   {form.sizes && (
                     <div className="mt-3 flex flex-wrap gap-2">

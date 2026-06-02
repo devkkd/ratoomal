@@ -11,7 +11,7 @@ import NotificationToast, { useNotification } from '../components/NotificationTo
 const filters = {
     "Finish / Style": ["All Finishes", "Natural", "Hand Painted", "Antique", "Metallic", "Matte"],
     "Material": ["Plastic", "Wooden", "Resin", "Thandi Lac", "Marble", "Metal", "Ceramic", "Glass", "Stone"],
-    "Size": ["3 inch", "6 inch", "9 inch", "12 inch", "15 inch", "18 inch", "24 inch", "36 inch"],
+    "Size": ["3\"", "6\"", "9\"", "12\"", "15\"", "18\"", "24\"", "36\""],
     "Product Type": ["Ready Stock", "Made to Order"],
     "Business Services": ["Custom Design", "Private Label", "Corporate Gifts", "Other"]
 };
@@ -225,7 +225,7 @@ const GodFigurePage = () => {
                             subCategoryId: product.subCategory?._id || "",
                             finish: product.finish || "Natural",
                             material: product.material || "Plastic",
-                            size: product.size || "6 inch",
+                            size: product.size || "6\"",
                             productType: product.productType || "Ready Stock",
                             services: product.services || [],
                             createdAt: product.createdAt || new Date().toISOString()

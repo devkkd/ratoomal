@@ -845,7 +845,7 @@ const ProductDetailPage = () => {
                                         <div className="flex items-center gap-2">
                                             <input
                                                 type="text"
-                                                placeholder="e.g., 15 inch"
+                                                placeholder="e.g., 2"
                                                 value={customSize}
                                                 onChange={(e) => setCustomSize(e.target.value)}
                                                 className="flex-1 px-4 py-3 text-sm border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#C08237] focus:border-[#C08237] transition-colors"

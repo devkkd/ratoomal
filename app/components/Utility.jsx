@@ -100,7 +100,7 @@ export default function Utility() {
                             {/* Add to Inquiry Section - Push to Bottom */}
                             <div className="mt-3 space-y-2 mt-auto">
                                 {/* Quantity Selector */}
-                                <div className="flex items-center justify-between">
+                                {/* <div className="flex items-center justify-between">
                                     <span className="text-xs hidden sm:flex text-gray-600">Quantity:</span>
                                     <div className="flex items-center mx-auto sm:mx-0 border border-gray-300 rounded-md">
                                         <button 
@@ -142,7 +142,7 @@ export default function Utility() {
                                             +
                                         </button>
                                     </div>
-                                </div>
+                                </div> */}
                                 
                                 {/* Add to Inquiry Button */}
                                 <button
@@ -152,7 +152,7 @@ export default function Utility() {
                                         const quantity = parseInt(quantityInput?.value) || 1;
                                         handleAddToInquiry(item, quantity, e);
                                     }}
-                                    className="w-full py-2 bg-[#C08237] text-white text-xs font-medium rounded-md hover:bg-[#9C774A] transition-colors flex items-center justify-center gap-1"
+                                    className="w-full my-2 py-2 bg-[#C08237] text-white text-xs font-medium rounded-md hover:bg-[#9C774A] transition-colors flex items-center justify-center gap-1"
                                 >
                                     <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />

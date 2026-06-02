@@ -78,27 +78,6 @@ const CategoryPage = () => {
     const { isLoggedIn, isLoading: authLoading, isClient } = useAuth();
     const [showLoginPrompt, setShowLoginPrompt] = useState(false);
 
-    // Track site header visibility to shift toolbar + sidebar dynamically
-    // Mirrors the same logic as Header.jsx scroll behavior
-    const [siteHeaderVisible, setSiteHeaderVisible] = useState(true);
-    const lastScrollYRef = React.useRef(0);
-
-    useEffect(() => {
-        const handleScroll = () => {
-            const currentY = window.scrollY;
-            if (currentY < 80) {
-                setSiteHeaderVisible(true);
-            } else if (currentY > lastScrollYRef.current + 8) {
-                setSiteHeaderVisible(false);
-            } else if (currentY < lastScrollYRef.current - 4) {
-                setSiteHeaderVisible(true);
-            }
-            lastScrollYRef.current = currentY;
-        };
-        window.addEventListener('scroll', handleScroll, { passive: true });
-        return () => window.removeEventListener('scroll', handleScroll);
-    }, []);
-
     const getProductImage = (product) => {
         if (product.thumbnail && (product.thumbnail.startsWith('http') || product.thumbnail.startsWith('/'))) {
             return product.thumbnail;
@@ -126,7 +105,7 @@ const CategoryPage = () => {
         
         // Non-logged in users can see up to 4 products per category
         if (!isLoggedIn) {
-            return categoryProducts.slice(0, 6);
+            return categoryProducts.slice(0, 3);
         }
         
         // Logged in users ke liye all products
@@ -848,9 +827,9 @@ const CategoryPage = () => {
                 </div>
             )}
 
-            {/* Page Hero - Collection Title */}
-            <section className="bg-gradient-to-r from-white via-[#FFFCF8] to-white border-b border-[#E5DDD5]">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-8 mt-2">
+            {/* Page Header - Beautiful and Clean */}
+            <header className="bg-gradient-to-r from-white via-[#FFFCF8] to-white border-b border-[#E5DDD5]">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
                     <div className="text-center space-y-4">
                         {/* Decorative Element */}
                         <div className="flex items-center justify-center gap-3 mb-2">
@@ -873,16 +852,26 @@ const CategoryPage = () => {
                                 : `Browse our exclusive ${activeCategory.toLowerCase()} collection`}
                         </p>
                         
-                        
+                        {/* Product Count Badge */}
+                        {sortedProducts.length > 0 && (
+                            <div className="inline-flex items-center gap-2 bg-white px-5 py-2.5 rounded-full shadow-md border border-[#E5DDD5]">
+                                <svg className="w-4 h-4 text-[#C08237]" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M21 13H3v8h18v-8zM3 7h18V5H3v2zm0-5h18V0H3v2z"/>
+                                </svg>
+                                <span className="text-sm font-semibold text-gray-700 mona">
+                                    {sortedProducts.length} {sortedProducts.length === 1 ? 'Product' : 'Products'}
+                                </span>
+                            </div>
+                        )}
                     </div>
                 </div>
-            </section>
+            </header>
 
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
                 <div className="flex flex-col lg:flex-row gap-6 lg:gap-8">
                     {/* Left Sidebar - Desktop */}
                     <aside className="hidden lg:block lg:w-72 shrink-0">
-                        <div className={`sticky space-y-4 transition-all duration-300 ${siteHeaderVisible ? 'top-[130px]' : 'top-6'}`}>
+                        <div className="sticky top-[90px] space-y-4">
                             
                             {/* Categories Card */}
                             <div className="bg-white rounded-2xl border border-[#E5DDD5] shadow-sm overflow-hidden">
@@ -1017,8 +1006,8 @@ const CategoryPage = () => {
 
                     {/* Main Content */}
                     <main className="flex-1 min-w-0">
-                        {/* Toolbar - Sticky, shifts up when site header hides */}
-                        <div className={`sticky z-40 bg-white/95 backdrop-blur-sm -mx-4 px-4 sm:-mx-6 sm:px-6 lg:-mx-0 lg:px-0 py-3 mb-6 border-b border-gray-100 shadow-sm transition-all duration-300 ${siteHeaderVisible ? 'top-[80px] lg:top-[128px]' : 'top-0'}`}>
+                        {/* Toolbar - Sticky */}
+                        <div className="sticky top-[80px] z-40 bg-white/95 backdrop-blur-sm -mx-4 px-4 sm:-mx-6 sm:px-6 lg:-mx-0 lg:px-0 py-3 mb-6 border-b border-gray-100 shadow-sm">
                             <div className="flex flex-col gap-3">
                                 
                                 {/* Row 1 - Mobile: Filter + Sort buttons */}
@@ -1297,7 +1286,6 @@ const CategoryPage = () => {
 
                                                             <button
                                                                 onClick={(e) => {
-                                                                    e.preventDefault();
                                                                     e.stopPropagation();
                                                                     toggleWishlist(product.id);
                                                                 }}
@@ -1384,7 +1372,6 @@ const CategoryPage = () => {
                                                                 {/* Add to Inquiry Button */}
                                                                 <button
                                                                     onClick={(e) => {
-                                                                        e.preventDefault();
                                                                         e.stopPropagation();
                                                                         if (!isLoggedIn) {
                                                                             router.push('/login');
@@ -1482,7 +1469,6 @@ const CategoryPage = () => {
 
                                                 <button
                                                     onClick={(e) => {
-                                                        e.preventDefault();
                                                         e.stopPropagation();
                                                         toggleWishlist(product.id);
                                                     }}
@@ -1569,7 +1555,6 @@ const CategoryPage = () => {
                                                     {/* Add to Inquiry Button */}
                                                     <button
                                                         onClick={(e) => {
-                                                            e.preventDefault();
                                                             e.stopPropagation();
                                                             if (!isLoggedIn) {
                                                                 router.push('/login');

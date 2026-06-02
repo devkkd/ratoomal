@@ -482,7 +482,7 @@ const InquiryCartPage = () => {
                                 key={index}
                                 className="px-2 py-1 bg-[#bf8e44] bg-opacity-10 text-white text-xs rounded-full"
                               >
-                                {size} inch
+                                {size}
                               </span>
                             ))}
                           </div>

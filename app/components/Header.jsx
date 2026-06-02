@@ -27,6 +27,31 @@ const Header = () => {
   const [selectedCurrency, setSelectedCurrency] = useState('INR ₹');
   const [showLangDropdown, setShowLangDropdown] = useState(false);
   const [showCurrencyDropdown, setShowCurrencyDropdown] = useState(false);
+
+  // Hide on scroll down, show on scroll up
+  const [isHeaderVisible, setIsHeaderVisible] = useState(true);
+  const lastScrollY = useRef(0);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentY = window.scrollY;
+      // Always show when near top
+      if (currentY < 80) {
+        setIsHeaderVisible(true);
+      } else if (currentY > lastScrollY.current + 8) {
+        // Scrolling down — hide
+        setIsHeaderVisible(false);
+        setActiveDropdown(null);
+      } else if (currentY < lastScrollY.current - 4) {
+        // Scrolling up — show
+        setIsHeaderVisible(true);
+      }
+      lastScrollY.current = currentY;
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
   
   const searchRef = useRef(null);
   const langRef = useRef(null);
@@ -99,11 +124,12 @@ const Header = () => {
         
         // 4. Fetch products for search (using public API with limit)
         try {
-          const productsResponse = await axios.get('/api/products?limit=50');
+          const productsResponse = await axios.get('/api/products?limit=500');
           if (productsResponse.data.success) {
             const transformed = productsResponse.data.data.map(product => ({
               id: product._id,
               name: product.name || "Unnamed Product",
+              code: product.code || "",
               img: product.thumbnail || (product.images && product.images[0]) || '/images/placeholder.png',
               categoryName: product.category?.name || "Uncategorized",
               categoryId: product.category?._id || ""
@@ -134,19 +160,20 @@ const Header = () => {
     
   }, [wishlist]);
 
-  // Search filter logic
+  // Search filter logic — by name and product code
   useEffect(() => {
     if (searchQuery.trim() === '') {
       setSearchResults([]);
       return;
     }
 
+    const q = searchQuery.trim().toLowerCase();
     const filtered = allProducts.filter(product =>
-      product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      product.categoryName.toLowerCase().includes(searchQuery.toLowerCase())
+      product.name.toLowerCase().includes(q) ||
+      product.code.toLowerCase().includes(q)
     );
     
-    setSearchResults(filtered.slice(0, 6));
+    setSearchResults(filtered.slice(0, 8));
   }, [searchQuery, allProducts]);
 
   // Outside click handler
@@ -316,7 +343,7 @@ const Header = () => {
 
   return (
     <>
-      <header className="w-full sticky top-0  bg-[#FFF6EB] border-b border-[#A49C93]/30 relative z-50">
+      <header className={`w-full fixed top-0 left-0 right-0 bg-[#FFF6EB] border-b border-[#A49C93]/30 z-50 transition-transform duration-300 ${isHeaderVisible ? 'translate-y-0' : '-translate-y-full'}`}>
       <div className="max-w-7xl mx-auto px-4 h-20 flex items-center justify-between">
         
         {/* Left Side (Desktop) */}
@@ -461,7 +488,14 @@ const Header = () => {
                       <img src={product.img} alt={product.name} className="w-12 h-12 object-cover rounded border border-gray-100" />
                       <div>
                         <p className="text-[11px] font-bold text-gray-800 uppercase line-clamp-1">{product.name}</p>
-                        <p className="text-[9px] text-[#C08237] font-semibold uppercase">{product.categoryName}</p>
+                        <div className="flex items-center gap-2 mt-0.5">
+                          {product.code && (
+                            <span className="text-[9px] font-bold text-white bg-[#C08237] px-1.5 py-0.5 rounded uppercase">
+                              {product.code}
+                            </span>
+                          )}
+                          <p className="text-[9px] text-gray-400 font-medium uppercase">{product.categoryName}</p>
+                        </div>
                       </div>
                     </Link>
                   ))
@@ -568,7 +602,14 @@ const Header = () => {
                     <img src={product.img} alt={product.name} className="w-10 h-10 object-cover rounded border border-gray-100" />
                     <div>
                       <p className="text-xs font-bold text-gray-800 uppercase line-clamp-1">{product.name}</p>
-                      <p className="text-xs text-[#C08237] font-semibold uppercase">{product.categoryName}</p>
+                      <div className="flex items-center gap-2 mt-0.5">
+                        {product.code && (
+                          <span className="text-[9px] font-bold text-white bg-[#C08237] px-1.5 py-0.5 rounded uppercase">
+                            {product.code}
+                          </span>
+                        )}
+                        <p className="text-[9px] text-gray-400 font-medium uppercase">{product.categoryName}</p>
+                      </div>
                     </div>
                   </Link>
                 ))

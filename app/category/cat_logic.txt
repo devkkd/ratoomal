@@ -1,0 +1,315 @@
+"use client";
+import React, { useState, useEffect, useCallback } from 'react';
+import { ChevronRight, Search, Heart } from 'lucide-react';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { useWishlistStore } from '@/store/wishlistStore';
+import { useInquiryCartStore } from '@/store/inquiryCartStore';
+import { useAuth } from '@/hooks/useAuth';
+import NotificationToast, { useNotification } from '../components/NotificationToast';
+
+// Static filters
+const filters = {
+    "Finish / Style": ["All Finishes", "Natural", "Hand Painted", "Antique", "Metallic", "Matte"],
+    "Material": ["Plastic", "Wooden", "Resin", "Thandi Lac", "Marble", "Metal", "Ceramic", "Glass", "Stone"],
+    "Size": ["3\"", "6\"", "9\"", "12\"", "15\"", "18\"", "24\"", "36\""],
+    "Product Type": ["Ready Stock", "Made to Order"],
+};
+
+// Sort options
+const sortOptions = [
+    "Recommended",
+    "Latest",
+    "Popularity",
+    "Name A-Z",
+    "Name Z-A",
+];
+
+const CategoryPage = () => {
+    const router = useRouter();
+    const searchParams = useSearchParams();
+    
+    // Get URL parameters
+    const urlCategory = searchParams.get('category');
+    const urlCategoryId = searchParams.get('id');
+    const urlSubCategory = searchParams.get('subcategory');
+    const urlSubCategoryId = searchParams.get('subid');
+    const pageParam = searchParams.get('page');
+    
+    const [activeCategory, setActiveCategory] = useState("All Products");
+    const [selectedFilters, setSelectedFilters] = useState({
+        "finish/style": [],
+        "material": [],
+        "size": [],
+        "producttype": [],
+    });
+    const [selectedCategories, setSelectedCategories] = useState([]);
+    const [expandedSections, setExpandedSections] = useState({
+        "Finish / Style": true,
+        "Minimum Order Quantity": true,
+        "Product Type": true,
+    });
+    const [navigationState, setNavigationState] = useState({
+        shouldNavigate: false,
+        url: null
+    });
+    const [isFilterOpen, setIsFilterOpen] = useState(false);
+    const [isSortOpen, setIsSortOpen] = useState(false);
+    const [selectedSort, setSelectedSort] = useState("Recommended");
+    const [products, setProducts] = useState([]);
+    const [filteredProducts, setFilteredProducts] = useState([]);
+    const [sortedProducts, setSortedProducts] = useState([]);
+    const { wishlist, toggleWishlist, isInWishlist, initialize } = useWishlistStore();
+    const { addToCart } = useInquiryCartStore();
+    const { notification, showNotification, hideNotification } = useNotification();
+    const [loading, setLoading] = useState(true);
+    
+    // State for categories and subcategories from backend
+    const [backendCategories, setBackendCategories] = useState([]);
+    const [allSubCategories, setAllSubCategories] = useState([]);
+    const [searchTerms, setSearchTerms] = useState({});
+    
+    // Pagination states
+    const [currentPage, setCurrentPage] = useState(1);
+    const [productsPerPage] = useState(12);
+    const [totalPages, setTotalPages] = useState(1);
+    const [currentProducts, setCurrentProducts] = useState([]);
+    
+    // Get auth state from custom hook
+    const { isLoggedIn, isLoading: authLoading, isClient } = useAuth();
+    const [showLoginPrompt, setShowLoginPrompt] = useState(false);
+
+    const getProductImage = (product) => {
+        if (product.thumbnail && (product.thumbnail.startsWith('http') || product.thumbnail.startsWith('/'))) {
+            return product.thumbnail;
+        }
+        
+        if (product.images && product.images.length > 0) {
+            const firstImage = product.images[0];
+            if (firstImage && (firstImage.startsWith('http') || firstImage.startsWith('/'))) {
+                return firstImage;
+            }
+        }
+        
+        if (product.image && (product.image.startsWith('http') || product.image.startsWith('/'))) {
+            return product.image;
+        }
+        
+        return '/images/placeholder.png';
+    };
+
+    // Get category products with limit for non-logged in users
+    const getCategoryProducts = (categoryId) => {
+        const categoryProducts = sortedProducts.filter(product => 
+            product.category === categoryId
+        );
+        
+        // Non-logged in users can see up to 4 products per category
+        if (!isLoggedIn) {
+            return categoryProducts.slice(0, 3);
+        }
+        
+        // Logged in users ke liye all products
+        return categoryProducts;
+    };
+
+    // Initialize wishlist from store (only once on mount)
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            initialize();
+        }
+    }, [initialize]);
+
+    // Log wishlist changes for debugging
+    useEffect(() => {
+        console.log('🔍 Category Page - Wishlist changed:', wishlist);
+    }, [wishlist]);
+
+    // Initialize from URL parameters
+    useEffect(() => {
+        if (urlCategory && urlCategoryId) {
+            setActiveCategory(urlCategory);
+            
+            if (urlSubCategoryId) {
+                const subKey = `${urlCategoryId}-${urlSubCategoryId}`;
+                setSelectedCategories([subKey]);
+            } else {
+                setSelectedCategories([urlCategoryId]);
+            }
+        }
+        
+        if (pageParam) {
+            const pageNum = parseInt(pageParam);
+            if (!isNaN(pageNum) && pageNum > 0) {
+                setCurrentPage(pageNum);
+            }
+        }
+        
+        // Only reset to page 1 for non-logged-in users after auth has finished loading
+        if (!authLoading && !isLoggedIn && pageParam && parseInt(pageParam) > 1) {
+            setCurrentPage(1);
+            updatePageInURL(1);
+        }
+    }, [urlCategory, urlCategoryId, urlSubCategoryId, pageParam, isLoggedIn, authLoading]);
+
+    // Handle navigation
+    useEffect(() => {
+        if (navigationState.shouldNavigate && navigationState.url) {
+            router.push(navigationState.url);
+            setNavigationState({ shouldNavigate: false, url: null });
+        }
+    }, [navigationState, router]);
+
+    // Fetch data from backend
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                setLoading(true);
+                
+                // Fetch categories
+                const categoriesResponse = await fetch('/api/categories');
+                if (categoriesResponse.ok) {
+                    const categoriesData = await categoriesResponse.json();
+                    if (categoriesData.success && categoriesData.data) {
+                        setBackendCategories(categoriesData.data);
+                        
+                        const initialSearchTerms = {};
+                        categoriesData.data.forEach(cat => {
+                            initialSearchTerms[cat._id] = "";
+                        });
+                        setSearchTerms(initialSearchTerms);
+                        
+                        // Fetch subcategories
+                        try {
+                            const subCatResponse = await fetch('/api/subcategories');
+                            if (subCatResponse.ok) {
+                                const subCatData = await subCatResponse.json();
+                                if (subCatData.success && subCatData.data) {
+                                    setAllSubCategories(subCatData.data);
+                                }
+                            }
+                        } catch (error) {
+                            console.error('Error fetching subcategories:', error);
+                        }
+                    }
+                }
+                
+                // Fetch products
+                const productsResponse = await fetch('/api/products');
+                if (productsResponse.ok) {
+                    const productsData = await productsResponse.json();
+                    if (productsData.success && productsData.data) {
+                        const transformedProducts = productsData.data.map(product => ({
+                            id: product._id,
+                            slug: product.slug || null,
+                            name: product.name || "Unnamed Product",
+                            code: product.code || "",
+                            price: product.price?.toString() || "0",
+                            moq: product.minimumOrderQuantity || product.moq || 0,
+                            img: getProductImage(product),
+                            category: product.category?._id || "",
+                            categoryName: product.category?.name || "Uncategorized",
+                            subCategory: product.subCategory?._id || "",
+                            subCategoryName: product.subCategory?.name || "",
+                            finish: product.finish || "Natural",
+                            material: product.material || "Plastic",
+                            size: product.size || "6\"",
+                            productType: product.productType || "Ready Stock",
+                            services: product.services || [],
+                            thumbnail: product.thumbnail,
+                            images: product.images || []
+                        }));
+                        
+                        setProducts(transformedProducts);
+                        setFilteredProducts(transformedProducts);
+                        setSortedProducts(transformedProducts);
+                    }
+                }
+            } catch (error) {
+                console.error('Error fetching data from backend:', error);
+                setProducts([]);
+                setFilteredProducts([]);
+                setSortedProducts([]);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchData();
+    }, []);
+
+    // Initialize expanded sections
+    useEffect(() => {
+        if (backendCategories.length > 0) {
+            const initialExpandedSections = {};
+            backendCategories.forEach((cat, index) => {
+                initialExpandedSections[cat._id] = index === 0;
+            });
+            Object.keys(filters).forEach(filter => {
+                initialExpandedSections[filter] = true;
+            });
+            setExpandedSections(prev => ({ ...prev, ...initialExpandedSections }));
+        }
+    }, [backendCategories]);
+
+    // Update current products when sorted products or current page changes
+    useEffect(() => {
+        if (sortedProducts && Array.isArray(sortedProducts)) {
+            const totalPagesCount = Math.ceil(sortedProducts.length / productsPerPage);
+            setTotalPages(totalPagesCount);
+            
+            let startIndex, endIndex;
+            
+            if (!authLoading && !isLoggedIn) {
+                // Non-logged in users can only see first page
+                if (currentPage > 1) {
+                    setCurrentPage(1);
+                    updatePageInURL(1);
+                    startIndex = 0;
+                } else {
+                    startIndex = (currentPage - 1) * productsPerPage;
+                }
+                endIndex = Math.min(startIndex + productsPerPage, sortedProducts.length);
+            } else {
+                startIndex = (currentPage - 1) * productsPerPage;
+                endIndex = Math.min(startIndex + productsPerPage, sortedProducts.length);
+            }
+            
+            const currentProductsSlice = sortedProducts.slice(startIndex, endIndex);
+            setCurrentProducts(currentProductsSlice);
+        }
+    }, [sortedProducts, currentPage, productsPerPage, isLoggedIn, authLoading]);
+
+    // Scroll back to last viewed product when returning from product detail page
+    // Runs only after loading is done and products are rendered in the DOM
+    useEffect(() => {
+        if (loading) return;
+        if (currentProducts.length === 0) return;
+        if (typeof window === 'undefined') return;
+
+        const lastProductId = sessionStorage.getItem('lastViewedProductId');
+        if (!lastProductId) return;
+
+        // Check if the product is on the current page
+        const isOnPage = currentProducts.some(p => p.id === lastProductId);
+        if (!isOnPage) return;
+
+        // Poll for the element — DOM may not be painted yet right after state update
+        let attempts = 0;
+        const maxAttempts = 20; // try for up to 2 seconds
+        const interval = setInterval(() => {
+            attempts++;
+            const el = document.getElementById(`product-${lastProductId}`);
+            if (el) {
+                clearInterval(interval);
+                // Scroll so the product is visible with some space above it
+                const offset = 120; // account for sticky header
+                const top = el.getBoundingClientRect().top + window.scrollY - offset;
+                window.scrollTo({ top: Math.max(0, top), behavior: 'smooth' });
+                sessionStorage.removeItem('lastViewedProductId');
+            } else if (attempts >= maxAttempts) {
+                clearInterval(interval);
+                sessionStorage.removeItem('lastViewedProductId');
+            }
+        }, 100);
+
+    

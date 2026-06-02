@@ -22,10 +22,12 @@ export default function ClientLayout({ children }) {
       <ScrollToTop />
       <LanguageLoader />
       {!isAdminRoute && (
-        <Suspense fallback={<div className="h-16 bg-white" />}>
+        <Suspense fallback={<div className="h-20 bg-[#FFF6EB]" />}>
           <Header />
         </Suspense>
       )}
+      {/* Spacer so content doesn't hide behind the fixed header */}
+      {!isAdminRoute && <div className="h-20 lg:h-[110px]" />}
       <main className="flex-grow">{children}</main>
       {!hideFooter && !isAdminRoute && <Footer />}
       {!isAdminRoute && <WhatsAppButton />}
