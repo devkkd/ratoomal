@@ -1629,7 +1629,7 @@ const CategoryPage = () => {
             </div>
 
             {/* Filter Sidebar */}
-            <div className={`fixed inset-0 z-50 transition-all duration-300 ${isFilterOpen ? 'visible' : 'invisible'}`}>
+            <div className={`fixed inset-0 z-[100] transition-all duration-300 ${isFilterOpen ? 'visible' : 'invisible'}`}>
                 <div
                     className={`absolute inset-0 bg-black transition-opacity duration-300 ${isFilterOpen ? 'opacity-50' : 'opacity-0'}`}
                     onClick={() => setIsFilterOpen(false)}
@@ -1777,7 +1777,7 @@ const CategoryPage = () => {
             {/* Close dropdown when clicking outside */}
             {isSortOpen && (
                 <div
-                    className="fixed inset-0 z-30"
+                    className="fixed inset-0 z-[90]"
                     onClick={() => setIsSortOpen(false)}
                 />
             )}

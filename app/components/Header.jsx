@@ -770,16 +770,16 @@ const Header = () => {
       {/* Mobile Sidebar */}
       {isMenuOpen && (
         <div className="fixed inset-0 z-[100] lg:hidden">
-          {/* Backdrop with animation */}
+          {/* Backdrop */}
           <div 
-            className="fixed inset-0 bg-black/60 backdrop-blur-sm transition-opacity duration-300" 
+            className="fixed inset-0 bg-black/60 transition-opacity duration-300" 
             onClick={() => setIsMenuOpen(false)} 
           />
           
-          {/* Sidebar with slide animation */}
-          <div className="fixed top-0 left-0 w-[85%] max-w-sm h-full bg-gradient-to-b from-[#FFF6EB] to-[#FFF9F0] shadow-2xl overflow-y-auto animate-slide-in">
-            {/* Header */}
-            <div className="sticky top-0 bg-[#FFF6EB]/95 backdrop-blur-md z-10 px-6 py-4 border-b border-[#D4C4B0]/30 shadow-sm">
+          {/* Sidebar panel */}
+          <div className="fixed top-0 left-0 w-[85%] max-w-sm h-[100dvh] bg-gradient-to-b from-[#FFF6EB] to-[#FFF9F0] shadow-2xl flex flex-col animate-slide-in z-[101]">
+            {/* Sidebar Header — logo + close */}
+            <div className="shrink-0 bg-[#FFF6EB] px-6 py-4 border-b border-[#D4C4B0]/30 shadow-sm">
               <div className="flex justify-between items-center">
                 <img src="/images/Group-56121.svg" alt="logo" className="h-9" />
                 <button 
@@ -835,6 +835,8 @@ const Header = () => {
               </div>
             </div>
             
+            {/* Navigation Links + Footer — scrollable area */}
+            <div className="flex-1 overflow-y-auto min-h-0 ios-scroll">
             {/* Navigation Links */}
             <div className="px-4 py-4">
               <ul className="space-y-2">
@@ -1135,6 +1137,7 @@ const Header = () => {
                 </Link>
               )}
             </div>
+            </div>{/* end scrollable area */}
           </div>
         </div>
       )}

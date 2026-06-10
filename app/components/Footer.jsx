@@ -22,7 +22,7 @@ const Footer = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 mb-12">
 
             {/* Brand Column */}
-            <div className="lg:col-span-1">
+            <div className="col-span-2 lg:col-span-1">
               <div className="mb-4">
 
                 <h2 className="text-xl font-serif font-bold text-[#B8860B]">
