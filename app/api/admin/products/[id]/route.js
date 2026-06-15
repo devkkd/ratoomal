@@ -41,10 +41,27 @@ export async function PATCH(request, { params }) {
       body.code = body.code.toUpperCase();
     }
 
-    const updated = await Product.findByIdAndUpdate(id, body, {
-      new: true,
-      runValidators: true,
-    });
+    // Guard: ensure sizes is always an array of strings split only by comma
+    if (body.sizes !== undefined) {
+      if (typeof body.sizes === 'string') {
+        body.sizes = body.sizes
+          .split(',')
+          .map(s => s.trim())
+          .filter(s => s.length > 0);
+      } else if (Array.isArray(body.sizes)) {
+        // Already array — flatten any accidentally nested arrays, keep as strings
+        body.sizes = body.sizes
+          .flat()
+          .map(s => String(s).trim())
+          .filter(s => s.length > 0);
+      }
+    }
+
+    const updated = await Product.findByIdAndUpdate(
+      id,
+      { $set: body },
+      { new: true, runValidators: true }
+    );
 
     return NextResponse.json({ success: true, data: updated });
   } catch (error) {

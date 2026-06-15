@@ -258,10 +258,13 @@ const handleSubmit = async (e) => {
         ? form.features.split(",").map(f => f.trim()).filter(Boolean)
         : [],
       sizes: form.sizes
-        ? form.sizes.split(/[,/]/).map(s => s.trim()).filter(Boolean)
+        ? form.sizes.split(",").map(s => s.trim()).filter(s => s.length > 0)
         : [],
       availability: isStock ? "In Stock" : "Out of Stock",
     };
+
+    console.log('🔍 sizes form value:', JSON.stringify(form.sizes));
+    console.log('🔍 sizes payload:', JSON.stringify(payload.sizes));
 
     if (!payload.subCategory) delete payload.subCategory;
 
@@ -963,7 +966,21 @@ const handleSubmit = async (e) => {
                       type="text"
                       placeholder="6, 8, 10, 12"
                       value={form.sizes}
-                      onChange={(e) => setForm({...form, sizes: e.target.value})}
+                      onChange={(e) => {
+                        // Only split on comma — preserve all other characters including fractions
+                        setForm({...form, sizes: e.target.value});
+                      }}
+                      onPaste={(e) => {
+                        // On paste, ensure we don't mangle fraction characters
+                        e.preventDefault();
+                        const pasted = e.clipboardData.getData('text');
+                        const current = form.sizes;
+                        const input = e.target;
+                        const start = input.selectionStart;
+                        const end = input.selectionEnd;
+                        const newVal = current.substring(0, start) + pasted + current.substring(end);
+                        setForm({...form, sizes: newVal});
+                      }}
                       className="pl-10 w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#C08237] focus:border-transparent"
                     />
                   </div>
@@ -972,7 +989,7 @@ const handleSubmit = async (e) => {
                   </p>
                   {form.sizes && (
                     <div className="mt-3 flex flex-wrap gap-2">
-                      {form.sizes.split(/[,/]/).map((size, idx) => {
+                      {form.sizes.split(",").map((size, idx) => {
                         const trimmedSize = size.trim();
                         return trimmedSize ? (
                           <span key={idx} className="px-3 py-1 bg-[#C08237] bg-opacity-10 text-[white] rounded-full text-sm font-medium">

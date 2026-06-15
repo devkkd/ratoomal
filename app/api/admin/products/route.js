@@ -64,6 +64,16 @@ export async function POST(request) {
       images: Array.isArray(body.images) ? body.images.filter(Boolean) : [],
       services: Array.isArray(body.services) ? body.services : [],
       features: Array.isArray(body.features) ? body.features : [],
+      sizes: (() => {
+        if (!body.sizes) return [];
+        if (typeof body.sizes === 'string') {
+          return body.sizes.split(',').map(s => s.trim()).filter(s => s.length > 0);
+        }
+        if (Array.isArray(body.sizes)) {
+          return body.sizes.flat().map(s => String(s).trim()).filter(s => s.length > 0);
+        }
+        return [];
+      })(),
       video360: body.video360 || "",
 
       availability: body.availability || "In Stock",

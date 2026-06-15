@@ -31,8 +31,8 @@ const normalizeSizes = (sizes) => {
       str.split(',').forEach(s => s.trim() && result.push(s.trim()));
       continue;
     }
-    // If item contains 'x' (dimension like 6x5x3), keep as-is
-    if (/\d+x\d+/i.test(str)) {
+    // If item contains 'x' (dimension like 6x5x3 or 7x3½x1½), keep as-is
+    if (/[\w\d½¾¼⅓⅔⅛⅜⅝⅞]+x[\w\d½¾¼⅓⅔⅛⅜⅝⅞]+/i.test(str) || str.includes('x')) {
       result.push(str);
       continue;
     }
