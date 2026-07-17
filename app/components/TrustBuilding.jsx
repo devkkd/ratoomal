@@ -16,10 +16,10 @@ const TrustBuilding = () => {
       imgSrc: "/images/trust/Legacy.svg",
       label: "70+ Years Legacy",
     },
-    // {
-    //   imgSrc: "/images/trust/Antiques.svg",
-    //   label: "Salvaged Antiques",
-    // },
+    {
+      imgSrc: "/images/trust/Antiques.svg",
+      label: "Salvaged Antiques",
+    },
     {
       imgSrc: "/images/trust/Presence.svg",
       label: "Global Presence",
@@ -27,7 +27,7 @@ const TrustBuilding = () => {
   ];
 
   return (
-    <section className="w-full bg-[#FCF8F1] py-4 px-4 md:px-8 font-sans overflow-hidden relative">
+   <section className="w-full bg-[#FCF8F1] py-4 px-4 md:px-8 playfair overflow-hidden relative">
       {/* Top-left decorative image */}
       <div className="absolute  top-0 left-0 w-52 h-52 md:w-96 md:h-80 pointer-events-none z-0">
         <img 
@@ -69,12 +69,12 @@ const TrustBuilding = () => {
               Ratoomals: Jaipur’s Heritage
             </h2>
 
-            <h1 className="text-4xl font-semibold text-black leading-[1.1] mona">
+           <h1 className="text-4xl font-semibold text-black leading-[1.1] playfair">
              Handicraft & Sculptural Excellence
             </h1>
             <div className="space-y-4">
-              <p className="text-gray-700  text-md max-w-xl mona">
-              From the royal city of Jaipur to the global market, Ratoomals specialises in creating premium-quality statues, sculptures, and décor items, all of which are a true representation of the heritage of India. At Ratoomals, we have been in the business of <span className="text-black text-md pl-1 font-bold uppercase mona"> handmade craftsmanship since 1955 </span>and are a prominent Indian handicraft exporter.
+            <p className="text-gray-700 text-md max-w-xl playfair">
+              From the Royal City of Jaipur to the World - Handcrafted Statues, Sculptures and Decor with Timeless Indian Heritage. <span className="text-black text-md pl-1 font-bold uppercase playfair"> HANDMADE ARTISTRY SINCE 1955 </span>
                 {/* <span className="text-black text-md pl-1 font-bold uppercase mona">
                   HANDMADE ARTISTRY SINCE 1955
                 </span> */}
@@ -82,7 +82,7 @@ const TrustBuilding = () => {
             </div>
             <div className="text-center items-center  sm:items-center flex justify-center sm:justify-start w-full"> 
             <Link href="/category">
-            <button className=" mona px-10 py-4 bg-[#c48b46] text-white rounded-full flex items-center gap-1 hover:bg-[#a6753a] transition-all duration-300 font-medium text-base uppercase">
+            <button className="playfair px-10 py-4 bg-[#c48b46] text-white rounded-full flex items-center gap-1 hover:bg-[#a6753a] transition-all duration-300 font-medium text-base uppercase">
               EXPLORE COLLECTIONS
               <span className="text-xl group-hover:translate-y-1 transition-transform duration-300">
                 ↓
@@ -95,7 +95,7 @@ const TrustBuilding = () => {
 
         {/* Bottom: Icon Features Grid */}
         <div className="relative max-w-6xl mx-7 px-4 md:px-0 ">
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6 md:gap-8 justify-items-center">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-6 md:gap-8 justify-items-center">
             {features.map((item, index) => (
               <div
                 key={index}
@@ -104,7 +104,7 @@ const TrustBuilding = () => {
                 <div className="p-2 transition-transform duration-300 group-hover:scale-110">
                   <img src={item.imgSrc} alt={item.label} className="w-12 h-12 object-contain" />
                 </div>
-                <p className="text-gray-800 text-sm md:text-[14px] font-normal mona">
+               <p className="text-gray-800 text-sm md:text-[14px] font-normal playfair">
                   {item.label}
                 </p>
 

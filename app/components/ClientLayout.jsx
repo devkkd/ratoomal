@@ -27,7 +27,7 @@ export default function ClientLayout({ children }) {
         </Suspense>
       )}
       {/* Spacer so content doesn't hide behind the fixed header */}
-      {!isAdminRoute && <div className="h-20 lg:h-[110px]" />}
+      {!isAdminRoute && <div className="h-20" />}
       <main className="flex-grow">{children}</main>
       {!hideFooter && !isAdminRoute && <Footer />}
       {!isAdminRoute && <WhatsAppButton />}

@@ -3,7 +3,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import Link from 'next/link';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { Menu, X, ChevronRight } from 'lucide-react';
+import { Menu, X, ChevronRight, Heart, ShoppingBag, Globe } from 'lucide-react';
 import Cookies from 'js-cookie';
 import { useTranslation } from '@/hooks/useTranslation';
 import { useWishlistStore } from '@/store/wishlistStore';
@@ -52,20 +52,49 @@ const Header = () => {
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
-  
+
   const searchRef = useRef(null);
   const langRef = useRef(null);
   const currencyRef = useRef(null);
   const pathname = usePathname();
   const router = useRouter();
   const searchParams = useSearchParams();
-  
+
+  // Delay timer for desktop dropdown hover close (so it stays open briefly)
+  const dropdownTimeoutRef = useRef(null);
+
+  const handleDropdownEnter = (name) => {
+    if (dropdownTimeoutRef.current) {
+      clearTimeout(dropdownTimeoutRef.current);
+      dropdownTimeoutRef.current = null;
+    }
+    setActiveDropdown(name);
+  };
+
+  const handleDropdownLeave = () => {
+    if (dropdownTimeoutRef.current) clearTimeout(dropdownTimeoutRef.current);
+    dropdownTimeoutRef.current = setTimeout(() => {
+      setActiveDropdown(null);
+    }, 350);
+  };
+
+  useEffect(() => {
+    return () => {
+      if (dropdownTimeoutRef.current) clearTimeout(dropdownTimeoutRef.current);
+    };
+  }, []);
+
+  // Currently selected category / subcategory (from URL) so the matching card
+  // keeps its "hover" styling even after the dropdown closes / page loads
+  const activeCategoryId = searchParams.get('id');
+  const activeSubCategoryId = searchParams.get('subid');
+
   // Get translation hook
   const { currentLanguage, languages, changeLanguage, getCurrentLanguageInfo, isLoading: translationLoading } = useTranslation();
-  
+
   // Get wishlist from Zustand store
   const { wishlist, initialize } = useWishlistStore();
-  
+
   // Get inquiry cart from Zustand store
   const { getCartCount, initialize: initializeCart } = useInquiryCartStore();
 
@@ -95,11 +124,11 @@ const Header = () => {
     const fetchData = async () => {
       try {
         setIsLoading(true);
-        
+
         // 1. Initialize wishlist and cart from store
         initialize();
         initializeCart();
-        
+
         // 2. Fetch categories (using public API)
         try {
           const categoriesResponse = await axios.get('/api/categories');
@@ -110,7 +139,7 @@ const Header = () => {
           console.warn('Failed to fetch categories:', categoryError.message);
           setCategories([]); // Set empty array as fallback
         }
-        
+
         // 3. Fetch subcategories (using public API)
         try {
           const subCategoriesResponse = await axios.get('/api/subcategories');
@@ -121,7 +150,7 @@ const Header = () => {
           console.warn('Failed to fetch subcategories:', subCategoryError.message);
           setSubCategories([]); // Set empty array as fallback
         }
-        
+
         // 4. Fetch products for search (using public API with limit)
         try {
           const productsResponse = await axios.get('/api/products?limit=500');
@@ -140,7 +169,7 @@ const Header = () => {
           console.warn('Failed to fetch products:', productError.message);
           setAllProducts([]); // Set empty array as fallback
         }
-        
+
       } catch (error) {
         console.error('Error fetching data:', error);
         // Set fallback data
@@ -151,13 +180,13 @@ const Header = () => {
         setIsLoading(false);
       }
     };
-    
+
     fetchData();
   }, []);
 
   // Log wishlist changes for debugging
   useEffect(() => {
-    
+
   }, [wishlist]);
 
   // Search filter logic — by name and product code
@@ -172,7 +201,7 @@ const Header = () => {
       product.name.toLowerCase().includes(q) ||
       product.code.toLowerCase().includes(q)
     );
-    
+
     setSearchResults(filtered.slice(0, 8));
   }, [searchQuery, allProducts]);
 
@@ -198,7 +227,7 @@ const Header = () => {
     if (!categoryId || !subCategories || !Array.isArray(subCategories)) {
       return [];
     }
-    
+
     return subCategories.filter(subCat => {
       if (subCat.category && subCat.category._id) {
         return subCat.category._id === categoryId;
@@ -217,7 +246,7 @@ const Header = () => {
       router.push('/login');
       return;
     }
-    
+
     // Navigate to category page with query parameter
     router.push(`/category?category=${encodeURIComponent(categoryName)}&id=${categoryId}`);
     setIsMenuOpen(false);
@@ -231,10 +260,10 @@ const Header = () => {
       router.push('/login');
       return;
     }
-    
+
     // Always navigate to the main category page with subcategory filter
     const baseUrl = '/category';
-    
+
     // Navigate with query parameters for filtering
     router.push(`${baseUrl}?category=${encodeURIComponent(categoryName)}&id=${categoryId}&subcategory=${encodeURIComponent(subCategoryName)}&subid=${subCategoryId}`);
     setIsMenuOpen(false);
@@ -248,7 +277,7 @@ const Header = () => {
       router.push('/login');
       return;
     }
-    
+
     // Navigate to the category page without any subcategory filter
     router.push(link.href);
     setIsMenuOpen(false);
@@ -259,7 +288,7 @@ const Header = () => {
   const handleLanguageChange = (language) => {
     setShowLangDropdown(false);
     changeLanguage(language.code); // This will automatically translate the entire website
-    
+
   };
 
   // Handle currency change
@@ -269,7 +298,7 @@ const Header = () => {
     // Here you can implement currency change logic
     Cookies.set('currency', currency.code, { expires: 365 });
     // You might want to update prices or refresh data based on currency
-    
+
   };
 
   // Handle logout - now using the hook
@@ -278,7 +307,7 @@ const Header = () => {
   // Get current currency from cookie (language is handled by translation hook)
   useEffect(() => {
     const savedCurrency = Cookies.get('currency');
-    
+
     if (savedCurrency) {
       const currency = currencyOptions.find(c => c.code === savedCurrency);
       if (currency) setSelectedCurrency(`${currency.code} ${currency.symbol}`);
@@ -288,7 +317,7 @@ const Header = () => {
   // Base navigation links
   const navLinks = [
     { name: 'HOME', href: '/' },
-    { 
+    {
       name: 'ABOUT',
       href: '/about',
       hasDropdown: true,
@@ -298,20 +327,20 @@ const Header = () => {
         { label: 'Our Vision & Philosophy', href: '/about#vision' },
         { label: 'Our History', href: '/about#history' },
         { label: 'CEO Message', href: '/about#ceo-message' }
-      ] 
+      ]
     },
   ];
 
   // Get navigation links - combine with dynamic CATEGORY dropdown (removed manual category links)
   const getNavLinks = () => {
     if (isLoading) {
-      return [...navLinks, 
+      return [...navLinks,
         { name: 'PRODUCT CATEGORY', href: '/category' },
         { name: 'CUSTOM ORDERS', href: '/custom-orders' },
         { name: 'BLOG', href: '/blog' },
-       
-         { name: 'EXHIBITIONS', href: '/exhibitions' },
-          { name: 'CONTACT US', href: '/contact-us' },
+
+        { name: 'EXHIBITIONS', href: '/exhibitions' },
+        { name: 'CONTACT US', href: '/contact-us' },
       ];
     }
 
@@ -333,9 +362,9 @@ const Header = () => {
       },
       { name: 'CUSTOM ORDERS', href: '/custom-orders' },
       { name: 'BLOG', href: '/blog' },
-     
+
       { name: 'EXHIBITIONS', href: '/exhibitions' },
-       { name: 'CONTACT US', href: '/contact-us' },
+      { name: 'CONTACT US', href: '/contact-us' },
     ];
   };
 
@@ -343,235 +372,373 @@ const Header = () => {
 
   return (
     <>
-      <header className={`w-full fixed top-0 left-0 right-0 bg-[#FFF6EB] border-b border-[#A49C93]/30 z-50 transition-transform duration-300 ${isHeaderVisible ? 'translate-y-0' : '-translate-y-full'}`}>
-      <div className="max-w-7xl mx-auto px-4 h-20 flex items-center justify-between">
-        
-        {/* Left Side (Desktop) */}
-        <div className="hidden lg:flex items-center gap-6 text-sm text-gray-700 flex-1">
-          {/* Language Selector */}
-          <div 
-            className="relative" 
-            ref={langRef}
-            onMouseEnter={() => setShowLangDropdown(true)}
-            onMouseLeave={() => setShowLangDropdown(false)}
-          >
-            <div 
-              className="flex items-center gap-2 cursor-pointer font-mona hover:text-[#C08237] transition-colors py-2 text-[11px] font-bold tracking-widest"
-              onClick={() => setShowLangDropdown(!showLangDropdown)}
-            >
-              <img 
-                src={getCurrentLanguageInfo().flag} 
-                alt="" 
-                className="w-4.5 h-3 object-cover rounded-sm shadow-sm"
-                onError={(e) => { e.target.style.display = 'none'; }} 
-              />
-              <span>{getCurrentLanguageInfo().name.toUpperCase()}</span>
-              <ChevronRight size={14} className={`rotate-90 transition-transform duration-200 ${showLangDropdown ? 'rotate-180' : ''}`} />
-            </div>
-            
-            {/* Language Dropdown */}
-            {showLangDropdown && (
-              <div className="absolute top-full left-0 mt-1 w-48 bg-[#FFFCF5] border border-[#D7CEC2] py-1 z-50 rounded-sm shadow-xl animate-fade-in max-h-80 overflow-y-auto">
-                <div className="py-1">
-                  {languageOptions.map((lang) => {
-                    const isActive = currentLanguage === lang.code;
-                    return (
-                      <button
-                        key={lang.code}
-                        onClick={() => handleLanguageChange(lang)}
-                        className={`flex items-center gap-3 w-full px-4 py-2.5 text-left hover:bg-[#C08237] hover:text-white transition-all text-xs font-semibold ${
-                          isActive ? 'text-[#C08237] bg-[#C08237]/5 font-bold' : 'text-gray-700'
-                        }`}
-                      >
-                        <img 
-                          src={lang.flag} 
-                          alt={lang.name} 
-                          className="w-4 h-3 object-cover rounded-sm shadow-sm"
-                          onError={(e) => { e.target.style.display = 'none'; }} 
-                        />
-                        <span className="font-mona uppercase tracking-wider">{lang.name}</span>
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
-            )}
-          </div>
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap');
 
-          {/* Currency Selector */}
-          {/* <div className="relative" ref={currencyRef}>
-            <div 
-              className="flex items-center gap-2 cursor-pointer font-mona"
-              onClick={() => setShowCurrencyDropdown(!showCurrencyDropdown)}
-            >
-              <img src="https://flagcdn.com/w20/in.png" alt="Currency" className="w-5 h-3" loading="lazy" />
-              <span>{selectedCurrency}</span>
-              <ChevronRight size={14} className={`rotate-90 transition-transform ${showCurrencyDropdown ? 'rotate-180' : ''}`} />
-            </div>
-            
-           
-            {showCurrencyDropdown && (
-              <div className="absolute top-full left-0 mt-2 w-48 bg-white rounded-lg shadow-xl border border-gray-200 z-50">
-                <div className="py-2">
-                  {currencyOptions.map((currency) => (
-                    <button
-                      key={currency.code}
-                      onClick={() => handleCurrencyChange(currency)}
-                      className="flex items-center gap-3 w-full px-4 py-2 text-left hover:bg-gray-50 text-sm"
-                    >
-                      <img src={currency.flag} alt={currency.name} className="w-5 h-3.5" />
-                      <span className={`mona ${selectedCurrency.includes(currency.code) ? 'text-[#C08237] font-medium' : 'text-gray-700'}`}>
-                        {currency.code} {currency.symbol}
-                      </span>
-                    </button>
-                  ))}
-                </div>
-              </div>
-            )}
-          </div> */}
-        </div>
+        .hdr-header, .hdr-header input, .hdr-header select, .hdr-header button, .hdr-header a, .hdr-header span, .hdr-header p, .hdr-header div {
+          font-family: 'Playfair Display', serif;
+        }
+
+        /* Underline + hover colour for main nav links */
+        .hdr-nav-link {
+          position: relative;
+          display: inline-flex;
+          align-items: center;
+          line-height: 1;
+          padding-bottom: 0;
+          color: #454040;
+        }
+        .hdr-nav-link::after {
+          content: '';
+          position: absolute;
+          left: 0;
+          bottom: -6px;
+          width: 100%;
+          height: 2px;
+          background-color: #C08237;
+          transform: scaleX(0);
+          transform-origin: left;
+          transition: transform 0.25s ease;
+        }
+        .hdr-nav-link:hover {
+          color: #C08237;
+        }
+        .hdr-nav-link:hover::after {
+          transform: scaleX(1);
+        }
+        .hdr-nav-link.hdr-active {
+          color: #C08237;
+        }
+        .hdr-nav-link.hdr-active::after {
+          transform: scaleX(1);
+        }
+
+        /* Desktop category / sub-category cards */
+        .hdr-cat-btn {
+          transition: background-color 0.2s ease, color 0.2s ease;
+        }
+        .hdr-cat-btn.hdr-cat-active {
+          background-color: #C08237;
+          color: #ffffff;
+        }
+
+        /* Mobile category / sub-category cards */
+        .hdr-mobile-cat.hdr-cat-active {
+          background-color: #C08237 !important;
+        }
+        .hdr-mobile-cat.hdr-cat-active span {
+          color: #ffffff !important;
+        }
+        .hdr-mobile-subcat.hdr-cat-active {
+          background-color: #C08237;
+          color: #ffffff;
+        }
+
+        /* Mega menu (PRODUCT CATEGORY) */
+        .hdr-mega-heading {
+          letter-spacing: 0.08em;
+        }
+       .hdr-mega-sub{
+  display:block;
+  margin:0 !important;
+  padding:0 !important;
+  line-height:25px !important;
+  letter-spacing:0 !important;
+  min-height:auto !important;
+}
+        .hdr-mega-sub:hover {
+          color: #C08237 !important;
+          padding-left: 4px;
+        }
+
+        /* Single-line desktop top bar — never wraps to a second row */
+        .hdr-toprow {
+           flex-wrap: nowrap;
+    overflow: visible;
+          scrollbar-width: none;
+          -ms-overflow-style: none;
+        }
+        .hdr-toprow::-webkit-scrollbar {
+          display: none;
+        }
+        .hdr-icon-btn {
+          transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+        }
+      `}</style>
+      <header className={`hdr-header notranslate w-full fixed top-0 left-0 right-0 bg-[#FFF6EB] border-b border-[#A49C93]/30 z-50 transition-transform duration-300 ${isHeaderVisible ? 'translate-y-0' : '-translate-y-full'}`}>
+      <div className="max-w-[1500px] mx-auto px-4 lg:px-6 xl:px-8 h-20 flex items-center justify-between gap-3 hdr-toprow">
 
         {/* Mobile Menu Icon & Search */}
         <div className="lg:hidden flex items-center gap-3">
           <button onClick={() => setIsMenuOpen(true)}>
             <Menu className="text-[#C08237]" size={28} />
           </button>
-          
+
           {/* Mobile Search Icon */}
-          {/* <div className="md:hidden">
-            <button 
+          <div className="md:hidden">
+            <button
               onClick={() => setIsSearchOpen(!isSearchOpen)}
-              className="p-2 border rounded-full border-[#C08237] bg-transparent hover:bg-[#C08237] transition-all group"
+              className="hdr-icon-btn p-2 border rounded-full border-[#C08237] bg-transparent hover:bg-[#C08237] transition-all group"
             >
-              <img src='/images/search-normal.svg' className='w-4 h-4 group-hover:brightness-0 group-hover:invert' alt="search" />
+              <img src='/images/search-normal.svg' className='w-6 h-5 group-hover:brightness-0 group-hover:invert' alt="search" />
             </button>
-          </div> */}
+          </div>
         </div>
 
-        {/* Center Logo */}
-        <div className="flex justify-center lg:flex-1">
+        {/* Mobile Center Logo */}
+        <div className="flex justify-center flex-1 lg:hidden">
           <Link href="/">
             <img src="/images/Group-56121.svg" alt="Logo" className="h-10 w-auto" />
           </Link>
         </div>
 
-        {/* Right Side (Search & Auth) */}
-        <div className="flex  items-center justify-end gap-2 lg:flex-1" ref={searchRef}>
-          {/* Search Bar */}
-          <div className="relative hidden md:block">
-            <div className="relative">
-              <input
-                type="text"
-                placeholder="WHAT ARE YOU LOOKING FOR?"
-                value={searchQuery}
-                onChange={(e) => {
-                  setSearchQuery(e.target.value);
-                  setIsSearchOpen(true);
-                }}
-                onFocus={() => setIsSearchOpen(true)}
-                className="w-48 lg:w-64 font-mona pl-10 pr-4 py-2 bg-transparent text-gray-500 border border-[#A49C93] rounded-full text-[10px] focus:border-[#C08237] outline-none transition-all"
-              />
-              <img src='/images/search-normal.svg' className='w-4 absolute left-3 top-2.5' alt="search" />
-            </div>
-
-            {/* Search Results Dropdown */}
-            {isSearchOpen && searchQuery && (
-              <div className="absolute top-full mt-2 w-74 right-0 bg-white shadow-2xl rounded-lg border border-gray-100 overflow-hidden z-50">
-                {searchResults.length > 0 ? (
-                  searchResults.map((product) => (
-                    <Link 
-                      key={product.id} 
-                      href={`/product/${product.id}`}
-                      onClick={() => setIsSearchOpen(false)}
-                      className="flex items-center gap-3 p-3 hover:bg-[#FFF6EB] border-b border-gray-50 last:border-0 transition-colors"
-                    >
-                      <img src={product.img} alt={product.name} className="w-12 h-12 object-cover rounded border border-gray-100" />
-                      <div>
-                        <p className="text-[11px] font-bold text-gray-800 uppercase line-clamp-1">{product.name}</p>
-                        <div className="flex items-center gap-2 mt-0.5">
-                          {product.code && (
-                            <span className="text-[9px] font-bold text-white bg-[#C08237] px-1.5 py-0.5 rounded uppercase">
-                              {product.code}
-                            </span>
-                          )}
-                          <p className="text-[9px] text-gray-400 font-medium uppercase">{product.categoryName}</p>
-                        </div>
-                      </div>
-                    </Link>
-                  ))
-                ) : (
-                  <div className="p-4 text-center text-[11px] text-gray-500">No results for "{searchQuery}"</div>
-                )}
-              </div>
-            )}
-          </div>
-
-          {/* Wishlist Button */}
+        {/* Mobile Right Icons */}
+        <div className="lg:hidden flex items-center gap-2">
           <Link href="/wishlist" className="relative">
-            <div className="relative">
-              <div className="p-2 flex justify-center item-center w-10 h-10 border rounded-full border-[#C08237] bg-[#C08237] hover:bg-[#a66f2e] cursor-pointer">
-                <img src='/images/heart.svg' className='w-5 h-5 group-hover:brightness-0 group-hover:invert' alt="wishlist" />
-              </div>
-              {isClient && wishlist && wishlist.length > 0 && (
-                <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center min-w-[20px]">
-                  {wishlist.length > 99 ? '99+' : wishlist.length}
-                </span>
-              )}
+            <div className="hdr-icon-btn p-2 flex items-center justify-center w-9 h-9 border rounded-full border-[#C08237] bg-transparent hover:bg-[#C08237] group cursor-pointer">
+              <Heart size={16} className="text-[#C08237] group-hover:text-white transition-colors" />
             </div>
+            {isClient && wishlist && wishlist.length > 0 && (
+              <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] font-bold rounded-full h-4 w-4 flex items-center justify-center min-w-[16px]">
+                {wishlist.length > 99 ? '99+' : wishlist.length}
+              </span>
+            )}
           </Link>
-
-          {/* Inquiry Cart Button */}
-          <Link href="/inquiry-cart" className="relative">
-            <div className="relative">
-              <div className="p-2 flex justify-center item-center w-10 h-10 border rounded-full border-[#C08237] bg-transparent hover:bg-[#C08237] cursor-pointer group">
-                <svg className="w-5 h-5 text-[#C08237] group-hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-1.5 6M7 13l-1.5-6M17 21a2 2 0 100-4 2 2 0 000 4zM9 21a2 2 0 100-4 2 2 0 000 4z" />
-                </svg>
-              </div>
-              {isClient && getCartCount() > 0 && (
-                <span className="absolute -top-1 -right-1 bg-[#C08237] text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center min-w-[20px]">
-                  {getCartCount() > 99 ? '99+' : getCartCount()}
-                </span>
-              )}
-            </div>
-          </Link>
-
-          {/* Conditional Inquiry/Profile Button */}
           {isLoggedIn ? (
-            <>
-             
-              {/* Profile Dropdown */}
-              <div className="relative group hidden sm:flex">
-                
-                 <button
-                        onClick={handleLogout}
-                        className="hidden sm:flex items-center justify-center gap-1 bg-[#C08237] text-white px-6 py-1 rounded-full text-xs font-bold uppercase hover:bg-[#a66f2e] transition-colors"
-                      >
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-                        </svg>
-                        Logout
-                      </button>
-
-                
-               
-              </div>
-            </>
+            <button onClick={handleLogout} className="bg-[#C08237] text-white px-3 py-1.5 rounded-full text-[10px] font-bold uppercase hover:bg-[#a66f2e] transition-colors">
+              Logout
+            </button>
           ) : (
-            /* Login Button (Only when NOT logged in) */
-            <Link href="/login" className='hidden sm:flex'>
-              <button className="hidden sm:flex  items-center justify-center gap-1 bg-[#C08237] text-white px-6 py-1 rounded-full text-xs font-bold uppercase hover:bg-[#a66f2e] transition-colors">
-                <img src='/images/profile.svg' className='w-4 h-4 brightness-0 invert' alt="login" />
-                <span className="hidden sm:inline">LOGIN</span>
+            <Link href="/login">
+              <button className="bg-[#C08237] text-white px-3 py-1.5 rounded-full text-[10px] font-bold uppercase hover:bg-[#a66f2e] transition-colors">
+                Login
               </button>
             </Link>
+          )}
+        </div>
+
+        {/* ================= Desktop — single line ================= */}
+
+        {/* Currency Selector */}
+        <div className="hidden lg:flex items-center relative shrink-0" ref={currencyRef}>
+          <div
+            className="flex items-center gap-1.5 cursor-pointer hover:text-[#C08237] transition-colors text-[11px] font-bold tracking-widest text-gray-800"
+            onClick={() => setShowCurrencyDropdown(!showCurrencyDropdown)}
+          >
+            <img src="https://flagcdn.com/w20/in.png" alt="Currency" className="w-5 h-3 object-cover rounded-sm" loading="lazy" />
+            <span>{selectedCurrency}</span>
+            <ChevronRight size={13} className={`rotate-90 transition-transform duration-200 ${showCurrencyDropdown ? 'rotate-180' : ''}`} />
+          </div>
+          {showCurrencyDropdown && (
+            <div className="absolute top-full left-0 mt-2 w-44 bg-[#FFFCF5] border border-[#D7CEC2] py-1 z-[999] rounded-sm shadow-xl">
+              <div className="py-1">
+                {currencyOptions.map((currency) => (
+                  <button
+                    key={currency.code}
+                    onClick={() => handleCurrencyChange(currency)}
+                    className={`flex items-center gap-3 w-full px-4 py-2.5 text-left hover:bg-[#C08237] hover:text-white transition-all text-xs font-semibold ${
+                      selectedCurrency.includes(currency.code) ? 'text-[#C08237] font-bold' : 'text-gray-700'
+                    }`}
+                  >
+                    <img src={currency.flag} alt={currency.name} className="w-4 h-3 object-cover rounded-sm shadow-sm" />
+                    <span className="uppercase tracking-wider">{currency.code} {currency.symbol}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Logo */}
+       <Link href="/" className="hidden lg:flex items-center shrink-0 mr-3">
+          <img src="/images/Group-56121.svg" alt="Logo" className="h-12 w-auto" />
+        </Link>
+
+        {/* Nav links */}
+        <nav className="hidden lg:flex items-center">
+         <ul className="flex items-center gap-3 xl:gap-5 whitespace-nowrap">
+            {navigationLinks.map((link) => {
+              const isActive = pathname === link.href;
+              return (
+                <li
+                  key={link.name}
+                  className="relative flex items-center"
+                  onMouseEnter={() => handleDropdownEnter(link.name)}
+                  onMouseLeave={handleDropdownLeave}
+                >
+                  {link.isMainCategory ? (
+                    <button
+                      onClick={() => router.push('/category')}
+                      className={`hdr-nav-link text-[11px] font-bold tracking-widest transition-colors cursor-pointer ${isActive ? 'hdr-active' : ''}`}
+                    >
+                      {link.name}
+                    </button>
+                  ) : (
+                    <Link
+                      href={link.href}
+                      className={`hdr-nav-link text-[11px] font-bold tracking-widest transition-colors ${isActive ? 'hdr-active' : ''}`}
+                    >
+                      {link.name}
+                    </Link>
+                  )}
+
+                  {/* Static Dropdowns (ABOUT) */}
+                  {link.hasDropdown && !link.isMainCategory && activeDropdown === link.name && (
+                   <div className="absolute left-0 top-[calc(100%+1px)] w-60 bg-[#FFFCF5] border border-[#D7CEC2] py-1 z-[9999] rounded-sm shadow-xl">
+                      {link.subItems.map((sub) => (
+                        <Link
+                          key={sub.label}
+                          href={sub.href}
+                          onClick={() => setActiveDropdown(null)}
+                          className="flex items-center justify-between px-5 py-3 text-[12px] font-medium text-gray-700 hover:bg-[#C08237] hover:text-white transition-all border-b border-gray-100 last:border-0"
+                        >
+                          {sub.label.toUpperCase()}
+                        </Link>
+                      ))}
+                    </div>
+                  )}
+                </li>
+              );
+            })}
+          </ul>
+        </nav>
+
+        {/* Search Bar */}
+        <div className="hidden lg:flex items-center relative shrink-0" ref={searchRef}>
+          <div className="relative">
+            <input
+              type="text"
+              placeholder="WHAT ARE YOU LOOKING FOR?"
+              value={searchQuery}
+              onChange={(e) => {
+                setSearchQuery(e.target.value);
+                setIsSearchOpen(true);
+              }}
+              onFocus={() => setIsSearchOpen(true)}
+              className="w-32 xl:w-40 2xl:w-48 pl-10 pr-4 py-2 bg-transparent text-gray-500 border border-[#A49C93] rounded-full text-[10px] focus:border-[#C08237] outline-none transition-all"
+            />
+            <img src='/images/search-normal.svg' className='w-4 absolute left-3 top-2.5' alt="search" />
+          </div>
+
+          {/* Search Results Dropdown */}
+          {isSearchOpen && searchQuery && (
+            <div className="absolute top-full mt-2 w-74 right-0 bg-white shadow-2xl rounded-lg border border-gray-100 overflow-hidden z-[9999]">
+              {searchResults.length > 0 ? (
+                searchResults.map((product) => (
+                  <Link
+                    key={product.id}
+                    href={`/product/${product.id}`}
+                    onClick={() => setIsSearchOpen(false)}
+                    className="flex items-center gap-3 p-3 hover:bg-[#FFF6EB] border-b border-gray-50 last:border-0 transition-colors"
+                  >
+                    <img src={product.img} alt={product.name} className="w-12 h-12 object-cover rounded border border-gray-100" />
+                    <div>
+                      <p className="text-[11px] font-bold text-gray-800 uppercase line-clamp-1">{product.name}</p>
+                      <div className="flex items-center gap-2 mt-0.5">
+                        {product.code && (
+                          <span className="text-[9px] font-bold text-white bg-[#C08237] px-1.5 py-0.5 rounded uppercase">
+                            {product.code}
+                          </span>
+                        )}
+                        <p className="text-[9px] text-gray-400 font-medium uppercase">{product.categoryName}</p>
+                      </div>
+                    </div>
+                  </Link>
+                ))
+              ) : (
+                <div className="p-4 text-center text-[11px] text-gray-500">No results for "{searchQuery}"</div>
+              )}
+            </div>
+          )}
+        </div>
+
+        {/* Wishlist */}
+        <Link href="/wishlist" className="hidden lg:flex items-center relative shrink-0">
+          <div className="hdr-icon-btn p-2 flex items-center justify-center w-10 h-10 border rounded-full border-[#C08237] bg-transparent hover:bg-[#C08237] group cursor-pointer">
+            <Heart size={18} className="text-[#C08237] group-hover:text-white transition-colors" />
+          </div>
+          {isClient && wishlist && wishlist.length > 0 && (
+            <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center min-w-[20px]">
+              {wishlist.length > 99 ? '99+' : wishlist.length}
+            </span>
+          )}
+        </Link>
+
+        {/* Login / Logout */}
+        <div className="hidden lg:flex items-center shrink-0">
+          {isLoggedIn ? (
+            <button
+              onClick={handleLogout}
+              className="flex items-center justify-center gap-1 bg-[#C08237] text-white px-6 py-2 rounded-full text-xs font-bold uppercase hover:bg-[#a66f2e] transition-colors whitespace-nowrap"
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+              </svg>
+              Logout
+            </button>
+          ) : (
+            <Link href="/login">
+              <button className="flex items-center justify-center gap-1 bg-[#C08237] text-white px-6 py-2 rounded-full text-xs font-bold uppercase hover:bg-[#a66f2e] transition-colors whitespace-nowrap">
+                <img src='/images/profile.svg' className='w-4 h-4 brightness-0 invert' alt="login" />
+                LOGIN
+              </button>
+            </Link>
+          )}
+        </div>
+
+        {/* Language Selector */}
+        <div
+          className="hidden lg:flex items-center relative shrink-0"
+          ref={langRef}
+          onMouseEnter={() => setShowLangDropdown(true)}
+          onMouseLeave={() => setShowLangDropdown(false)}
+        >
+          <div
+            className="flex items-center gap-2 cursor-pointer hover:text-[#C08237] transition-colors py-2 text-[11px] font-bold tracking-widest text-gray-800"
+            onClick={() => setShowLangDropdown(!showLangDropdown)}
+          >
+            <img
+              src={getCurrentLanguageInfo().flag}
+              alt=""
+              className="w-4.5 h-3 object-cover rounded-sm shadow-sm"
+              onError={(e) => { e.target.style.display = 'none'; }}
+            />
+            <span>{getCurrentLanguageInfo().name.toUpperCase()}</span>
+            <ChevronRight size={14} className={`rotate-90 transition-transform duration-200 ${showLangDropdown ? 'rotate-180' : ''}`} />
+          </div>
+
+          {showLangDropdown && (
+            <div className="absolute top-full right-0 mt-1 w-48 bg-[#FFFCF5] border border-[#D7CEC2] py-1 z-[999] rounded-sm shadow-xl animate-fade-in max-h-80 overflow-y-auto">
+              <div className="py-1">
+                {languageOptions.map((lang) => {
+                  const isActive = currentLanguage === lang.code;
+                  return (
+                    <button
+                      key={lang.code}
+                      onClick={() => handleLanguageChange(lang)}
+                      className={`flex items-center gap-3 w-full px-4 py-2.5 text-left hover:bg-[#C08237] hover:text-white transition-all text-xs font-semibold ${
+                        isActive ? 'text-[#C08237] bg-[#C08237]/5 font-bold' : 'text-gray-700'
+                      }`}
+                    >
+                      <img
+                        src={lang.flag}
+                        alt={lang.name}
+                        className="w-4 h-3 object-cover rounded-sm shadow-sm"
+                        onError={(e) => { e.target.style.display = 'none'; }}
+                      />
+                      <span className="uppercase tracking-wider">{lang.name}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
           )}
         </div>
       </div>
 
       {/* Mobile Search Dropdown */}
       {isSearchOpen && (
-        <div className="md:hidden bg-white border-t border-gray-200 p-4">
+        <div className="md:hidden lg:hidden bg-white border-t border-gray-200 p-4">
           <div className="relative">
             <input
               type="text"
@@ -580,18 +747,18 @@ const Header = () => {
               onChange={(e) => {
                 setSearchQuery(e.target.value);
               }}
-              className="w-full font-mona pl-10 pr-4 py-3 bg-transparent text-gray-500 border border-[#A49C93] rounded-full text-sm focus:border-[#C08237] outline-none transition-all"
+              className="w-full pl-10 pr-4 py-3 bg-transparent text-gray-500 border border-[#A49C93] rounded-full text-sm focus:border-[#C08237] outline-none transition-all"
             />
             <img src='/images/search-normal.svg' className='w-4 absolute left-3 top-3.5' alt="search" />
           </div>
-          
+
           {/* Mobile Search Results */}
           {searchQuery && (
-            <div className="mt-3 bg-white rounded-lg border border-gray-100 overflow-hidden max-h-60 overflow-y-auto">
+            <div className="mt-0 bg-white rounded-lg border border-gray-100 overflow-hidden max-h-60 overflow-y-auto">
               {searchResults.length > 0 ? (
                 searchResults.map((product) => (
-                  <Link 
-                    key={product.id} 
+                  <Link
+                    key={product.id}
                     href={`/product/${product.id}`}
                     onClick={() => {
                       setIsSearchOpen(false);
@@ -621,168 +788,100 @@ const Header = () => {
         </div>
       )}
 
-      {/* --- Desktop Navigation --- */}
-      <nav className="hidden lg:block ">
-        <div className="max-w-7xl mx-auto px-4">
-          <ul className="flex justify-center pb-2 items-center gap-8">
-            {navigationLinks.map((link) => {
-              const isActive = pathname === link.href;
-              return (
-                <li 
-                  key={link.name} 
-                  className="relative group"
-                  onMouseEnter={() => setActiveDropdown(link.name)}
-                  onMouseLeave={() => setActiveDropdown(null)}
-                >
-                  {link.isMainCategory ? (
-                    <button
-                      onClick={() => router.push('/category')}
-                      className={`text-[11px] font-bold tracking-widest ${isActive ? 'text-[#C08237]' : 'text-gray-800'} hover:text-[#C08237] transition-colors cursor-pointer`}
-                    >
-                      {link.name}
-                    </button>
-                  ) : (
-                    <Link 
-                      href={link.href} 
-                      className={`text-[11px] font-bold tracking-widest ${isActive ? 'text-[#C08237]' : 'text-gray-800'} hover:text-[#C08237] transition-colors`}
-                    >
-                      {link.name}
-                    </Link>
-                  )}
-
-                  {/* Main CATEGORY Dropdown (Dynamic) */}
-                  {link.hasDropdown && link.isMainCategory && activeDropdown === link.name && (
-                    <div className="absolute top-full left-0 w-80 bg-[#FFFCF5] border border-[#D7CEC2] py-1 z-50 rounded-sm shadow-xl">
-                      {isLoading ? (
-                        <div className="px-6 py-4 text-center text-sm text-gray-500">
-                          Loading categories...
-                        </div>
-                      ) : categories.length === 0 ? (
-                        <div className="px-6 py-4 text-center text-sm text-gray-500">
-                          No categories available
-                        </div>
-                      ) : (
-                        <div className="py-2">
-                          {categories.map((category) => {
-                            const categorySubCats = getSubCategoriesForCategory(category._id);
+      {/* --- PRODUCT CATEGORY mega menu --- */}
+      {activeDropdown === 'PRODUCT CATEGORY' && (
+        <div
+          className="hidden lg:block fixed left-0 top-20 w-full bg-[#FFFCF5] border-t border-b border-[#D7CEC2] shadow-xl z-[999]"
+          onMouseEnter={() => handleDropdownEnter('PRODUCT CATEGORY')}
+          onMouseLeave={handleDropdownLeave}
+        >
+          <div className="max-w-[1500px] mx-auto px-10 py-10">
+            {isLoading ? (
+              <div className="text-center text-sm text-gray-500 py-6">Loading categories...</div>
+            ) : categories.length === 0 ? (
+              <div className="text-center text-sm text-gray-500 py-6">No categories available</div>
+            ) : (
+            <div className="grid grid-cols-3 gap-x-12 gap-y-10">
+                {categories.map((category) => {
+                  const categorySubCats = getSubCategoriesForCategory(category._id);
+                  const isCategoryActive = category._id === activeCategoryId;
+                  const colCount = categorySubCats.length > 10 ? 3 : categorySubCats.length > 5 ? 2 : 1;
+                  return (
+                 <div
+  key={category._id}
+  className="w-full min-h-[190px]"
+>
+                      <button
+                        onClick={() => handleCategoryNavigation(category.name, category._id)}
+                    className={`hdr-mega-heading block w-full text-left text-[16px] font-semibold uppercase pb-2 mb-3 border-b ${
+                          isCategoryActive ? 'text-[#C08237] border-[#C08237]' : 'text-[#C08237] border-[#C08237]/40'
+                        }`}
+                        title={!isLoggedIn ? "Login required to access this category" : ""}
+                      >
+                        {category.name}
+                      </button>
+                      {categorySubCats.length > 0 ? (
+                    <div
+  className="grid gap-y-[2px]"
+  style={{
+    gridTemplateColumns: `repeat(${colCount}, minmax(0,1fr))`,
+    columnGap: "20px",
+  }}
+>
+                          {categorySubCats.map((subCat) => {
+                            const isSubActive = subCat._id === activeSubCategoryId;
                             return (
-                              <div key={category._id} className="group/category relative">
-                                <button
-                                  onClick={() => handleCategoryNavigation(category.name, category._id)}
-                                  className={`flex items-center justify-between w-full px-6 py-3 text-sm font-medium transition-all border-b border-gray-100 last:border-0 ${
-                                    isLoggedIn 
-                                      ? 'text-gray-700 hover:bg-[#C08237] hover:text-white' 
-                                      : 'text-gray-500 hover:bg-[#C08237] hover:text-white'
-                                  }`}
-                                  title={!isLoggedIn ? "Login required to access this category" : ""}
-                                >
-                                  <div className="flex items-center uppercase gap-1">
-                                    <span>{category.name.charAt(0).toUpperCase() + category.name.slice(1).toLowerCase()}</span>
-                                    {/* {!isLoggedIn && (
-                                      <svg className="w-3 h-3 text-yellow-500" fill="currentColor" viewBox="0 0 20 20">
-                                        <path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd" />
-                                      </svg>
-                                    )} */}
-                                  </div>
-                                  {categorySubCats.length > 0 && (
-                                    <ChevronRight size={14} className="opacity-50" />
-                                  )}
-                                </button>
-                                
-                                {/* Nested Subcategory Dropdown */}
-                                {categorySubCats.length > 0 && (
-                                  <div className="absolute left-full top-0 w-60 bg-white border border-[#D7CEC2] shadow-xl rounded-sm opacity-0 invisible group-hover/category:opacity-100 group-hover/category:visible uppercase transition-all duration-200 z-50">
-                                    <div className="py-1">
-                                      {categorySubCats.map((subCat) => (
-                                        <button
-                                          key={subCat._id}
-                                          onClick={() => handleSubCategoryNavigation(
-                                            category.name, 
-                                            category._id, 
-                                            subCat.name, 
-                                            subCat._id
-                                          )}
-                                          className={`flex items-center justify-between w-full px-4 py-2 text-xs font-medium transition-all border-b border-gray-50 last:border-0 ${
-                                            isLoggedIn 
-                                              ? 'text-gray-600 hover:bg-[#C08237] hover:text-white' 
-                                              : 'text-gray-400 hover:bg-[#C08237] hover:text-white'
-                                          }`}
-                                          title={!isLoggedIn ? "Login required to access this subcategory" : ""}
-                                        >
-                                          <span>{subCat.name.charAt(0).toUpperCase() + subCat.name.slice(1).toUpperCase()}</span>
-                                          {/* {!isLoggedIn && (
-                                            <svg className="w-3 h-3 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
-                                              <path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd" />
-                                            </svg>
-                                          )} */}
-                                        </button>
-                                      ))}
-                                    </div>
-                                  </div>
-                                )}
-                              </div>
+                              <button
+                                key={subCat._id}
+                                onClick={() => handleSubCategoryNavigation(category.name, category._id, subCat.name, subCat._id)}
+                         className={`hdr-mega-sub block w-full text-left text-[12px] font-medium uppercase py-0 leading-[16px] mb-0 ${
+                                  isSubActive ? 'text-[#C08237]' : isLoggedIn ? 'text-[#453314]' : 'text-gray-400'
+                                }`}
+                                style={{ breakInside: 'avoid' }}
+                                title={!isLoggedIn ? "Login required to access this subcategory" : ""}
+                              >
+                                {subCat.name}
+                              </button>
                             );
                           })}
-                          <div className="border-t border-gray-200 ">
-                            <Link
-                              href="/custom-orders"
-                              onClick={() => setActiveDropdown(null)}
-                              className="flex items-center uppercase justify-between px-6 py-3 text-sm font-medium text-gray-700 hover:bg-[#C08237] hover:text-white transition-all"
-                            >
-                              Custom Orders
-                            </Link>
-                          </div>
                         </div>
+                      ) : (
+                        <p className="text-xs text-gray-400">No sub-categories</p>
                       )}
                     </div>
-                  )}
-
-                  {/* Individual Manual Category Dropdowns - REMOVED as requested */}
-                  {/* {link.hasDropdown && link.isCategory && activeDropdown === link.name && (
-                    <div className="absolute top-full left-0 w-60 bg-[#FFFCF5] border border-[#D7CEC2] py-1 z-50 rounded-sm shadow-xl">
-                      ... dropdown content removed ...
-                    </div>
-                  )} */}
-
-                  {/* Static Dropdowns (ABOUT) */}
-                  {link.hasDropdown && !link.isMainCategory && !link.isCategory && activeDropdown === link.name && (
-                    <div className="absolute top-full left-0 w-60 bg-[#FFFCF5] border border-[#D7CEC2] py-1 z-50 rounded-sm shadow-xl">
-                      {link.subItems.map((sub) => (
-                        <Link 
-                          key={sub.label} 
-                          href={sub.href}
-                          onClick={() => setActiveDropdown(null)}
-                          className="flex items-center justify-between px-5 py-3 text-[12px] font-medium text-gray-700 hover:bg-[#C08237] hover:text-white transition-all border-b border-gray-100 last:border-0"
-                        >
-                          {sub.label.toUpperCase()}
-                          {/* <ChevronRight size={12} className="opacity-50" /> */}
-                        </Link>
-                      ))}
-                    </div>
-                  )}
-                </li>
-              );
-            })}
-          </ul>
+                  );
+                })}
+              </div>
+            )}
+            <div className="mt-8 pt-6 border-t border-[#D7CEC2]">
+              <Link
+                href="/custom-orders"
+                onClick={() => setActiveDropdown(null)}
+                className="hdr-nav-link text-xs font-bold uppercase tracking-widest text-gray-700"
+              >
+                Custom Orders
+              </Link>
+            </div>
+          </div>
         </div>
-      </nav>
+      )}
 
       {/* Mobile Sidebar */}
       {isMenuOpen && (
-        <div className="fixed inset-0 z-[100] lg:hidden">
+        <div className="fixed inset-0 z-[1000] lg:hidden">
           {/* Backdrop */}
-          <div 
-            className="fixed inset-0 bg-black/60 transition-opacity duration-300" 
-            onClick={() => setIsMenuOpen(false)} 
+          <div
+            className="fixed inset-0 bg-black/60 transition-opacity duration-300"
+            onClick={() => setIsMenuOpen(false)}
           />
-          
+
           {/* Sidebar panel */}
-          <div className="fixed top-0 left-0 w-[85%] max-w-sm h-[100dvh] bg-gradient-to-b from-[#FFF6EB] to-[#FFF9F0] shadow-2xl flex flex-col animate-slide-in z-[101]">
+          <div className="fixed top-0 left-0 w-[85%] max-w-sm h-[100dvh] bg-gradient-to-b from-[#FFF6EB] to-[#FFF9F0] shadow-2xl flex flex-col animate-slide-in z-[1001]">
             {/* Sidebar Header — logo + close */}
             <div className="shrink-0 bg-[#FFF6EB] px-6 py-4 border-b border-[#D4C4B0]/30 shadow-sm">
               <div className="flex justify-between items-center">
                 <img src="/images/Group-56121.svg" alt="logo" className="h-9" />
-                <button 
+                <button
                   onClick={() => setIsMenuOpen(false)}
                   className="p-2 hover:bg-[#C08237]/10 rounded-full transition-colors"
                 >
@@ -790,7 +889,7 @@ const Header = () => {
                 </button>
               </div>
             </div>
-            
+
             {/* Language and Currency Section */}
             <div className="px-6 py-4 space-y-3 bg-white/40 border-b border-[#D4C4B0]/20">
               <div className="flex items-center justify-between bg-white rounded-lg px-4 py-3 shadow-sm">
@@ -800,7 +899,7 @@ const Header = () => {
                   </svg>
                   <span className="text-sm font-semibold text-gray-700">Language</span>
                 </div>
-                <select 
+                <select
                   className="bg-transparent text-sm font-medium text-[#C08237] border-none outline-none cursor-pointer"
                   value={getCurrentLanguageInfo().name}
                   onChange={(e) => {
@@ -813,7 +912,7 @@ const Header = () => {
                   ))}
                 </select>
               </div>
-              
+
               <div className="flex items-center justify-between bg-white rounded-lg px-4 py-3 shadow-sm">
                 <div className="flex items-center gap-2">
                   <svg className="w-4 h-4 text-[#C08237]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -821,7 +920,7 @@ const Header = () => {
                   </svg>
                   <span className="text-sm font-semibold text-gray-700">Currency</span>
                 </div>
-                <select 
+                <select
                   className="bg-transparent text-sm font-medium text-[#C08237] border-none outline-none cursor-pointer"
                   value={selectedCurrency}
                   onChange={(e) => handleCurrencyChange({code: e.target.value.split(' ')[0], symbol: e.target.value.split(' ')[1]})}
@@ -834,7 +933,7 @@ const Header = () => {
                 </select>
               </div>
             </div>
-            
+
             {/* Navigation Links + Footer — scrollable area */}
             <div className="flex-1 overflow-y-auto min-h-0 ios-scroll">
             {/* Navigation Links */}
@@ -846,7 +945,7 @@ const Header = () => {
                     <div className="flex justify-between items-center px-4 py-3">
                       {link.isMainCategory ? (
                         <div className="flex items-center justify-between w-full">
-                          <button 
+                          <button
                             onClick={() => setActiveDropdown(activeDropdown === link.name ? null : link.name)}
                             className="flex items-center gap-2 text-xs font-bold text-gray-800 uppercase tracking-wide flex-1 text-left"
                           >
@@ -860,9 +959,9 @@ const Header = () => {
                               onClick={() => setActiveDropdown(activeDropdown === link.name ? null : link.name)}
                               className="p-2 hover:bg-[#C08237]/10 rounded-lg transition-colors"
                             >
-                              <ChevronRight 
-                                size={18} 
-                                className={`text-[#C08237] transition-transform duration-300 ${activeDropdown === link.name ? 'rotate-90' : ''}`} 
+                              <ChevronRight
+                                size={18}
+                                className={`text-[#C08237] transition-transform duration-300 ${activeDropdown === link.name ? 'rotate-90' : ''}`}
                               />
                             </button>
                           )}
@@ -870,7 +969,7 @@ const Header = () => {
                       ) : (
                         <>
                           {link.hasDropdown ? (
-                            <button 
+                            <button
                               onClick={() => setActiveDropdown(activeDropdown === link.name ? null : link.name)}
                               className="flex items-center gap-2 text-xs font-bold text-gray-800 uppercase tracking-wide flex-1 text-left"
                             >
@@ -902,8 +1001,8 @@ const Header = () => {
                             {link.name}
                           </button>
                           ) : (
-                            <Link 
-                              href={link.href} 
+                            <Link
+                              href={link.href}
                               onClick={() => setIsMenuOpen(false)}
                               className="flex items-center gap-2 text-xs font-bold text-gray-800 uppercase tracking-wide"
                             >
@@ -940,16 +1039,16 @@ const Header = () => {
                               onClick={() => setActiveDropdown(activeDropdown === link.name ? null : link.name)}
                               className="p-2 hover:bg-[#C08237]/10 rounded-lg transition-colors"
                             >
-                              <ChevronRight 
-                                size={18} 
-                                className={`text-[#C08237] transition-transform duration-300 ${activeDropdown === link.name ? 'rotate-90' : ''}`} 
+                              <ChevronRight
+                                size={18}
+                                className={`text-[#C08237] transition-transform duration-300 ${activeDropdown === link.name ? 'rotate-90' : ''}`}
                               />
                             </button>
                           )}
                         </>
                       )}
                     </div>
-                    
+
                     {/* Dropdown Content with Animation */}
                     {link.hasDropdown && activeDropdown === link.name && (
                       <div className="bg-gradient-to-b from-[#FFF9F0] to-white border-t border-[#D4C4B0]/20 animate-fade-in">
@@ -968,9 +1067,10 @@ const Header = () => {
                                 {categories.map(category => {
                                   const categorySubCats = getSubCategoriesForCategory(category._id);
                                   const isExpanded = mobileDropdown === category._id;
-                                  
+                                  const isCategoryActive = category._id === activeCategoryId;
+
                                   return (
-                                    <div key={category._id} className="bg-white rounded-lg shadow-sm border border-[#D4C4B0]/20 overflow-hidden">
+                                    <div key={category._id} className={`hdr-mobile-cat bg-white rounded-lg shadow-sm border border-[#D4C4B0]/20 overflow-hidden ${isCategoryActive ? 'hdr-cat-active' : ''}`}>
                                       <button
                                         onClick={() => {
                                           if (categorySubCats.length > 0) {
@@ -985,47 +1085,50 @@ const Header = () => {
                                             {category.name}
                                           </span>
                                         </div>
-                                        
+
                                         {categorySubCats.length > 0 && (
-                                          <ChevronRight 
-                                            size={16} 
-                                            className={`text-[#C08237] transition-transform duration-300 ${isExpanded ? 'rotate-90' : ''}`} 
+                                          <ChevronRight
+                                            size={16}
+                                            className={`text-[#C08237] transition-transform duration-300 ${isExpanded ? 'rotate-90' : ''}`}
                                           />
                                         )}
                                       </button>
-                                      
+
                                       {/* Subcategories with smooth animation */}
                                       {categorySubCats.length > 0 && isExpanded && (
                                         <div className="bg-[#FFF9F0] border-t border-[#D4C4B0]/20 px-3 py-2 space-y-1 animate-fade-in">
-                                          {categorySubCats.map(subCat => (
+                                          {categorySubCats.map(subCat => {
+                                            const isSubActive = subCat._id === activeSubCategoryId;
+                                            return (
                                             <button
                                               key={subCat._id}
                                               onClick={() => {
                                                 handleSubCategoryNavigation(
-                                                  category.name, 
-                                                  category._id, 
-                                                  subCat.name, 
+                                                  category.name,
+                                                  category._id,
+                                                  subCat.name,
                                                   subCat._id
                                                 );
                                               }}
-                                              className={`flex items-center gap-2 w-full px-3 py-2 rounded-md text-xs font-medium text-left transition-all ${
-                                                isLoggedIn 
-                                                  ? 'text-gray-600 hover:bg-[#C08237] hover:text-white hover:pl-4' 
+                                              className={`hdr-mobile-subcat flex items-center gap-2 w-full px-3 py-2 rounded-md text-xs font-medium text-left transition-all ${
+                                                isLoggedIn
+                                                  ? 'text-gray-600 hover:bg-[#C08237] hover:text-white hover:pl-4'
                                                   : 'text-gray-400'
-                                              }`}
+                                              } ${isSubActive ? 'hdr-cat-active' : ''}`}
                                             >
                                               <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                                               </svg>
                                               <span>{subCat.name}</span>
                                             </button>
-                                          ))}
+                                            );
+                                          })}
                                         </div>
                                       )}
                                     </div>
                                   );
                                 })}
-                                
+
                                 <div className="pt-2 mt-2 border-t border-[#D4C4B0]/30">
                                   <Link
                                     href="/custom-orders"
@@ -1042,14 +1145,14 @@ const Header = () => {
                             )}
                           </div>
                         )}
-                        
+
                         {/* Static dropdowns (ABOUT) */}
                         {!link.isMainCategory && !link.isCategory && link.hasDropdown && (
                           <div className="px-3 py-3 space-y-1">
                             {link.subItems.map(sub => (
-                              <Link 
+                              <Link
                                 key={sub.label}
-                                href={sub.href} 
+                                href={sub.href}
                                 onClick={() => setIsMenuOpen(false)}
                                 className="flex items-center gap-2 px-3 py-2 rounded-md text-xs font-semibold text-gray-600 uppercase hover:bg-[#C08237] hover:text-white hover:pl-4 transition-all"
                               >
@@ -1081,7 +1184,7 @@ const Header = () => {
                       CUSTOMER INQUIRY
                     </button>
                   </Link>
-                  
+
                   {/* Wishlist Button */}
                   <Link href="/wishlist" onClick={() => setIsMenuOpen(false)}>
                     <button className="w-full flex items-center justify-center gap-2 bg-white border-2 border-[#C08237] text-[#C08237] px-4 py-3 rounded-xl text-xs font-bold uppercase hover:bg-[#C08237] hover:text-white hover:shadow-lg transition-all shadow-sm relative">
@@ -1096,7 +1199,7 @@ const Header = () => {
                       )}
                     </button>
                   </Link>
-                  
+
                   {/* Inquiry Cart Button */}
                   <Link href="/inquiry-cart" onClick={() => setIsMenuOpen(false)}>
                     <button className="w-full flex items-center justify-center gap-2 bg-white border-2 border-[#C08237] text-[#C08237] px-4 py-3 rounded-xl text-xs font-bold uppercase hover:bg-[#C08237] hover:text-white hover:shadow-lg transition-all shadow-sm relative">
@@ -1111,7 +1214,7 @@ const Header = () => {
                       )}
                     </button>
                   </Link>
-                 
+
                   {/* Logout Button */}
                   <button
                     onClick={() => {

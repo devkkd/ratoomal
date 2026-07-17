@@ -1,7 +1,11 @@
 import Hero from "@/app/components/Hero";
 import Craftsmanship from "@/app/components/Craftsmanship";
+import GlobalCollections from "./components/GlobalCollections";
 import TrustBuilding from "@/app/components/TrustBuilding";
 import dynamic from "next/dynamic";
+import ManufacturingAdvantage from "./components/ManufacturingAdvantage";
+import Testimonials1 from "./components/Testimonials1";
+import BannerVideo from "./components/BannerVideo";
 
 // SSR-safe dynamic imports (server component compatible)
 const ElephantSizeFilter = dynamic(() => import("./components/ElephantSizeFilter"));
@@ -71,6 +75,7 @@ export default function HomePage() {
       <main className="flex flex-col bg-[#FCF8F1]">
 
       <Hero />
+      <GlobalCollections />
       {/* WHY US */}
       <section className="w-full">
         <TrustBuilding />
@@ -81,33 +86,35 @@ export default function HomePage() {
         <Craftsmanship />
 
       </section>
-
+<ManufacturingAdvantage />
+<BannerVideo />
       {/* PRODUCTS */}
       <section className="-mt-12">
-        <ElephantSizeFilter />
+        {/* <ElephantSizeFilter /> */}
 
-        <div className="bg-[#FCF8F1] mt-4">
+        {/* <div className="bg-[#FCF8F1] mt-4">
         <CuratedCollections />
-        </div>
+        </div> */}
 
-        <div className="bg-[#FCF8F1]">
+        {/* <div className="bg-[#FCF8F1]">
         <GodFigurines />
-        </div>
+        </div> */}
 
-        <div className="">
+        {/* <div className="">
         <Utility />
-        </div>
+        </div> */}
 
-         <div className="">
+         {/* <div className="">
         <WhyRatoomals/>
-        </div>
+        </div> */}
 
-        <div className="">
+        {/* <div className="">
         <Testimonials/>
-        </div>
-        <div className="">
+        </div> */}
+        {/* <div className="">
         <FAQSection/>
-        </div>
+        </div> */}
+        <Testimonials1 />
          <div className="">
         <ContactForm/>
         </div>
