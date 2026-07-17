@@ -9,34 +9,95 @@ const testimonials = [
     name: "John Deo",
     role: "International Retail Buyer",
   },
+
   {
     type: "photo",
-    photo: "https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=600&q=80&auto=format&fit=crop",
-    name: "John Deo",
+    photo: "/client/1.JPG",
+    name: "Client 1",
     role: "International Retail Buyer",
   },
-  {
-    type: "quote",
-    text: "\"Ratoomals' elephant collection elevated our retail décor lineup and connected with customers worldwide.\"",
-    name: "John Deo",
-    role: "International Retail Buyer",
-  },
+
   {
     type: "photo",
-    photo: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=600&q=80&auto=format&fit=crop",
-    name: "John Deo",
+    photo: "/client/2.JPG",
+    name: "Client 2",
     role: "International Retail Buyer",
   },
-  {
-    type: "quote",
-    text: "\"Ratoomals' elephant collection elevated our retail décor lineup and connected with customers worldwide.\"",
-    name: "John Deo",
-    role: "International Retail Buyer",
-  },
+
   {
     type: "photo",
-    photo: "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=600&q=80&auto=format&fit=crop",
-    name: "John Deo",
+    photo: "/client/3.jpeg",
+    name: "Client 3",
+    role: "International Retail Buyer",
+  },
+
+  {
+    type: "photo",
+    photo: "/client/4.jpeg",
+    name: "Client 4",
+    role: "International Retail Buyer",
+  },
+
+  {
+    type: "photo",
+    photo: "/client/5.jpeg",
+    name: "Client 5",
+    role: "International Retail Buyer",
+  },
+
+  {
+    type: "photo",
+    photo: "/client/6.jpeg",
+    name: "Client 6",
+    role: "International Retail Buyer",
+  },
+
+  {
+    type: "photo",
+    photo: "/client/7.jpeg",
+    name: "Client 7",
+    role: "International Retail Buyer",
+  },
+
+  {
+    type: "photo",
+    photo: "/client/8.jpeg",
+    name: "Client 8",
+    role: "International Retail Buyer",
+  },
+
+  {
+    type: "photo",
+    photo: "/client/9.jpeg",
+    name: "Client 9",
+    role: "International Retail Buyer",
+  },
+
+  {
+    type: "photo",
+    photo: "/client/10.jpeg",
+    name: "Client 10",
+    role: "International Retail Buyer",
+  },
+
+  {
+    type: "photo",
+    photo: "/client/11.jpeg",
+    name: "Client 11",
+    role: "International Retail Buyer",
+  },
+
+  {
+    type: "photo",
+    photo: "/client/12.jpeg",
+    name: "Client 12",
+    role: "International Retail Buyer",
+  },
+
+  {
+    type: "photo",
+    photo: "/client/13.jpeg",
+    name: "Client 13",
     role: "International Retail Buyer",
   },
 ];
@@ -449,11 +510,11 @@ const Testimonials = () => {
                 <div className="tst-card tst-card-photo" key={idx}>
                   <img className="tst-photo-img" src={item.photo} alt={item.name} />
                   <div className="tst-photo-overlay" />
-                  <button className="tst-play-btn" aria-label="Play video">
+                  {/* <button className="tst-play-btn" aria-label="Play video">
                     <svg viewBox="0 0 24 24">
                       <path d="M8 5v14l11-7z" />
                     </svg>
-                  </button>
+                  </button> */}
                   <div className="tst-photo-info">
                     <p className="tst-photo-name">{item.name}</p>
                     <p className="tst-photo-role">{item.role}</p>

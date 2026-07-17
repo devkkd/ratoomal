@@ -108,13 +108,13 @@ export default function HomePage() {
         <WhyRatoomals/>
         </div> */}
 
-        {/* <div className="">
+        <div className="">
         <Testimonials/>
-        </div> */}
+        </div>
         {/* <div className="">
         <FAQSection/>
         </div> */}
-        <Testimonials1 />
+        {/* <Testimonials1 /> */}
          <div className="">
         <ContactForm/>
         </div>
