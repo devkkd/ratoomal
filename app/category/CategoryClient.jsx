@@ -263,7 +263,11 @@ const CategoryPage = () => {
         if (backendCategories.length > 0) {
             const initialExpandedSections = {};
             backendCategories.forEach((cat, index) => {
-                initialExpandedSections[cat._id] = index === 0;
+                // Auto-expand if this category has a subcategory selected from URL params,
+                // or if it's the first category and nothing is pre-selected
+                const hasSelectedSub = selectedCategories.some(key => key.startsWith(`${cat._id}-`));
+                const isActiveCategory = urlCategoryId === cat._id;
+                initialExpandedSections[cat._id] = hasSelectedSub || isActiveCategory || index === 0;
             });
             Object.keys(filters).forEach(filter => {
                 initialExpandedSections[filter] = true;
@@ -904,7 +908,8 @@ const CategoryPage = () => {
                                         <div className="space-y-1">
                                             {backendCategories.map(category => {
                                                 const categorySubCats = getFilteredSubCategories(category._id);
-                                                const isParentSelected = selectedCategories.includes(category._id);
+                                                const isParentSelected = selectedCategories.includes(category._id) ||
+                                                    selectedCategories.some(key => key.startsWith(`${category._id}-`));
                                                 const isExpanded = expandedSections[category._id];
                                                 
                                                 return (
@@ -1659,7 +1664,8 @@ const CategoryPage = () => {
                                 <div className="space-y-3">
                                     {backendCategories.map(category => {
                                         const categorySubCats = getFilteredSubCategories(category._id);
-                                        const isParentSelected = selectedCategories.includes(category._id);
+                                        const isParentSelected = selectedCategories.includes(category._id) ||
+                                            selectedCategories.some(key => key.startsWith(`${category._id}-`));
                                         
                                         return (
                                             <div key={category._id}>

@@ -478,7 +478,7 @@ const Header = () => {
           <div className="md:hidden">
             <button
               onClick={() => setIsSearchOpen(!isSearchOpen)}
-              className="hdr-icon-btn p-2 border rounded-full border-[#C08237] bg-transparent hover:bg-[#C08237] transition-all group"
+              className="hdr-icon-btn p-2  rounded-full  bg-transparent hover:bg-[#C08237] transition-all group"
             >
               <img src='/images/search-normal.svg' className='w-6 h-5 group-hover:brightness-0 group-hover:invert' alt="search" />
             </button>
@@ -520,7 +520,7 @@ const Header = () => {
         {/* ================= Desktop — single line ================= */}
 
         {/* Currency Selector */}
-        <div className="hidden lg:flex items-center relative shrink-0" ref={currencyRef}>
+        {/* <div className="hidden lg:flex items-center relative shrink-0" ref={currencyRef}>
           <div
             className="flex items-center gap-1.5 cursor-pointer hover:text-[#C08237] transition-colors text-[11px] font-bold tracking-widest text-gray-800"
             onClick={() => setShowCurrencyDropdown(!showCurrencyDropdown)}
@@ -547,7 +547,7 @@ const Header = () => {
               </div>
             </div>
           )}
-        </div>
+        </div> */}
 
         {/* Logo */}
        <Link href="/" className="hidden lg:flex items-center shrink-0 mr-3">
