@@ -438,13 +438,14 @@ const Header = () => {
         .hdr-mega-heading {
           letter-spacing: 0.08em;
         }
-       .hdr-mega-sub{
-  display:block;
-  margin:0 !important;
-  padding:0 !important;
-  line-height:25px !important;
-  letter-spacing:0 !important;
-  min-height:auto !important;
+     .hdr-mega-sub{
+  display: block;
+  margin: 0 !important;
+  padding: 0 !important;
+  line-height: 25px !important;
+  letter-spacing: 0 !important;
+  min-height: auto !important;
+  font-family: "Mona Sans", sans-serif !important;
 }
         .hdr-mega-sub:hover {
           color: #C08237 !important;
@@ -834,8 +835,8 @@ const Header = () => {
                               <button
                                 key={subCat._id}
                                 onClick={() => handleSubCategoryNavigation(category.name, category._id, subCat.name, subCat._id)}
-                         className={`hdr-mega-sub block w-full text-left text-[12px] font-medium uppercase py-0 leading-[16px] mb-0 ${
-                                  isSubActive ? 'text-[#C08237]' : isLoggedIn ? 'text-[#453314]' : 'text-gray-400'
+                         className={`hdr-mega-sub block w-full text-left text-[12px] font-medium  py-0 leading-[16px] mb-0 ${
+                                  isSubActive ? 'text-[#C08237]' : isLoggedIn ? 'text-[#453314]' : 'text-black'
                                 }`}
                                 style={{ breakInside: 'avoid' }}
                                 title={!isLoggedIn ? "Login required to access this subcategory" : ""}
@@ -853,15 +854,16 @@ const Header = () => {
                 })}
               </div>
             )}
-            <div className="mt-8 pt-6 border-t border-[#D7CEC2]">
-              <Link
-                href="/custom-orders"
-                onClick={() => setActiveDropdown(null)}
-                className="hdr-nav-link text-xs font-bold uppercase tracking-widest text-gray-700"
-              >
-                Custom Orders
-              </Link>
-            </div>
+           <div className="mt-8 pt-6 border-t border-[#D7CEC2]">
+  <Link
+    href="/custom-orders"
+    onClick={() => setActiveDropdown(null)}
+    className="hdr-nav-link text-xs font-bold uppercase tracking-widest text-gray-700"
+    style={{ fontFamily: "Mona Sans, sans-serif" }}
+  >
+    Custom Orders
+  </Link>
+</div>
           </div>
         </div>
       )}

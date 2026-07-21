@@ -1,165 +1,37 @@
 "use client";
 
-import React from "react";
-import { useRouter } from "next/navigation";
-
 const collections = [
   {
     title: "Elephants",
     image: "/images/global/1.png",
-    category: "Animal",
-    categoryId: null,          // filled dynamically from DB — set static IDs below if known
-    subcategory: "Elephants",
-    subcategoryId: null,
   },
   {
     title: "Owls",
     image: "/images/global/2.png",
-    category: "Animal",
-    categoryId: null,
-    subcategory: "Owls",
-    subcategoryId: null,
   },
   {
     title: "Incense Burners",
     image: "/images/global/3.png",
-    category: "Utility",
-    categoryId: "698342a0c919744de491b4ed",
-    subcategory: "Incense Burner",
-    subcategoryId: null,
   },
   {
     title: "Ganesha",
     image: "/images/global/4.png",
-    category: "God Figure",
-    categoryId: null,
-    subcategory: "Ganesha",
-    subcategoryId: null,
   },
   {
     title: "Candle Holders",
     image: "/images/global/5.png",
-    category: "Utility",
-    categoryId: "698342a0c919744de491b4ed",
-    subcategory: "Candle Stand",
-    subcategoryId: null,
   },
   {
     title: "Contemporary Products",
-    image: "/images/global/6.png",
-    category: "Animal",
-    categoryId: null,
-    subcategory: "Contemporary Designs",
-    subcategoryId: null,
+    image: "/images/global/9.png",
   },
   {
     title: "Wall Hangings",
     image: "/images/global/7.png",
-    category: "Utility",
-    categoryId: "698342a0c919744de491b4ed",
-    subcategory: "Wall Hanging",
-    subcategoryId: null,
   },
 ];
 
-function buildCategoryUrl(item, backendData) {
-  const { categories = [], subcategories = [] } = backendData;
-
-  // Resolve category id
-  const catObj = categories.find(
-    (c) => c.name?.toLowerCase() === item.category?.toLowerCase()
-  );
-  const catId = item.categoryId || catObj?._id;
-  const catName = item.category;
-
-  if (!catId || !catName) return "/category";
-
-  // Resolve subcategory id — try exact match first, then partial match
-  let subId = item.subcategoryId;
-  let subName = item.subcategory;
-
-  if (subName && !subId) {
-    // Try exact name match (case-insensitive) scoped to this category
-    let subObj = subcategories.find(
-      (s) =>
-        s.name?.toLowerCase() === subName.toLowerCase() &&
-        (String(s.category) === String(catId) || String(s.category?._id) === String(catId))
-    );
-
-    // If not found scoped, try without category scope (in case category field differs)
-    if (!subObj) {
-      subObj = subcategories.find(
-        (s) => s.name?.toLowerCase() === subName.toLowerCase()
-      );
-    }
-
-    // Last resort: partial match
-    if (!subObj) {
-      subObj = subcategories.find(
-        (s) =>
-          s.name?.toLowerCase().includes(subName.toLowerCase()) ||
-          subName.toLowerCase().includes(s.name?.toLowerCase())
-      );
-    }
-
-    subId = subObj?._id ? String(subObj._id) : null;
-    if (subObj && subId) {
-      subName = subObj.name; // use exact DB name
-    }
-
-    console.log(`🔎 Subcategory lookup for "${item.subcategory}":`, {
-      found: !!subObj,
-      matchedName: subObj?.name,
-      subId,
-      totalSubcategories: subcategories.length,
-      subcategories: subcategories.map(s => ({ name: s.name, catId: s.category?._id || s.category })),
-    });
-  }
-
-  const params = new URLSearchParams();
-  params.set("category", catName);
-  params.set("id", catId);
-  if (subName && subId) {
-    params.set("subcategory", subName);
-    params.set("subid", subId);
-  }
-  params.set("page", "1");
-
-  return `/category?${params.toString()}`;
-}
-
 export default function GlobalCollections() {
-  const router = useRouter();
-  const [backendData, setBackendData] = React.useState({ categories: [], subcategories: [] });
-
-  React.useEffect(() => {
-    const load = async () => {
-      try {
-        const [catRes, subRes] = await Promise.all([
-          fetch("/api/categories"),
-          fetch("/api/subcategories"),
-        ]);
-        const catData = catRes.ok ? await catRes.json() : {};
-        const subData = subRes.ok ? await subRes.json() : {};
-        setBackendData({
-          categories: catData.data || [],
-          subcategories: subData.data || [],
-        });
-      } catch (_) {}
-    };
-    load();
-  }, []);
-
-  const handleCardClick = (item) => {
-    const url = buildCategoryUrl(item, backendData);
-    console.log('🔍 GlobalCollections card clicked:', {
-      item,
-      backendData,
-      resolvedUrl: url,
-    });
-    router.push(url);
-  };
-
   return (
     <>
       <section className="global-section">
@@ -193,12 +65,9 @@ export default function GlobalCollections() {
   {collections.map((item, index) => (
     <div
       key={index}
-      className={`collection-card ${index >= 4 ? "bottom-row" : ""}`}
-      onClick={() => handleCardClick(item)}
-      role="button"
-      tabIndex={0}
-      onKeyDown={(e) => e.key === "Enter" && handleCardClick(item)}
-      aria-label={`Browse ${item.title}`}
+      className={`collection-card ${
+        index >= 4 ? "bottom-row" : ""
+      }`}
     >
       <div className="collection-image">
         <img
@@ -274,7 +143,6 @@ export default function GlobalCollections() {
 
 .collection-card{
   text-align:center;
-  cursor:pointer;
 }
 
 .collection-card:nth-child(1){
