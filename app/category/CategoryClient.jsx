@@ -867,14 +867,20 @@ const CategoryPage = () => {
                         
                         {/* Main Heading */}
                         <h1 className="text-3xl sm:text-4xl md:text-5xl playfair font-bold text-gray-900 tracking-tight">
-                            {activeCategory === "All Products" ? "Explore Our Collection" : activeCategory}
+                            {activeCategory === "All Products"
+                                ? "Explore Our Collection"
+                                : urlSubCategory
+                                    ? urlSubCategory
+                                    : activeCategory}
                         </h1>
                         
                         {/* Subtitle */}
                         <p className="text-gray-600 text-sm md:text-base mona max-w-2xl mx-auto leading-relaxed">
-                            {activeCategory === "All Products" 
-                                ? "Discover handcrafted treasures across our curated categories" 
-                                : `Browse our exclusive ${activeCategory.toLowerCase()} collection`}
+                            {activeCategory === "All Products"
+                                ? "Discover handcrafted treasures across our curated categories"
+                                : urlSubCategory
+                                    ? `${activeCategory} › ${urlSubCategory}`
+                                    : `Browse our exclusive ${activeCategory.toLowerCase()} collection`}
                         </p>
                         
                         
@@ -1023,7 +1029,7 @@ const CategoryPage = () => {
                     {/* Main Content */}
                     <main className="flex-1 min-w-0">
                         {/* Toolbar - Sticky, shifts up when site header hides */}
-                        <div className={`sticky z-40 bg-white/95 backdrop-blur-sm -mx-4 px-4 sm:-mx-6 sm:px-6 lg:-mx-0 lg:px-0 py-3 mb-6 border-b border-gray-100 shadow-sm transition-all duration-300 ${siteHeaderVisible ? 'top-[80px] lg:top-[128px]' : 'top-0'}`}>
+                        <div className={`sticky z-40 bg-white/95 backdrop-blur-sm -mx-4 px-4 sm:-mx-6 sm:px-6 lg:-mx-0 lg:px-0 py-3 mb-6 border-b border-gray-100  transition-all duration-300 ${siteHeaderVisible ? 'top-[80px] lg:top-[80px]' : 'top-0'}`}>
                             <div className="flex flex-col gap-3">
                                 
                                 {/* Row 1 - Mobile: Filter + Sort buttons */}

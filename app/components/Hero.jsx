@@ -5,10 +5,10 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 
 const images = [
   "/images/hero1.png",
-  "/images/hero1.png",
-  "/images/hero1.png",
-  "/images/hero1.png",
-  "/images/hero1.png",
+  // "/images/hero1.png",
+  // "/images/hero1.png",
+  // "/images/hero1.png",
+  // "/images/hero1.png",
 ];
 
 export default function Hero() {
@@ -34,7 +34,27 @@ export default function Hero() {
     <section className="relative w-full overflow-hidden bg-[#FFF6EB]">
 
       <div className="relative h-[250px] sm:h-[280px] md:h-[400px] lg:h-[520px] xl:h-[620px]">
-
+{/* Hero Content */}
+<div className="
+  absolute 
+  left-6 md:left-12 lg:left-20
+  top-1/2 
+  -translate-y-1/2
+  z-10
+">
+  <h1 className="
+    text-3xl
+    sm:text-4xl
+    md:text-5xl
+    lg:text-6xl
+    font-serif
+    text-[#4A3526]
+    leading-tight
+    max-w-xl
+  ">
+    Timeless Handcrafted Creations
+  </h1>
+</div>
         {images.map((image, index) => (
           <img
             key={index}
@@ -47,7 +67,7 @@ export default function Hero() {
         ))}
 
         {/* Left Arrow */}
-    <button
+    {/* <button
   onClick={prevSlide}
   className="hidden md:flex absolute left-5 top-1/2 -translate-y-1/2
              items-center justify-center
@@ -65,7 +85,7 @@ export default function Hero() {
     strokeWidth={2}
   />
 </button>
-        {/* Right Arrow */}
+   
   <button
   onClick={nextSlide}
   className="hidden md:flex absolute right-5 top-1/2 -translate-y-1/2
@@ -85,7 +105,7 @@ export default function Hero() {
   />
 </button>
 
-        {/* Dots */}
+       
     <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-1 z-20">
   {images.map((_, index) => (
     <button
@@ -113,7 +133,7 @@ export default function Hero() {
       }}
     />
   ))}
-</div>
+</div> */}
       </div>
     </section>
   );
