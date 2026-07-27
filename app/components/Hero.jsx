@@ -48,11 +48,13 @@ export default function Hero() {
     md:text-5xl
     lg:text-6xl
     font-serif
+    font-medium
     text-[#4A3526]
     leading-tight
     max-w-xl
   ">
-    Timeless Handcrafted Creations
+    {/* Handicrafts Manufacturers In Jaipur */}
+   Handicrafts Exporters in Jaipur
   </h1>
 </div>
         {images.map((image, index) => (
