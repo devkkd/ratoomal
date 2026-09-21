@@ -383,6 +383,7 @@ const Header = () => {
         .hdr-nav-link {
           position: relative;
           display: inline-flex;
+font-family: "Mona Sans", sans-serif !important;
           align-items: center;
           line-height: 1;
           padding-bottom: 0;
@@ -450,6 +451,16 @@ const Header = () => {
         .hdr-mega-sub:hover {
           color: #C08237 !important;
           padding-left: 4px;
+        }
+          .hdr-mega-about{
+  line-height: 25px !important;
+  letter-spacing: 0 !important;
+
+  font-family: "Mona Sans", sans-serif !important;
+}
+        .hdr-mega-about:hover {
+          color: #C08237 !important;
+      
         }
 
         /* Single-line desktop top bar — never wraps to a second row */
@@ -577,7 +588,7 @@ const Header = () => {
                   ) : (
                     <Link
                       href={link.href}
-                      className={`hdr-nav-link text-[11px] font-bold tracking-widest transition-colors ${isActive ? 'hdr-active' : ''}`}
+                      className={`hdr-nav-link font-mono text-[11px] font-bold tracking-widest transition-colors ${isActive ? 'hdr-active' : ''}`}
                     >
                       {link.name}
                     </Link>
@@ -585,15 +596,15 @@ const Header = () => {
 
                   {/* Static Dropdowns (ABOUT) */}
                   {link.hasDropdown && !link.isMainCategory && activeDropdown === link.name && (
-                   <div className="absolute left-0 top-[calc(100%+1px)] w-60 bg-[#FFFCF5] border border-[#D7CEC2] py-1 z-[9999] rounded-sm shadow-xl">
+                   <div className="absolute left-0 top-[calc(135%+1px)] w-60 bg-[#FFFCF5] border border-[#D7CEC2] py-1 z-[9999] rounded-sm shadow-xl">
                       {link.subItems.map((sub) => (
                         <Link
                           key={sub.label}
                           href={sub.href}
                           onClick={() => setActiveDropdown(null)}
-                          className="flex items-center justify-between px-5 py-3 text-[12px] font-medium text-gray-700 hover:bg-[#C08237] hover:text-white transition-all border-b border-gray-100 last:border-0"
+                          className=" hdr-mega-about flex items-center justify-between px-5 py-3 text-[12px] font-medium text-black transition-all border-b border-gray-100 last:border-0"
                         >
-                          {sub.label.toUpperCase()}
+                          {sub.label}
                         </Link>
                       ))}
                     </div>
