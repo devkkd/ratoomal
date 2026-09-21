@@ -1,7 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // Mark nodemailer as server-only (prevents bundling issues)
-  serverExternalPackages: ['nodemailer'],
+  // Mark nodemailer and mongoose as server-only (prevents Turbopack bundling issues on Windows)
+  serverExternalPackages: ['nodemailer', 'mongoose'],
 
   // WWW Canonicalization: redirect non-www to www
   async redirects() {
@@ -25,6 +25,9 @@ const nextConfig = {
 
   // Never strip console logs — we need them for email debugging
   compiler: {},
+
+  // Turbopack configuration (silences conflict error with custom webpack config in Next.js 16)
+  turbopack: {},
   
   // Handle build-time environment variables safely
   env: {
@@ -73,8 +76,6 @@ const nextConfig = {
     return config;
   },
   
-  // Empty turbopack config to silence the warning
-  turbopack: {},
 };
 
 export default nextConfig;
