@@ -30,6 +30,7 @@ const EMPTY_FORM = {
   author: { name: "Ratoomal's Team" },
   metaTitle: "",
   metaDescription: "",
+  schemaMarkup: "",
 };
 
 // ── Image Upload Component ──────────────────────────────────────────────────
@@ -156,6 +157,253 @@ function CoverImageUpload({ value, onChange }) {
   );
 }
 
+// ── Schema Markup Tab Component ────────────────────────────────────────────
+const SCHEMA_TEMPLATES = {
+  article: (blog) => ({
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": blog.title || "Blog Title",
+    "description": blog.excerpt || "",
+    "image": blog.coverImage || "",
+    "author": {
+      "@type": "Person",
+      "name": blog.author?.name || "Ratoomal's Team",
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "Ratoomal's",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://www.ratoomals.com/logo.png",
+      },
+    },
+    "datePublished": new Date().toISOString(),
+    "dateModified": new Date().toISOString(),
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": `https://www.ratoomals.com/blog/${blog.title?.toLowerCase().replace(/\s+/g, "-") || ""}`,
+    },
+  }),
+  blogPosting: (blog) => ({
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": blog.title || "Blog Title",
+    "description": blog.excerpt || "",
+    "image": blog.coverImage || "",
+    "author": {
+      "@type": "Person",
+      "name": blog.author?.name || "Ratoomal's Team",
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "Ratoomal's",
+      "url": "https://www.ratoomals.com",
+    },
+    "datePublished": new Date().toISOString(),
+    "dateModified": new Date().toISOString(),
+    "keywords": blog.tags || "",
+    "articleSection": blog.category || "",
+  }),
+  faqPage: () => ({
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "Your question here?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Your answer here.",
+        },
+      },
+    ],
+  }),
+  howTo: (blog) => ({
+    "@context": "https://schema.org",
+    "@type": "HowTo",
+    "name": blog.title || "How To Guide",
+    "description": blog.excerpt || "",
+    "image": blog.coverImage || "",
+    "step": [
+      {
+        "@type": "HowToStep",
+        "name": "Step 1",
+        "text": "Describe step 1 here.",
+      },
+    ],
+  }),
+};
+
+function SchemaMarkupTab({ value, onChange, blog }) {
+  const [jsonError, setJsonError] = useState(null);
+  const [previewMode, setPreviewMode] = useState(false);
+
+  const validateAndSet = (raw) => {
+    onChange(raw);
+    if (!raw.trim()) {
+      setJsonError(null);
+      return;
+    }
+    try {
+      JSON.parse(raw);
+      setJsonError(null);
+    } catch (e) {
+      setJsonError(e.message);
+    }
+  };
+
+  const applyTemplate = (templateKey) => {
+    const schema = SCHEMA_TEMPLATES[templateKey](blog);
+    onChange(JSON.stringify(schema, null, 2));
+    setJsonError(null);
+  };
+
+  const formatJson = () => {
+    if (!value.trim()) return;
+    try {
+      onChange(JSON.stringify(JSON.parse(value), null, 2));
+      setJsonError(null);
+    } catch (e) {
+      setJsonError(e.message);
+    }
+  };
+
+  const isValid = value.trim() === "" || jsonError === null;
+
+  return (
+    <div className="space-y-5">
+      {/* Info banner */}
+      <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 flex gap-3">
+        <div className="flex-shrink-0 mt-0.5">
+          <svg className="w-5 h-5 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+        </div>
+        <div className="text-sm text-blue-800">
+          <p className="font-semibold mb-1">What is Schema Markup?</p>
+          <p className="text-blue-700">
+            JSON-LD structured data that helps Google understand your content and show rich results (rich snippets) in search. Paste valid JSON-LD or use a template below.
+          </p>
+        </div>
+      </div>
+
+      {/* Quick Templates */}
+      <div>
+        <p className="text-sm font-medium text-gray-700 mb-2">Quick Templates</p>
+        <div className="flex flex-wrap gap-2">
+          {[
+            { key: "article", label: "Article" },
+            { key: "blogPosting", label: "Blog Posting" },
+            { key: "faqPage", label: "FAQ Page" },
+            { key: "howTo", label: "How-To" },
+          ].map(({ key, label }) => (
+            <button
+              key={key}
+              type="button"
+              onClick={() => applyTemplate(key)}
+              className="px-3 py-1.5 text-xs font-medium bg-[#FFF8F0] text-[#C08237] border border-[#E0A75E]/40 rounded-lg hover:bg-[#C08237] hover:text-white transition-colors"
+            >
+              + {label}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Editor + toolbar */}
+      <div>
+        <div className="flex items-center justify-between mb-1.5">
+          <label className="text-sm font-medium text-gray-700">
+            JSON-LD Schema{" "}
+            <span className="text-gray-400 font-normal">(optional)</span>
+          </label>
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={formatJson}
+              disabled={!value.trim()}
+              className="text-xs text-gray-500 hover:text-[#C08237] disabled:opacity-40 disabled:cursor-not-allowed font-medium"
+            >
+              Format JSON
+            </button>
+            <button
+              type="button"
+              onClick={() => { onChange(""); setJsonError(null); }}
+              disabled={!value.trim()}
+              className="text-xs text-red-400 hover:text-red-600 disabled:opacity-40 disabled:cursor-not-allowed font-medium"
+            >
+              Clear
+            </button>
+          </div>
+        </div>
+
+        <textarea
+          value={value}
+          onChange={(e) => validateAndSet(e.target.value)}
+          placeholder={`{\n  "@context": "https://schema.org",\n  "@type": "Article",\n  "headline": "Your Blog Title"\n}`}
+          rows={16}
+          spellCheck={false}
+          className={`w-full px-4 py-3 border rounded-lg focus:ring-2 focus:border-transparent font-mono text-sm resize-y transition-colors ${
+            jsonError
+              ? "border-red-400 focus:ring-red-300 bg-red-50"
+              : "border-gray-300 focus:ring-[#C08237] bg-white"
+          }`}
+        />
+
+        {/* Validation feedback */}
+        {jsonError && (
+          <div className="flex items-start gap-2 mt-1.5 text-sm text-red-600">
+            <svg className="w-4 h-4 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </svg>
+            <span>Invalid JSON: {jsonError}</span>
+          </div>
+        )}
+        {!jsonError && value.trim() && (
+          <div className="flex items-center gap-2 mt-1.5 text-sm text-green-600">
+            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+            </svg>
+            <span>Valid JSON-LD — will be injected as <code className="bg-green-50 px-1 rounded text-xs">&lt;script type="application/ld+json"&gt;</code> in the blog page.</span>
+          </div>
+        )}
+      </div>
+
+      {/* Preview */}
+      {!jsonError && value.trim() && (
+        <div>
+          <button
+            type="button"
+            onClick={() => setPreviewMode((p) => !p)}
+            className="text-sm text-[#C08237] font-medium underline underline-offset-2"
+          >
+            {previewMode ? "Hide Preview" : "Show Rendered Preview"}
+          </button>
+          {previewMode && (
+            <div className="mt-3 bg-gray-900 rounded-lg p-4 overflow-x-auto">
+              <pre className="text-green-400 text-xs whitespace-pre-wrap break-all">
+                {`<script type="application/ld+json">\n${value}\n</script>`}
+              </pre>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Google test link */}
+      <div className="text-xs text-gray-400">
+        After publishing, validate at{" "}
+        <a
+          href="https://search.google.com/test/rich-results"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-[#C08237] underline underline-offset-2"
+        >
+          Google Rich Results Test ↗
+        </a>
+      </div>
+    </div>
+  );
+}
+
 // ── Main Page ───────────────────────────────────────────────────────────────
 export default function AdminBlogsPage() {
   const [blogs, setBlogs] = useState([]);
@@ -217,6 +465,7 @@ export default function AdminBlogsPage() {
       author: blog.author || { name: "Ratoomal's Team" },
       metaTitle: blog.metaTitle || "",
       metaDescription: blog.metaDescription || "",
+      schemaMarkup: blog.schemaMarkup || "",
     });
     setEditId(blog._id);
     setActiveTab("basic");
@@ -359,7 +608,7 @@ export default function AdminBlogsPage() {
 
             {/* Tabs */}
             <div className="flex gap-1 mb-6 border-b border-gray-200">
-              {["basic", "content", "seo"].map((tab) => (
+              {["basic", "content", "seo", "schema"].map((tab) => (
                 <button
                   key={tab}
                   onClick={() => setActiveTab(tab)}
@@ -369,7 +618,7 @@ export default function AdminBlogsPage() {
                       : "border-transparent text-gray-500 hover:text-gray-700"
                   }`}
                 >
-                  {tab === "basic" ? "Basic Info" : tab === "content" ? "Content" : "SEO & Meta"}
+                  {tab === "basic" ? "Basic Info" : tab === "content" ? "Content" : tab === "seo" ? "SEO & Meta" : "Schema Markup"}
                 </button>
               ))}
             </div>
@@ -547,6 +796,15 @@ export default function AdminBlogsPage() {
                   />
                 </div>
               </div>
+            )}
+
+            {/* ── Schema Markup Tab ── */}
+            {activeTab === "schema" && (
+              <SchemaMarkupTab
+                value={form.schemaMarkup}
+                onChange={(val) => setForm({ ...form, schemaMarkup: val })}
+                blog={form}
+              />
             )}
 
             {/* Form Actions */}

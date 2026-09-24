@@ -33,6 +33,7 @@ const BlogSchema = new mongoose.Schema(
     publishedAt: { type: Date, default: null },
     metaTitle: { type: String, trim: true },
     metaDescription: { type: String, trim: true },
+    schemaMarkup: { type: String, default: "" }, // JSON-LD schema markup (raw JSON string)
   },
   { timestamps: true }
 );

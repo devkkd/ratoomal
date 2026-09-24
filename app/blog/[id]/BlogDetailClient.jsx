@@ -255,6 +255,30 @@ export default function BlogDetailClient() {
               <BookOpen className="w-4 h-4" />
               View All Articles
             </Link>
+
+            {/* Structured Data badge — only shown when schemaMarkup is set */}
+            {blog.schemaMarkup && blog.schemaMarkup.trim() && (
+              <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-5">
+                <div className="flex items-center gap-2 mb-2">
+                  <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+                  <h3 className="text-sm font-semibold text-gray-800">Structured Data Active</h3>
+                </div>
+                <p className="text-xs text-gray-500 mb-3 leading-relaxed">
+                  This article includes JSON-LD schema markup to help search engines show rich results.
+                </p>
+                <a
+                  href={`https://search.google.com/test/rich-results?url=${encodeURIComponent(typeof window !== "undefined" ? window.location.href : "")}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 text-xs text-[#C08237] font-medium hover:underline underline-offset-2"
+                >
+                  <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                  </svg>
+                  Test in Google Rich Results ↗
+                </a>
+              </div>
+            )}
           </div>
         </div>
       </div>

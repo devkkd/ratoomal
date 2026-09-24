@@ -1,4 +1,5 @@
 import { notFound, redirect } from "next/navigation";
+import Script from "next/script";
 import BlogDetailClient from "./BlogDetailClient";
 import connectDB from "@/lib/db";
 import Blog from "@/models/Blog";
@@ -12,13 +13,13 @@ async function getBlog(id) {
 
   // Try slug lookup first (canonical URL format)
   let blog = await Blog.findOne({ slug: id, status: "published" })
-    .select("title slug excerpt coverImage metaTitle metaDescription")
+    .select("title slug excerpt coverImage metaTitle metaDescription schemaMarkup")
     .lean();
 
   // Fallback to ObjectId if slug not found
   if (!blog && /^[0-9a-fA-F]{24}$/.test(id)) {
     blog = await Blog.findOne({ _id: id, status: "published" })
-      .select("title slug excerpt coverImage metaTitle metaDescription")
+      .select("title slug excerpt coverImage metaTitle metaDescription schemaMarkup")
       .lean();
   }
 
@@ -69,6 +70,8 @@ export async function generateMetadata({ params }) {
 export default async function BlogDetailPage({ params }) {
   const { id } = await params;
 
+  let schemaMarkup = null;
+
   try {
     const blog = await getBlog(id);
 
@@ -82,9 +85,32 @@ export default async function BlogDetailPage({ params }) {
     if (blog.slug && id !== blog.slug) {
       redirect(`/blog/${blog.slug}`);
     }
+
+    // Extract schemaMarkup only if it's valid JSON
+    if (blog.schemaMarkup && blog.schemaMarkup.trim()) {
+      try {
+        JSON.parse(blog.schemaMarkup); // validate before injecting
+        schemaMarkup = blog.schemaMarkup.trim();
+      } catch {
+        // Invalid JSON saved in DB — skip injection silently
+      }
+    }
   } catch {
     // DB error — let client component handle gracefully, don't 404
   }
 
-  return <BlogDetailClient />;
+  return (
+    <>
+      {/* JSON-LD Schema Markup — only injected when admin has set valid JSON */}
+      {schemaMarkup && (
+        <Script
+          id="blog-schema-markup"
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: schemaMarkup }}
+          strategy="beforeInteractive"
+        />
+      )}
+      <BlogDetailClient />
+    </>
+  );
 }
