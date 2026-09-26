@@ -57,7 +57,7 @@ export default function ExhibitionPopup() {
             {/* Image Container - 500x680 scaled responsively */}
             <div className="relative w-full aspect-[500/680] bg-gray-200 overflow-hidden">
               <Image
-                src="/expo1.png"
+                src="/expo2.png"
                 alt="Exhibition Banner"
                 fill
                 className="object-cover"
