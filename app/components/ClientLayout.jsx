@@ -7,6 +7,7 @@ import WhatsAppButton from "@/app/components/WhatsAppButton";
 import ScrollToTop from "@/app/components/ScrollToTop";
 import TranslationProvider from "@/app/components/TranslationProvider";
 import LanguageLoader from "@/app/components/LanguageLoader";
+import ExhibitionPopup from "@/components/ExhibitionPopup";
 
 export default function ClientLayout({ children }) {
   const pathname = usePathname();
@@ -21,6 +22,7 @@ export default function ClientLayout({ children }) {
     <TranslationProvider>
       <ScrollToTop />
       <LanguageLoader />
+      <ExhibitionPopup />
       {!isAdminRoute && (
         <Suspense fallback={<div className="h-20 bg-[#FFF6EB]" />}>
           <Header />
