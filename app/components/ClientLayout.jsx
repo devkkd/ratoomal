@@ -22,7 +22,7 @@ export default function ClientLayout({ children }) {
     <TranslationProvider>
       <ScrollToTop />
       <LanguageLoader />
-      <ExhibitionPopup />
+      {/* <ExhibitionPopup /> */}
       {!isAdminRoute && (
         <Suspense fallback={<div className="h-20 bg-[#FFF6EB]" />}>
           <Header />
