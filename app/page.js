@@ -4,17 +4,10 @@ import GlobalCollections from "./components/GlobalCollections";
 import TrustBuilding from "@/app/components/TrustBuilding";
 import dynamic from "next/dynamic";
 import ManufacturingAdvantage from "./components/ManufacturingAdvantage";
-import Testimonials1 from "./components/Testimonials1";
 import BannerVideo from "./components/BannerVideo";
 
 // SSR-safe dynamic imports (server component compatible)
-const ElephantSizeFilter = dynamic(() => import("./components/ElephantSizeFilter"));
-const CuratedCollections = dynamic(() => import("./components/CuratedCollections"));
-const GodFigurines       = dynamic(() => import("./components/GodFigurines"));
-const Utility            = dynamic(() => import("./components/Utility"));
-const WhyRatoomals       = dynamic(() => import("./components/WhyRatoomals"));
 const Testimonials       = dynamic(() => import("./components/Testimonials"));
-const FAQSection         = dynamic(() => import("./components/FAQSection"));
 const ContactForm        = dynamic(() => import("./components/ContactForm"));
 
 export const metadata = {

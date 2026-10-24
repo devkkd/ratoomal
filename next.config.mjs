@@ -15,6 +15,52 @@ const nextConfig = {
     ];
   },
 
+  // Long-lived cache headers for static assets in /public
+  async headers() {
+    return [
+      {
+        // Immutable cache for all images (1 year)
+        source: '/images/:path*',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=31536000, immutable',
+          },
+        ],
+      },
+      {
+        // Immutable cache for client testimonial photos (1 year)
+        source: '/client/:path*',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=31536000, immutable',
+          },
+        ],
+      },
+      {
+        // Long cache for banner video (7 days, not immutable since it may be replaced)
+        source: '/banner-video.mp4',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=604800, stale-while-revalidate=86400',
+          },
+        ],
+      },
+      {
+        // Fonts and other static assets
+        source: '/:path*.woff2',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=31536000, immutable',
+          },
+        ],
+      },
+    ];
+  },
+
   // Optimize for production builds
   experimental: {
     optimizePackageImports: ['lucide-react', '@heroicons/react'],

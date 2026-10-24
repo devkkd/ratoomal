@@ -1,14 +1,14 @@
-import { Geist, Geist_Mono, Playfair_Display, Mona_Sans } from "next/font/google";
+import { Geist, Playfair_Display, Mona_Sans } from "next/font/google";
 import "./globals.css";
 import Script from "next/script";
 import ClientLayout from "@/app/components/ClientLayout";
 
 const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"], display: "swap" });
-const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"], display: "swap" });
+// Playfair: only weights actually used in the UI
 const playfair = Playfair_Display({
   variable: "--font-playfair",
   subsets: ["latin"],
-  weight: ["600", "700"],
+  weight: ["400", "600", "700"],
   display: "swap",
 });
 const monaSans = Mona_Sans({
@@ -28,12 +28,17 @@ export default function RootLayout({ children }) {
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        {/* Preconnect to external origins */}
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        {/* Preconnect to Cloudflare R2 for product images */}
+        <link rel="preconnect" href="https://pub-a7812a845df148fe9eec1889ce42d836.r2.dev" />
+        {/* Preconnect GTM (analytics) */}
         <link rel="preconnect" href="https://www.googletagmanager.com" />
-        {/* Preload hero video so it starts faster */}
-        <link rel="preload" href="/banner-video.mp4" as="video" type="video/mp4" />
+        {/* Preload LCP hero image so browser discovers it immediately */}
+        <link
+          rel="preload"
+          href="/images/hero1.png"
+          as="image"
+          fetchPriority="high"
+        />
         <Script
           src="https://www.googletagmanager.com/gtag/js?id=G-Q1083NJZEW"
           strategy="afterInteractive"
@@ -49,7 +54,7 @@ export default function RootLayout({ children }) {
         />
       </head>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} ${playfair.variable} ${monaSans.variable} antialiased min-h-screen flex flex-col`}
+        className={`${geistSans.variable} ${playfair.variable} ${monaSans.variable} antialiased min-h-screen flex flex-col`}
       >
         <ClientLayout>{children}</ClientLayout>
       </body>

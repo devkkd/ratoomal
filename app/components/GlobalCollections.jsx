@@ -204,6 +204,10 @@ export default function GlobalCollections() {
         <img
           src={item.image}
           alt={item.title}
+          width={400}
+          height={400}
+          loading="lazy"
+          decoding="async"
         />
       </div>
 

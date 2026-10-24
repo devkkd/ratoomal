@@ -62,6 +62,11 @@ export default function Hero() {
             key={index}
             src={image}
             alt={`Hero ${index + 1}`}
+            width={1920}
+            height={620}
+            decoding="async"
+            fetchPriority={index === 0 ? "high" : "low"}
+            loading={index === 0 ? "eager" : "lazy"}
             className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ${
               current === index ? "opacity-100" : "opacity-0"
             }`}

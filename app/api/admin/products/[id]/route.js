@@ -63,6 +63,18 @@ export async function PATCH(request, { params }) {
       { new: true, runValidators: true }
     );
 
+    // If the update changed name or code but didn't supply a slug,
+    // regenerate the slug via a real save() so the pre-save hook fires.
+    if ((body.name || body.code) && !body.slug) {
+      const doc = await Product.findById(id);
+      if (doc) {
+        // Force slug regeneration
+        doc.slug = undefined;
+        await doc.save();
+        return NextResponse.json({ success: true, data: doc });
+      }
+    }
+
     return NextResponse.json({ success: true, data: updated });
   } catch (error) {
     console.error("UPDATE PRODUCT ERROR:", error);

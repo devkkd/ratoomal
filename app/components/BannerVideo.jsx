@@ -1,19 +1,43 @@
 "use client";
 
+import { useEffect, useRef, useState } from "react";
+
 export default function BannerVideo() {
+  const videoRef = useRef(null);
+  const [shouldLoad, setShouldLoad] = useState(false);
+
+  useEffect(() => {
+    // Only load the video on desktop (viewport >= 768px) to save mobile bandwidth
+    if (window.innerWidth >= 768) {
+      setShouldLoad(true);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (shouldLoad && videoRef.current) {
+      videoRef.current.play().catch(() => {});
+    }
+  }, [shouldLoad]);
+
   return (
     <>
       <section className="video-section">
         <div className="video-container">
-          <video
-            className="banner-video"
-            src="/banner-video.mp4"
-            autoPlay
-            muted
-            loop
-            playsInline
-            preload="auto"
-          />
+          {shouldLoad ? (
+            <video
+              ref={videoRef}
+              className="banner-video"
+              src="/banner-video.mp4"
+              autoPlay
+              muted
+              loop
+              playsInline
+              preload="none"
+            />
+          ) : (
+            /* Mobile: show a static poster image instead of loading the video */
+            <div className="banner-video banner-placeholder" aria-hidden="true" />
+          )}
         </div>
       </section>
 
@@ -40,6 +64,10 @@ export default function BannerVideo() {
           object-position: center;
           pointer-events: none;
           user-select: none;
+        }
+
+        .banner-placeholder {
+          background: #fcf8f1;
         }
 
         @media (max-width: 1200px) {

@@ -157,6 +157,7 @@ const Header = () => {
           if (productsResponse.data.success) {
             const transformed = productsResponse.data.data.map(product => ({
               id: product._id,
+              slug: product.slug || null,
               name: product.name || "Unnamed Product",
               code: product.code || "",
               img: product.thumbnail || (product.images && product.images[0]) || '/images/placeholder.png',
@@ -373,10 +374,9 @@ const Header = () => {
   return (
     <>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap');
-
+        /* Playfair Display is loaded via next/font/google in layout.js — no @import needed here */
         .hdr-header, .hdr-header input, .hdr-header select, .hdr-header button, .hdr-header a, .hdr-header span, .hdr-header p, .hdr-header div {
-          font-family: 'Playfair Display', serif;
+          font-family: var(--font-playfair), serif;
         }
 
         /* Underline + hover colour for main nav links */
@@ -639,7 +639,7 @@ font-family: "Mona Sans", sans-serif !important;
                 searchResults.map((product) => (
                   <Link
                     key={product.id}
-                    href={`/product/${product.id}`}
+                    href={`/product/${product.slug || product.id}`}
                     onClick={() => setIsSearchOpen(false)}
                     className="flex items-center gap-3 p-3 hover:bg-[#FFF6EB] border-b border-gray-50 last:border-0 transition-colors"
                   >
@@ -771,7 +771,7 @@ font-family: "Mona Sans", sans-serif !important;
                 searchResults.map((product) => (
                   <Link
                     key={product.id}
-                    href={`/product/${product.id}`}
+                    href={`/product/${product.slug || product.id}`}
                     onClick={() => {
                       setIsSearchOpen(false);
                       setSearchQuery('');
