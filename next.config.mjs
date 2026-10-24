@@ -69,8 +69,12 @@ const nextConfig = {
     },
   },
 
-  // Never strip console logs — we need them for email debugging
-  compiler: {},
+  // Remove console.log in production (keep console.error for debugging)
+  compiler: {
+    removeConsole: {
+      exclude: ['error'],
+    },
+  },
 
   // Turbopack configuration (silences conflict error with custom webpack config in Next.js 16)
   turbopack: {},

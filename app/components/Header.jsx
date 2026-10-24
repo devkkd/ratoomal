@@ -160,7 +160,7 @@ const Header = () => {
               slug: product.slug || null,
               name: product.name || "Unnamed Product",
               code: product.code || "",
-              img: product.thumbnail || (product.images && product.images[0]) || '/images/placeholder.png',
+              img: product.thumbnail || (product.images && product.images[0]) || '/images/placeholder.webp',
               categoryName: product.category?.name || "Uncategorized",
               categoryId: product.category?._id || ""
             }));

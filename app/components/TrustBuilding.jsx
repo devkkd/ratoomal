@@ -31,7 +31,7 @@ const TrustBuilding = () => {
       {/* Top-left decorative image */}
       <div className="absolute  top-0 left-0 w-52 h-52 md:w-96 md:h-80 pointer-events-none z-0">
         <img 
-          src="/images/top-left.png" 
+          src="/images/top-left.webp" 
           alt="Decorative corner ornament"
           className="w-full h-full object-cover rotate-180"
         />
@@ -40,7 +40,7 @@ const TrustBuilding = () => {
       {/* Top-right decorative image */}
       <div className="absolute  top-0 right-0 w-32 h-32 md:w-80 md:h-80  ">
         <img 
-          src="/images/top-right.png" 
+          src="/images/top-right.webp" 
           alt="Decorative corner ornament"
           className="w-full h-full object-cover rotate-90"
         />

@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 const collections = [
   {
     title: "Elephants",
-    image: "/images/global/1.png",
+    image: "/images/global/1.webp",
     category: "Animal",
     categoryId: null,          // filled dynamically from DB — set static IDs below if known
     subcategory: "Elephants",
@@ -14,7 +14,7 @@ const collections = [
   },
   {
     title: "Owls",
-    image: "/images/global/2.png",
+    image: "/images/global/2.webp",
     category: "Animal",
     categoryId: null,
     subcategory: "Owls",
@@ -22,7 +22,7 @@ const collections = [
   },
   {
     title: "Incense Burners",
-    image: "/images/global/3.png",
+    image: "/images/global/3.webp",
     category: "Utility",
     categoryId: "698342a0c919744de491b4ed",
     subcategory: "Incense Burner",
@@ -30,7 +30,7 @@ const collections = [
   },
   {
     title: "Ganesha",
-    image: "/images/global/4.png",
+    image: "/images/global/4.webp",
     category: "God Figure",
     categoryId: null,
     subcategory: "Ganesha",
@@ -38,7 +38,7 @@ const collections = [
   },
   {
     title: "Candle Holders",
-    image: "/images/global/5.png",
+    image: "/images/global/5.webp",
     category: "Utility",
     categoryId: "698342a0c919744de491b4ed",
     subcategory: "Candle Stand",
@@ -46,7 +46,7 @@ const collections = [
   },
   {
     title: "Contemporary Products",
-    image: "/images/global/9.png",
+    image: "/images/global/9.webp",
     category: "Animal",
     categoryId: null,
     subcategory: "Contemporary Designs",
@@ -54,7 +54,7 @@ const collections = [
   },
   {
     title: "Wall Hangings",
-    image: "/images/global/7.png",
+    image: "/images/global/7.webp",
     category: "Utility",
     categoryId: "698342a0c919744de491b4ed",
     subcategory: "Wall Hanging",

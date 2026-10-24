@@ -35,8 +35,9 @@ export default function RootLayout({ children }) {
         {/* Preload LCP hero image so browser discovers it immediately */}
         <link
           rel="preload"
-          href="/images/hero1.png"
+          href="/images/hero1.webp"
           as="image"
+          type="image/webp"
           fetchPriority="high"
         />
         <Script

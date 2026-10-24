@@ -1,21 +1,20 @@
-"use client";
-import React from 'react';
+// Server component — purely presentational, no hooks or interactivity needed.
 import { Star } from 'lucide-react';
 
 const clients = [
-  { image: '/client/1.JPG',   name: 'Client 1'  },
-  { image: '/client/2.JPG',   name: 'Client 2'  },
-  { image: '/client/3.jpeg',  name: 'Client 3'  },
-  { image: '/client/4.jpeg',  name: 'Client 4'  },
-  { image: '/client/5.jpeg',  name: 'Client 5'  },
-  { image: '/client/6.jpeg',  name: 'Client 6'  },
-  { image: '/client/7.jpeg',  name: 'Client 7'  },
-  { image: '/client/8.jpeg',  name: 'Client 8'  },
-  { image: '/client/9.jpeg',  name: 'Client 9'  },
-  { image: '/client/10.jpeg', name: 'Client 10' },
-  { image: '/client/11.jpeg', name: 'Client 11' },
-  { image: '/client/12.jpeg', name: 'Client 12' },
-  { image: '/client/13.jpeg', name: 'Client 13' },
+  { image: '/client/1.webp',   name: 'Client 1'  },
+  { image: '/client/2.webp',   name: 'Client 2'  },
+  { image: '/client/3.webp',  name: 'Client 3'  },
+  { image: '/client/4.webp',  name: 'Client 4'  },
+  { image: '/client/5.webp',  name: 'Client 5'  },
+  { image: '/client/6.webp',  name: 'Client 6'  },
+  { image: '/client/7.webp',  name: 'Client 7'  },
+  { image: '/client/8.webp',  name: 'Client 8'  },
+  { image: '/client/9.webp',  name: 'Client 9'  },
+  { image: '/client/10.webp', name: 'Client 10' },
+  { image: '/client/11.webp', name: 'Client 11' },
+  { image: '/client/12.webp', name: 'Client 12' },
+  { image: '/client/13.webp', name: 'Client 13' },
 ];
 
 // Duplicate for seamless infinite loop
@@ -96,19 +95,6 @@ const Testimonials = () => {
           ))}
         </div>
       </div>
-
-      <style jsx>{`
-        .marquee-track {
-          animation: marquee 55s linear infinite;
-        }
-        .marquee-track:hover {
-          animation-play-state: paused;
-        }
-        @keyframes marquee {
-          0%   { transform: translateX(0); }
-          100% { transform: translateX(-50%); }
-        }
-      `}</style>
     </section>
   );
 };

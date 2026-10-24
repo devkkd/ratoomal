@@ -37,7 +37,7 @@ const ProductCard = ({
       return product.image;
     }
     
-    return '/images/placeholder.png';
+    return '/images/placeholder.webp';
   };
 
   // Handle add to inquiry cart
@@ -125,7 +125,7 @@ const ProductCard = ({
             alt={product.name || 'Product'}
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
             onError={(e) => {
-              e.target.src = '/images/placeholder.png';
+              e.target.src = '/images/placeholder.webp';
             }}
           />
           

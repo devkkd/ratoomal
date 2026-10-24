@@ -1,31 +1,33 @@
-"use client";
-
-import { Playfair_Display } from "next/font/google";
-
-const playfairDisplay = Playfair_Display({
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
-  display: "swap",
-});
+// Server component — no "use client" needed, purely static content.
+// Font loaded via CSS variable from layout.js (--font-playfair).
 
 export default function ArtOfAuthenticity() {
   return (
     <section
-      className={`${playfairDisplay.className} w-full bg-[#FCF8F1] pt-16 pb-8 md:py-16 flex flex-col items-center text-center px-4`}
+      className="w-full bg-[#FCF8F1] pt-16 pb-8 md:py-16 flex flex-col items-center text-center px-4"
+      style={{ fontFamily: "var(--font-playfair), serif" }}
     >
-      <p className=" text-sm md:text-base  text-gray-500 uppercase">
-        <img src="/images/upperblock.svg" alt="Decorative block pattern" className="w-md" />
+      <p className="text-sm md:text-base text-gray-500 uppercase">
+        <img
+          src="/images/upperblock.svg"
+          alt="Decorative block pattern"
+          width={300}
+          height={40}
+          loading="lazy"
+          decoding="async"
+          className="w-md"
+        />
       </p>
 
-      <h1 className="text-[30px] sm:text-[50px] font-semibold text-[#C08237] mt-8 my-7">
+      <h2 className="text-[30px] sm:text-[50px] font-semibold text-[#C08237] mt-8 my-7">
         Where Royal Rajasthan Craftsmanship
-      </h1>
+      </h2>
 
       <div className="max-w-[1200px] mx-auto mt-8 space-y-8">
         <p className="text-[14px] md:text-[16px] leading-[1.9] text-[#2B2B2B] text-center">
           <span className="font-semibold text-[#121212]">
             Rooted in Jaipur, Rajasthan – the land of Maharajas and master craftsmen –
-            Ratoomal's represents over six decades of heritage artistry,
+            Ratoomal&apos;s represents over six decades of heritage artistry,
           </span>{" "}
           meticulously handcrafted for international markets.
         </p>
@@ -64,6 +66,10 @@ export default function ArtOfAuthenticity() {
         <img
           src="/images/downblock.svg"
           alt="Decorative block pattern"
+          width={300}
+          height={40}
+          loading="lazy"
+          decoding="async"
           className="w-md"
         />
       </p>

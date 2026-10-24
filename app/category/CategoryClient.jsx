@@ -115,7 +115,7 @@ const CategoryPage = () => {
             return product.image;
         }
         
-        return '/images/placeholder.png';
+        return '/images/placeholder.webp';
     };
 
     // Get category products with limit for non-logged in users
@@ -1300,7 +1300,7 @@ const CategoryPage = () => {
                                                                         } else if (product.images && product.images.length > 0) {
                                                                             e.target.src = product.images[0];
                                                                         } else {
-                                                                            e.target.src = '/images/placeholder.png';
+                                                                            e.target.src = '/images/placeholder.webp';
                                                                         }
                                                                     }}
                                                                 />
@@ -1485,7 +1485,7 @@ const CategoryPage = () => {
                                                             } else if (product.images && product.images.length > 0) {
                                                                 e.target.src = product.images[0];
                                                             } else {
-                                                                e.target.src = '/images/placeholder.png';
+                                                                e.target.src = '/images/placeholder.webp';
                                                             }
                                                         }}
                                                     />

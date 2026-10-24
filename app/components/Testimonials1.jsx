@@ -109,13 +109,13 @@ const Testimonials = () => {
   return (
     <>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&display=swap');
+        /* Playfair Display loaded via next/font in layout.js — no @import needed */
 
         .tst-section {
           background-color: #FFFCF5;
           padding: 80px 72px 90px;
           overflow: hidden;
-          font-family: 'Playfair Display', serif;
+          font-family: var(--font-playfair), serif;
         }
 
         .tst-header {
